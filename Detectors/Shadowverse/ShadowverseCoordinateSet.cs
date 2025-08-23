@@ -2,7 +2,7 @@ namespace DuelLedger.Detectors.Shadowverse;
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+using OpenCvSharp;
 using Padding = DuelLedger.Vision.UiPadding;
 
 public enum VsElem
@@ -99,7 +99,7 @@ public static class VsUiMap
 
     };
 
-    public static Rectangle GetRect(VsElem e, int screenW, int screenH)
+    public static Rect GetRect(VsElem e, int screenW, int screenH)
     {
         var (rr, a, s) = map[e];
         return rr.ComputeRect(screenW, screenH, a, s);

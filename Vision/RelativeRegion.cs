@@ -1,5 +1,5 @@
 using System;
-using System.Drawing;
+using OpenCvSharp;
 using Padding = DuelLedger.Vision.UiPadding;
 
 public readonly struct RelativeRegion
@@ -43,7 +43,7 @@ public readonly struct RelativeRegion
     /// <summary>
     /// 任意のターゲットサイズにおけるピクセル矩形（テンプレート側の相対領域→絶対矩形に使用）
     /// </summary>
-    public Rectangle ToRect(Size targetSize)
+    public Rect ToRect(Size targetSize)
     {
         return ComputeRect(
             screenW: targetSize.Width,
@@ -56,7 +56,7 @@ public readonly struct RelativeRegion
     /// <summary>
     /// 任意スクリーンサイズにおけるピクセル矩形を返す
     /// </summary>
-    public Rectangle ComputeRect(int screenW, int screenH, Anchor2D anchor, ScaleMode scaleMode)
+    public Rect ComputeRect(int screenW, int screenH, Anchor2D anchor, ScaleMode scaleMode)
     {
         // 基準座標（px）
         double L0 = X * RefW;
@@ -150,7 +150,7 @@ public readonly struct RelativeRegion
             y = cy - h / 2.0;
         }
 
-        /*var r = new Rectangle(
+        /*var r = new Rect(
             (int)Math.Round(x),
             (int)Math.Round(y),
             Math.Max(0, (int)Math.Round(w)),
@@ -165,7 +165,7 @@ public readonly struct RelativeRegion
             r.Height += DefaultMargin.Vertical;
         }
         return r;*/
-        return new Rectangle(
+        return new Rect(
             (int)Math.Round(x),
             (int)Math.Round(y),
             Math.Max(0, (int)Math.Round(w)),

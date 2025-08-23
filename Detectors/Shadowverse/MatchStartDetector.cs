@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Drawing;
 using OpenCvSharp;
 using DuelLedger.Vision;
 using DuelLedger.Core;
@@ -94,7 +93,7 @@ public class MatchStartDetector : IStateDetector
     }
     
     // --- ラベルから個別 screenRect を解決（__roi / __elem） ---
-    private static System.Drawing.Rectangle ResolveScreenRectForLabel(string label, int w, int h, VsElem fallbackElem)
+    private static Rect ResolveScreenRectForLabel(string label, int w, int h, VsElem fallbackElem)
     {
         var roiIdx = label.IndexOf("__roi=", StringComparison.OrdinalIgnoreCase);
         if (roiIdx >= 0)
@@ -113,7 +112,7 @@ public class MatchStartDetector : IStateDetector
                 int sy = Math.Max(0, (int)Math.Round(ry * h));
                 int sw = Math.Max(0, (int)Math.Round(rw2 * w));
                 int sh = Math.Max(0, (int)Math.Round(rh2 * h));
-                return new System.Drawing.Rectangle(sx, sy, sw, sh);
+                return new Rect(sx, sy, sw, sh);
             }
         }
         var elemIdx = label.IndexOf("__elem=", StringComparison.OrdinalIgnoreCase);

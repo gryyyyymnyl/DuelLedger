@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Drawing;
 using OpenCvSharp;
 using OpenCvSharp.Features2D;
 namespace DuelLedger.Vision
@@ -31,7 +30,7 @@ namespace DuelLedger.Vision
         // -------------- 共通：特徴量マッチ用コア --------------
         private static bool TryFeatureHomographyMatch(
             Mat screen, Mat template,
-            Rectangle screenRect, RelativeRegion templateRegion,
+            Rect screenRect, RelativeRegion templateRegion,
             Func<Feature2D> createDetector, NormTypes matcherNorm,
             out double score, out OpenCvSharp.Point location, OrbMatchConfig? cfg = null,
             [CallerMemberName] string? callerName = null)
@@ -139,8 +138,8 @@ namespace DuelLedger.Vision
             }
         }
 
-        /// <summary>System.Drawing.Rectangleで安全に切り出し（画面外ならfalse）</summary>
-        private static bool TryCrop(Mat screen, Rectangle rect, out Mat crop, out Rect roi)
+        /// <summary>Rectで安全に切り出し（画面外ならfalse）</summary>
+        private static bool TryCrop(Mat screen, Rect rect, out Mat crop, out Rect roi)
         {
             crop = null!;
             roi = default;
@@ -180,7 +179,7 @@ namespace DuelLedger.Vision
         /// </summary>
         public static bool TryOrbHomographyMatch(
             Mat screen, Mat template,
-            Rectangle screenRect, RelativeRegion templateRegion,
+            Rect screenRect, RelativeRegion templateRegion,
             out double score, out OpenCvSharp.Point location, OrbMatchConfig? cfg = null,
             [CallerMemberName] string? callerName = null)
         {
@@ -215,7 +214,7 @@ namespace DuelLedger.Vision
         }
         public static bool TryAkazeHomographyMatch(
             Mat screen, Mat template,
-            Rectangle screenRect, RelativeRegion templateRegion,
+            Rect screenRect, RelativeRegion templateRegion,
             out double score, out OpenCvSharp.Point location, OrbMatchConfig? cfg = null,
             [CallerMemberName] string? callerName = null)
         {
@@ -243,7 +242,7 @@ namespace DuelLedger.Vision
         }
         public static bool TryKazeHomographyMatch(
             Mat screen, Mat template,
-            Rectangle screenRect, RelativeRegion templateRegion,
+            Rect screenRect, RelativeRegion templateRegion,
             out double score, out OpenCvSharp.Point location, OrbMatchConfig? cfg = null,
             [CallerMemberName] string? callerName = null)
         {
@@ -269,7 +268,7 @@ namespace DuelLedger.Vision
         }
         public static bool TrySiftHomographyMatch(
             Mat screen, Mat template,
-            Rectangle screenRect, RelativeRegion templateRegion,
+            Rect screenRect, RelativeRegion templateRegion,
             out double score, out OpenCvSharp.Point location, OrbMatchConfig? cfg = null,
             [CallerMemberName] string? callerName = null)
         {
@@ -288,7 +287,7 @@ namespace DuelLedger.Vision
         }
 
         public static bool TryChamferMatch(
-            Mat screen, Mat template, System.Drawing.Rectangle screenRect,
+            Mat screen, Mat template, Rect screenRect,
             RelativeRegion tplRR,  // 使わなくてもOK（将来マスク対応用に受けておく）
             out double score, out OpenCvSharp.Point bestLoc,
             double canny1 = 70, double canny2 = 200,
