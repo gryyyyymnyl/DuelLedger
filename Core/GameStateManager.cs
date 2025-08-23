@@ -40,7 +40,7 @@ public class GameStateManager
         _battleDetectors = _detectors.Where(d => IsType(d, "BattleDetector")).ToList();
         _resultDetectors = _detectors.Where(d => IsType(d, "ResultDetector")).ToList();
 
-        _matchAgg = new MatchAggregator(publisher ?? new ArgumentNullException(nameof(publisher));
+        _matchAgg = new MatchAggregator(publisher ?? new NullPublisher());
     }
 
     public void Update(Bitmap bmp)
