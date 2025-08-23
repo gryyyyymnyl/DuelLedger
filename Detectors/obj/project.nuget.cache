@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "yWprfa2qXY0=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Detectors\\DuelLedger.Detectors.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\MW\\.nuget\\packages\\microsoft.win32.systemevents\\9.0.8\\microsoft.win32.systemevents.9.0.8.nupkg.sha512",
+    "C:\\Users\\MW\\.nuget\\packages\\opencvsharp4\\4.11.0.20250507\\opencvsharp4.4.11.0.20250507.nupkg.sha512",
+    "C:\\Users\\MW\\.nuget\\packages\\opencvsharp4.extensions\\4.11.0.20250507\\opencvsharp4.extensions.4.11.0.20250507.nupkg.sha512",
+    "C:\\Users\\MW\\.nuget\\packages\\system.drawing.common\\9.0.8\\system.drawing.common.9.0.8.nupkg.sha512",
+    "C:\\Users\\MW\\.nuget\\packages\\system.memory\\4.6.3\\system.memory.4.6.3.nupkg.sha512"
+  ],
+  "logs": []
+}

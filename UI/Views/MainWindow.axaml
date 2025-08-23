@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:DuelLedger.UI.ViewModels"
+        xmlns:models="using:DuelLedger.UI.Models"
+        xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+        xmlns:conv="using:DuelLedger.UI.Converters"
+        x:Class="DuelLedger.UI.Views.MainWindow"
+        Width="250" Height="800"
+        MinWidth="{DynamicResource MinWindowWidth}"
+        MinHeight="{DynamicResource MinWindowHeight}"
+        Title="DuelLedger">
+
+  <Window.Resources>
+    <!-- 最小ウィンドウサイズ -->
+    <sys:Double x:Key="MinWindowWidth">100</sys:Double>
+    <sys:Double x:Key="MinWindowHeight">100</sys:Double>
+    <!-- 横長切替の比率しきい値（W/H） -->
+    <sys:Double x:Key="WideAspectThreshold">1.6</sys:Double>
+    <!-- レイアウト切替（比率のみ） -->
+    <conv:AspectWideByRatio   x:Key="AspectWideByRatio"/>
+    <conv:AspectNarrowByRatio x:Key="AspectNarrowByRatio"/>
+    <!-- 表示用コンバータ -->
+    <conv:PlayerClassToBrush x:Key="ClassBrush"/>
+    <conv:PlayerClassToGlyph x:Key="ClassGlyph"/>
+    <conv:TurnOrderToText   x:Key="OrderText"/>
+    <conv:ResultToText      x:Key="ResultText"/>
+    <conv:OpponentTurnOrder x:Key="OppOrder"/>
+    <conv:OpponentResult    x:Key="OppResult"/>
+  </Window.Resources>
+
+  <Design.DataContext>
+    <vm:MainWindowViewModel />
+  </Design.DataContext>
+
+  <DockPanel>
+    <!-- 共通フッター：Win・Lose・Rate -->
+    <Border DockPanel.Dock="Bottom" Background="#ffffffff" Padding="10"
+            BorderBrush="#2D2D2D" BorderThickness="1" Margin="0,8,0,0">
+      <StackPanel Orientation="Horizontal" Spacing="12">
+        <TextBlock Text="Win:"/>
+        <TextBlock Text="{Binding OverallTotals.Wins}" FontWeight="Bold"/>
+        <TextBlock Text=" / Lose:"/>
+        <TextBlock Text="{Binding OverallTotals.Losses}" FontWeight="Bold"/>
+        <TextBlock Text=" / Rate:"/>
+        <TextBlock Text="{Binding OverallTotals.WinRatePct}" FontWeight="Bold"/>
+      </StackPanel>
+    </Border>
+
+    <TabControl>
+      <!-- 履歴 -->
+      <TabItem Header="履歴" FontSize="18">
+        <DockPanel Margin="12">
+          <!--StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="16">
+            <TextBlock Text="試合履歴（新しい順）" FontSize="12"/>
+          </StackPanel-->
+
+          <!-- ▼通常表示：表＋横並び装飾行 -->
+          <StackPanel>
+            <StackPanel.IsVisible>
+              <MultiBinding Converter="{StaticResource AspectNarrowByRatio}">
+                <Binding Path="$parent[Window].Bounds.Width"/>
+                <Binding Path="$parent[Window].Bounds.Height"/>
+                <Binding Source="{StaticResource WideAspectThreshold}"/>
+              </MultiBinding>
+            </StackPanel.IsVisible>
+            <!-- 表（新しい順） -->
+            <DataGrid ItemsSource="{Binding HistoryDesc}" AutoGenerateColumns="False"
+                      GridLinesVisibility="All" Margin="0,12,0,16">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="終了時刻" Binding="{Binding EndedAtLocal}" Width="180"/>
+                <DataGridTextColumn Header="自分"     Binding="{Binding SelfClass}" Width="120"/>
+                <DataGridTextColumn Header="相手"     Binding="{Binding OppClass}"  Width="120"/>
+                <DataGridTextColumn Header="先/後"    Binding="{Binding Order}"     Width="80"/>
+                <DataGridTextColumn Header="勝敗"     Binding="{Binding Result}"    Width="80"/>
+              </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- タイムライン（横並び1行装飾） -->
+            <StackPanel>
+              <!--TextBlock Text="タイムライン（新しい順）" FontWeight="Bold" Margin="0,0,0,8"/-->
+              <ItemsControl ItemsSource="{Binding HistoryDesc}">
+
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Border Margin="0,2" Padding="8" CornerRadius="8" BorderBrush="#2D2D2D" BorderThickness="1">
+                      <Grid ColumnDefinitions="Auto,8,Auto,16,Auto,8,Auto,16,Auto,8,Auto,8,Auto" VerticalAlignment="Center">
+                        <!-- 自分クラス（アイコン） -->
+                        <Border Grid.Column="0" Width="28" Height="28" CornerRadius="14"
+                                Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}">
+                          <TextBlock Text="{Binding SelfClass, Converter={StaticResource ClassGlyph}}"
+                                     HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                        </Border>
+                        <Rectangle Grid.Column="1" Width="8"/>
+
+                        <!-- 自分の先行/後攻 -->
+                        <TextBlock Grid.Column="2" Text="{Binding Order, Converter={StaticResource OrderText}}"/>
+                        <Rectangle Grid.Column="3" Width="16"/>
+
+                        <!-- 自分の勝敗 -->
+                        <TextBlock Grid.Column="4" Text="{Binding Result, Converter={StaticResource ResultText}}" FontWeight="Bold"/>
+                        <Rectangle Grid.Column="5" Width="8"/>
+
+                        <!-- 相手の勝敗（反転） -->
+                        <TextBlock Grid.Column="6" Text="{Binding Result, Converter={StaticResource OppResult}}"/>
+                        <Rectangle Grid.Column="7" Width="16"/>
+
+                        <!-- 相手の先行/後攻（反転） -->
+                        <TextBlock Grid.Column="8" Text="{Binding Order, Converter={StaticResource OppOrder}}"/>
+                        <Rectangle Grid.Column="9" Width="8"/>
+
+                        <!-- 相手クラス（アイコン） -->
+                        <Border Grid.Column="10" Width="28" Height="28" CornerRadius="14"
+                                Background="{Binding OppClass, Converter={StaticResource ClassBrush}}">
+                          <TextBlock Text="{Binding OppClass, Converter={StaticResource ClassGlyph}}"
+                                     HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                        </Border>
+                      </Grid>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </StackPanel>
+
+          <!-- ▼ワイド表示（幅 >= 1200px）“縦カード”を横に並べる -->
+          <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                        VerticalScrollBarVisibility="Disabled" Margin="0,12,0,0">
+            <ScrollViewer.IsVisible>
+              <MultiBinding Converter="{StaticResource AspectWideByRatio}">
+                <Binding Path="$parent[Window].Bounds.Width"/>
+                <Binding Path="$parent[Window].Bounds.Height"/>
+                <Binding Source="{StaticResource WideAspectThreshold}"/>
+              </MultiBinding>
+            </ScrollViewer.IsVisible>
+
+            <ItemsControl ItemsSource="{Binding HistoryDesc}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border Width="110" Margin="0,0,8,0" Padding="10" CornerRadius="8" BorderBrush="#2D2D2D" BorderThickness="1">
+                    <StackPanel Spacing="6">
+                      <TextBlock Text="{Binding EndedAtLocal, StringFormat='{}{0:MM/dd HH:mm}'}" FontWeight="Bold"/>
+                      <!-- 自分 -->
+                      <StackPanel Orientation="Horizontal" Spacing="6">
+                        <Border Width="24" Height="24" CornerRadius="12"
+                                Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}">
+                          <TextBlock Text="{Binding SelfClass, Converter={StaticResource ClassGlyph}}"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                        </Border>
+                        <TextBlock Text="{Binding Order, Converter={StaticResource OrderText}}"/>
+                        <TextBlock Text="{Binding Result, Converter={StaticResource ResultText}}" FontWeight="Bold"/>
+                      </StackPanel>
+                      <!-- 相手 -->
+                      <StackPanel Orientation="Horizontal" Spacing="6">
+                        <Border Width="24" Height="24" CornerRadius="12"
+                                Background="{Binding OppClass, Converter={StaticResource ClassBrush}}">
+                          <TextBlock Text="{Binding OppClass, Converter={StaticResource ClassGlyph}}"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                        </Border>
+                        <TextBlock Text="{Binding Order, Converter={StaticResource OppOrder}}"/>
+                        <TextBlock Text="{Binding Result, Converter={StaticResource OppResult}}"/>
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+        </DockPanel>
+      </TabItem>
+
+      <!-- 勝敗（全体：相手クラス別） -->
+      <TabItem Header="勝敗" FontSize="18">
+        <DockPanel Margin="12">
+          <!--StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="16">
+            <TextBlock Text="相手クラス別 勝敗・Rate（全試合）" FontSize="20"/>
+          </StackPanel-->
+
+          <!-- ▼通常表示（行の装飾） -->
+          <StackPanel>
+            <StackPanel.IsVisible>
+              <MultiBinding Converter="{StaticResource AspectNarrowByRatio}">
+                <Binding Path="$parent[Window].Bounds.Width"/>
+                <Binding Path="$parent[Window].Bounds.Height"/>
+                <Binding Source="{StaticResource WideAspectThreshold}"/>
+              </MultiBinding>
+            </StackPanel.IsVisible>
+            <ItemsControl ItemsSource="{Binding OverallRows}" Margin="0,12,0,0">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border Margin="0,4" Padding="10" CornerRadius="10" BorderBrush="#2D2D2D" BorderThickness="1">
+                    <Grid ColumnDefinitions="Auto,8,Auto,16,Auto,8,Auto,16,Auto" VerticalAlignment="Center">
+                      <!-- 相手クラス（アイコン） -->
+                      <Border Grid.Column="0" Width="28" Height="28" CornerRadius="14"
+                              Background="{Binding Opponent, Converter={StaticResource ClassBrush}}">
+                        <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassGlyph}}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                      </Border>
+                      <Rectangle Grid.Column="1" Width="8"/>
+                      <!-- 相手クラス名 -->
+                      <TextBlock Grid.Column="2" Text="{Binding Opponent}"/>
+                      <Rectangle Grid.Column="3" Width="16"/>
+                      <!-- 勝利数 -->
+                      <TextBlock Grid.Column="4" Text="{Binding Wins,    StringFormat='勝利 {0}'}" FontWeight="Bold"/>
+                      <Rectangle Grid.Column="5" Width="8"/>
+                      <!-- 敗北数 -->
+                      <TextBlock Grid.Column="6" Text="{Binding Losses,  StringFormat='敗北 {0}'}" FontWeight="Bold"/>
+                      <Rectangle Grid.Column="7" Width="16"/>
+                      <!-- Rate -->
+                      <TextBlock Grid.Column="8" Text="{Binding WinRatePct}" FontWeight="Bold"/>
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+
+          <!-- ▼ワイド表示（縦カード） -->
+          <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                        VerticalScrollBarVisibility="Disabled" Margin="0,12,0,0">
+            <ScrollViewer.IsVisible>
+              <MultiBinding Converter="{StaticResource AspectWideByRatio}">
+                <Binding Path="$parent[Window].Bounds.Width"/>
+                <Binding Path="$parent[Window].Bounds.Height"/>
+                <Binding Source="{StaticResource WideAspectThreshold}"/>
+              </MultiBinding>
+            </ScrollViewer.IsVisible>
+            <ItemsControl ItemsSource="{Binding OverallRows}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border Width="110" Margin="0,0,8,0" Padding="10" CornerRadius="8" BorderBrush="#2D2D2D" BorderThickness="1">
+                    <StackPanel Spacing="6">
+                      <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Border Width="24" Height="24" CornerRadius="12"
+                                Background="{Binding Opponent, Converter={StaticResource ClassBrush}}">
+                          <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassGlyph}}"
+                                     HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                        </Border>
+                        <TextBlock Text="{Binding Opponent}" FontWeight="Bold"/>
+                      </StackPanel>
+                      <TextBlock Text="{Binding Wins,    StringFormat='勝利 {0}'}"/>
+                      <TextBlock Text="{Binding Losses,  StringFormat='敗北 {0}'}"/>
+                      <TextBlock Text="{Binding WinRatePct, StringFormat='Rate {0}'}" FontWeight="Bold"/>
+                    </StackPanel>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+        </DockPanel>
+      </TabItem>
+
+      <!-- クラス（自分クラス選択 → 相手クラス別） -->
+      <TabItem Header="クラス" FontSize="18">
+        <DockPanel Margin="12">
+          <StackPanel Orientation="Horizontal" Spacing="12" DockPanel.Dock="Top">
+            <TextBlock Text="自分のクラス:" VerticalAlignment="Center"/>
+            <ComboBox ItemsSource="{Binding SelfClassOptions}" SelectedItem="{Binding SelectedSelfClass}" Width="180"/>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <TextBlock Text="勝利:"/><TextBlock Text="{Binding SelfTotals.Wins}" FontWeight="Bold"/>
+              <TextBlock Text=" / 敗北:" Margin="8,0,0,0"/><TextBlock Text="{Binding SelfTotals.Losses}" FontWeight="Bold"/>
+              <TextBlock Text=" / Rate:" Margin="8,0,0,0"/><TextBlock Text="{Binding SelfTotals.WinRatePct}" FontWeight="Bold"/>
+            </StackPanel>
+          </StackPanel>
+
+          <!-- ▼通常表示（行の装飾） -->
+          <StackPanel>
+            <StackPanel.IsVisible>
+              <MultiBinding Converter="{StaticResource AspectNarrowByRatio}">
+                <Binding Path="$parent[Window].Bounds.Width"/>
+                <Binding Path="$parent[Window].Bounds.Height"/>
+                <Binding Source="{StaticResource WideAspectThreshold}"/>
+              </MultiBinding>
+            </StackPanel.IsVisible>
+            <ItemsControl ItemsSource="{Binding SelfFilteredRows}" Margin="0,12,0,0">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border Margin="0,4" Padding="10" CornerRadius="10" BorderBrush="#2D2D2D" BorderThickness="1">
+                    <Grid ColumnDefinitions="Auto,8,Auto,16,Auto,8,Auto,16,Auto" VerticalAlignment="Center">
+                      <!-- 相手クラス（アイコン） -->
+                      <Border Grid.Column="0" Width="28" Height="28" CornerRadius="14"
+                              Background="{Binding Opponent, Converter={StaticResource ClassBrush}}">
+                        <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassGlyph}}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                      </Border>
+                      <Rectangle Grid.Column="1" Width="8"/>
+                      <!-- 相手クラス名 -->
+                      <TextBlock Grid.Column="2" Text="{Binding Opponent}"/>
+                      <Rectangle Grid.Column="3" Width="16"/>
+                      <!-- 勝利数 -->
+                      <TextBlock Grid.Column="4" Text="{Binding Wins,    StringFormat='勝利 {0}'}" FontWeight="Bold"/>
+                      <Rectangle Grid.Column="5" Width="8"/>
+                      <!-- 敗北数 -->
+                      <TextBlock Grid.Column="6" Text="{Binding Losses,  StringFormat='敗北 {0}'}" FontWeight="Bold"/>
+                      <Rectangle Grid.Column="7" Width="16"/>
+                      <!-- Rate -->
+                      <TextBlock Grid.Column="8" Text="{Binding WinRatePct}" FontWeight="Bold"/>
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+
+          <!-- ▼ワイド表示（縦カード） -->
+          <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                        VerticalScrollBarVisibility="Disabled" Margin="0,12,0,0">
+            <ScrollViewer.IsVisible>
+              <MultiBinding Converter="{StaticResource AspectWideByRatio}">
+                <Binding Path="$parent[Window].Bounds.Width"/>
+                <Binding Path="$parent[Window].Bounds.Height"/>
+                <Binding Source="{StaticResource WideAspectThreshold}"/>
+              </MultiBinding>
+            </ScrollViewer.IsVisible>
+            <ItemsControl ItemsSource="{Binding SelfFilteredRows}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border Width="110" Margin="0,0,8,0" Padding="10" CornerRadius="8" BorderBrush="#2D2D2D" BorderThickness="1">
+                    <StackPanel Spacing="6">
+                      <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Border Width="24" Height="24" CornerRadius="12"
+                                Background="{Binding Opponent, Converter={StaticResource ClassBrush}}">
+                          <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassGlyph}}"
+                                     HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                        </Border>
+                        <TextBlock Text="{Binding Opponent}" FontWeight="Bold"/>
+                      </StackPanel>
+                      <TextBlock Text="{Binding Wins,    StringFormat='勝利 {0}'}"/>
+                      <TextBlock Text="{Binding Losses,  StringFormat='敗北 {0}'}"/>
+                      <TextBlock Text="{Binding WinRatePct, StringFormat='Rate {0}'}" FontWeight="Bold"/>
+                    </StackPanel>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+        </DockPanel>
+      </TabItem>
+    </TabControl>
+  </DockPanel>
+</Window>
