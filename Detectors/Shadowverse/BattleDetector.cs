@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Text.Json;
 using OpenCvSharp;
 using DuelLedger.Vision;
+using DuelLedger.Core;
 
 public class BattleDetector : IStateDetector
 {

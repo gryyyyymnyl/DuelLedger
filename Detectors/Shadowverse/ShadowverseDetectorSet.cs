@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 using DuelLedger.Vision;
+using DuelLedger.Core;
+using DuelLedger.Contracts;
+
 namespace DuelLedger.Detectors.Shadowverse
 {
 
