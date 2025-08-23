@@ -9,3 +9,4 @@ C:\Users\MW\Documents\Projects\DuelLedger\Contracts\obj\Debug\net8.0\DuelLedger.
 C:\Users\MW\Documents\Projects\DuelLedger\Contracts\obj\Debug\net8.0\refint\DuelLedger.Contracts.dll
 C:\Users\MW\Documents\Projects\DuelLedger\Contracts\obj\Debug\net8.0\DuelLedger.Contracts.pdb
 C:\Users\MW\Documents\Projects\DuelLedger\Contracts\obj\Debug\net8.0\ref\DuelLedger.Contracts.dll
+C:\Users\MW\Documents\Projects\DuelLedger\Contracts\obj\Debug\net8.0\DuelLedger.Contracts.sourcelink.json

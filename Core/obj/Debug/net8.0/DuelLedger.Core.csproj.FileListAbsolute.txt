@@ -3,3 +3,4 @@ C:\Users\MW\Documents\Projects\DuelLedger\Core\obj\Debug\net8.0\DuelLedger.Core.
 C:\Users\MW\Documents\Projects\DuelLedger\Core\obj\Debug\net8.0\DuelLedger.Core.AssemblyInfoInputs.cache
 C:\Users\MW\Documents\Projects\DuelLedger\Core\obj\Debug\net8.0\DuelLedger.Core.AssemblyInfo.cs
 C:\Users\MW\Documents\Projects\DuelLedger\Core\obj\Debug\net8.0\DuelLedger.Core.csproj.CoreCompileInputs.cache
+C:\Users\MW\Documents\Projects\DuelLedger\Core\obj\Debug\net8.0\DuelLedger.Core.sourcelink.json
