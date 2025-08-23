@@ -1,16 +1,14 @@
 using System.Threading.Tasks;
 using System.Threading;
-namespace DuelLedger.Core;
-
 using System;
 using System.Linq;
 using System.Text.Json;
 using System.Collections.Generic;
 using OpenCvSharp;
-using OpenCvSharp.Extensions;
-using System.Drawing;
-
+using DuelLedger.Vision;
 using DuelLedger.Contracts;
+
+namespace DuelLedger.Core;
 public class GameStateManager
 {
     private GameState _currentState = GameState.Unknown;
@@ -29,9 +27,11 @@ public class GameStateManager
     public string? FinalOwnClass { get; private set; }
     public string? FinalEnemyClass { get; private set; }
     private readonly MatchAggregator _matchAgg;
-    public GameStateManager(IGameStateDetectorSet detectorSet, IMatchPublisher? publisher = null)
+    private readonly IScreenSource _screenSource;
+    public GameStateManager(IGameStateDetectorSet detectorSet, IScreenSource screenSource, IMatchPublisher? publisher = null)
     {
         _detectorSet = detectorSet;
+        _screenSource = screenSource;
         _detectors = detectorSet.CreateDetectors();
         // 名前ベースでグルーピング（必要に応じて調整）
         bool IsType(IStateDetector d, string name) => d.GetType().Name.Contains(name, StringComparison.OrdinalIgnoreCase);
@@ -43,18 +43,17 @@ public class GameStateManager
         _matchAgg = new MatchAggregator(publisher ?? new NullPublisher());
     }
 
-    public void Update(Bitmap bmp)
+    public void Update()
     {
-        Mat screen = BitmapConverter.ToMat(bmp);
-        Cv2.CvtColor(screen, screen, ColorConversionCodes.BGR2GRAY);
+        if (!_screenSource.TryCapture(out var screen))
+            return;
+        using (screen)
+        {
+            Cv2.CvtColor(screen, screen, ColorConversionCodes.BGR2GRAY);
 
-        double scale = 0.4; // 0.4〜0.6くらいが実務的にバランス良い
-        OpenCvSharp.Mat small = new OpenCvSharp.Mat();
-        OpenCvSharp.Cv2.Resize(
-            screen, small, new OpenCvSharp.Size(),
-            scale, scale, OpenCvSharp.InterpolationFlags.Area);
-        screen.Dispose();
-        screen = small;
+            double scale = 0.4; // 0.4〜0.6くらいが実務的にバランス良い
+            Cv2.Resize(screen, screen, new OpenCvSharp.Size(),
+                scale, scale, OpenCvSharp.InterpolationFlags.Area);
 
         // 状態マシン（各段階で指定の検知のみ実行）
         switch (_currentState)
@@ -123,6 +122,7 @@ public class GameStateManager
                 }
                 Console.WriteLine($"[{_detectorSet.GameName}] 終了: 未検出、継続待機");
                 return;
+        }
         }
     }
 

@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Drawing;
 using System.Text.Json;
 using OpenCvSharp;
 using DuelLedger.Vision;
@@ -111,7 +110,7 @@ public class BattleDetector : IStateDetector
     }
 
     // --- 内部実装 ---
-    private static bool TryMatchClass(Mat screen, Rectangle fallbackRegion,
+    private static bool TryMatchClass(Mat screen, Rect fallbackRegion,
                                       Dictionary<string, List<(string Label, Mat Tpl)>> bank,
                                       out string? bestClass, out double bestScore,
                                       out OpenCvSharp.Point bestLoc, out List<string> bestLabelsInGroups)
@@ -195,7 +194,7 @@ public class BattleDetector : IStateDetector
     }
 
     // ラベルから個別 screenRect を解決： __roi=x,y,w,h（相対） > __elem=Name > fallbackRect
-    private static Rectangle ResolveScreenRectForLabel(string label, int w, int h, Rectangle fallbackRect)
+    private static Rect ResolveScreenRectForLabel(string label, int w, int h, Rect fallbackRect)
     {
         var roiIdx = label.IndexOf("__roi=", StringComparison.OrdinalIgnoreCase);
         if (roiIdx >= 0)
@@ -214,7 +213,7 @@ public class BattleDetector : IStateDetector
                 int sy = Math.Max(0, (int)Math.Round(ry * h));
                 int sw = Math.Max(0, (int)Math.Round(rw2 * w));
                 int sh = Math.Max(0, (int)Math.Round(rh2 * h));
-                return new Rectangle(sx, sy, sw, sh);
+                return new Rect(sx, sy, sw, sh);
             }
         }
         var elemIdx = label.IndexOf("__elem=", StringComparison.OrdinalIgnoreCase);
