@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using DuelLedger.UI.Models;
 using DuelLedger.UI.Services;
+
 namespace DuelLedger.UI.ViewModels;
 
 public sealed class MainWindowViewModel : NotifyBase
