@@ -10,3 +10,4 @@ public sealed class NullPublisher : IMatchPublisher
     public void PublishSnapshot(MatchSnapshot snapshot) { }
     public void PublishFinal(MatchSummary summary) { }
 }
+
