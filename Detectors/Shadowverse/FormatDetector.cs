@@ -8,6 +8,7 @@ using System.Text;
 using System.Drawing;
 using OpenCvSharp;
 using DuelLedger.Vision;
+using DuelLedger.Core;
 
 public class FormatDetector : IStateDetector
 {

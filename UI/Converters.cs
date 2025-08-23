@@ -4,7 +4,6 @@ using Avalonia.Data.Converters;
 using Avalonia.Media;
 using DuelLedger.UI.Models;
 
-using DuelLedger.Contracts;
 namespace DuelLedger.UI.Converters;
 
 public sealed class PlayerClassToBrush : IValueConverter

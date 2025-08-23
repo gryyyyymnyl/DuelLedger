@@ -349,10 +349,8 @@ namespace DuelLedger.Vision
 #endif
             double best = double.PositiveInfinity;
             OpenCvSharp.Point bestP = default;
-#if DEBUG
             OpenCvSharp.Point bestRespLoc = default;
             OpenCvSharp.Size bestTplSize = default;
-#endif
             foreach (var s in scales)
             {
                 // テンプレのエッジマスク（0/1, CV_32F）
@@ -384,9 +382,9 @@ namespace DuelLedger.Vision
                 if (minVal < best)
                 {
                     best = minVal;
-#if DEBUG
                     bestRespLoc = minLoc;
                     bestTplSize = new OpenCvSharp.Size(tResized.Width, tResized.Height);
+#if DEBUG
                     // ベストのレスポンスを保存（可視化）
                     DumpIf(dbg, "resp_best_gray", ToVis8U(resp));
                     DumpColorMapIf(dbg, "resp_best_heat", ToVis8U(resp));
