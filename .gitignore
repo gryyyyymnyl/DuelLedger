@@ -1,0 +1,9 @@
+.vscode/
+Templates/
+bin/
+obj/Debug/
+*.png
+*.jpg
+*.exe
+*.dll
+*.pdb
