@@ -20,7 +20,7 @@ namespace DuelLedger.Detectors.Shadowverse
 
         public List<IStateDetector> CreateDetectors()
         {
-            var tplRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..","..","..","..", "Detectors","Shadowverse","Templates"));
+            var tplRoot = Path.Combine(AppContext.BaseDirectory, "Templates");
             return new List<IStateDetector>
         {
             new FormatDetector(new[]{
