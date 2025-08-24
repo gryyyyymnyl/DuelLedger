@@ -1,10 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using Avalonia;
 using Avalonia.Data.Converters;
 using Avalonia.Media;
 using DuelLedger.UI.Models;
+using DuelLedger.UI.Services;
 
 namespace DuelLedger.UI.Converters;
 
@@ -12,14 +12,11 @@ public sealed class ClassColorConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        var resources = Application.Current?.Resources;
-        if (resources != null &&
-            resources.TryGetValue("ClassVisuals", out var obj) &&
-            obj is IReadOnlyDictionary<PlayerClass, ClassVisual> visuals &&
-            value is PlayerClass cls &&
-            visuals.TryGetValue(cls, out var visual))
+        if (Application.Current?.Resources["UiMap"] is UiMapProvider map && value is PlayerClass cls)
         {
-            return new SolidColorBrush(Color.Parse(visual.Color));
+            var color = map.Get($"Class.{cls}").color;
+            if (string.IsNullOrEmpty(color)) color = "#808080";
+            return new SolidColorBrush(Color.Parse(color));
         }
         return new SolidColorBrush(Colors.Gray);
     }

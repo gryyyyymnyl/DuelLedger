@@ -29,18 +29,20 @@
     <Border DockPanel.Dock="Bottom" Background="#ffffffff" Padding="10"
             BorderBrush="#2D2D2D" BorderThickness="1" Margin="0,8,0,0">
       <StackPanel Orientation="Horizontal" Spacing="12">
-        <TextBlock Text="Win:"/>
+        <TextBlock Text="{Binding Source='Label.Win', Converter={StaticResource UiText}}"/>
         <TextBlock Text="{Binding OverallTotals.Wins}" FontWeight="Bold"/>
-        <TextBlock Text=" / Lose:"/>
+        <TextBlock Text=" / "/>
+        <TextBlock Text="{Binding Source='Label.Lose', Converter={StaticResource UiText}}"/>
         <TextBlock Text="{Binding OverallTotals.Losses}" FontWeight="Bold"/>
-        <TextBlock Text=" / Rate:"/>
+        <TextBlock Text=" / "/>
+        <TextBlock Text="{Binding Source='Label.Rate', Converter={StaticResource UiText}}"/>
         <TextBlock Text="{Binding OverallTotals.WinRatePct}" FontWeight="Bold"/>
       </StackPanel>
     </Border>
 
-    <TabControl>
-      <!-- 履歴 -->
-      <TabItem Header="履歴" FontSize="18">
+      <TabControl>
+        <!-- 履歴 -->
+        <TabItem Header="{Binding Source='Header.History', Converter={StaticResource UiText}}" FontSize="18">
         <DockPanel Margin="12">
           <!--StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="16">
             <TextBlock Text="試合履歴（新しい順）" FontSize="12"/>
@@ -58,13 +60,13 @@
             <!-- 表（新しい順） -->
             <DataGrid ItemsSource="{Binding HistoryDesc}" AutoGenerateColumns="False"
                       GridLinesVisibility="All" Margin="0,12,0,16">
-              <DataGrid.Columns>
-                <DataGridTextColumn Header="終了時刻" Binding="{Binding EndedAtLocal}" Width="180"/>
-                <DataGridTextColumn Header="自分"     Binding="{Binding SelfClass}" Width="120"/>
-                <DataGridTextColumn Header="相手"     Binding="{Binding OppClass}"  Width="120"/>
-                <DataGridTextColumn Header="先/後"    Binding="{Binding Order}"     Width="80"/>
-                <DataGridTextColumn Header="勝敗"     Binding="{Binding Result}"    Width="80"/>
-              </DataGrid.Columns>
+                <DataGrid.Columns>
+                  <DataGridTextColumn Header="{Binding Source='Header.EndedAt', Converter={StaticResource UiText}}" Binding="{Binding EndedAtLocal}" Width="180"/>
+                  <DataGridTextColumn Header="{Binding Source='Header.Self', Converter={StaticResource UiText}}"     Binding="{Binding SelfClass, Converter={StaticResource ClassName}}" Width="120"/>
+                  <DataGridTextColumn Header="{Binding Source='Header.Opponent', Converter={StaticResource UiText}}"     Binding="{Binding OppClass, Converter={StaticResource ClassName}}"  Width="120"/>
+                  <DataGridTextColumn Header="{Binding Source='Header.Order', Converter={StaticResource UiText}}"    Binding="{Binding Order, Converter={StaticResource OrderText}}"     Width="80"/>
+                  <DataGridTextColumn Header="{Binding Source='Header.Result', Converter={StaticResource UiText}}"     Binding="{Binding Result, Converter={StaticResource ResultText}}"    Width="80"/>
+                </DataGrid.Columns>
             </DataGrid>
 
             <!-- タイムライン（横並び1行装飾） -->
@@ -166,12 +168,10 @@
         </DockPanel>
       </TabItem>
 
-      <!-- 勝敗（全体：相手クラス別） -->
-      <TabItem Header="勝敗" FontSize="18">
+        <!-- Result summary by opponent -->
+        <TabItem Header="{Binding Source='Header.Result', Converter={StaticResource UiText}}" FontSize="18">
         <DockPanel Margin="12">
-          <!--StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="16">
-            <TextBlock Text="相手クラス別 勝敗・Rate（全試合）" FontSize="20"/>
-          </StackPanel-->
+            <!-- summary header removed -->
 
           <!-- ▼通常表示（行の装飾） -->
           <StackPanel>
@@ -195,16 +195,16 @@
                       </Border>
                       <Rectangle Grid.Column="1" Width="8"/>
                       <!-- 相手クラス名 -->
-                      <TextBlock Grid.Column="2" Text="{Binding Opponent}"/>
+                      <TextBlock Grid.Column="2" Text="{Binding Opponent, Converter={StaticResource ClassName}}"/>
                       <Rectangle Grid.Column="3" Width="16"/>
-                      <!-- 勝利数 -->
-                      <TextBlock Grid.Column="4" Text="{Binding Wins,    StringFormat='勝利 {0}'}" FontWeight="Bold"/>
+                        <!-- Wins -->
+                        <TextBlock Grid.Column="4" Text="{Binding Wins, Converter={StaticResource FormatText}, ConverterParameter='Format.Win'}" FontWeight="Bold"/>
                       <Rectangle Grid.Column="5" Width="8"/>
-                      <!-- 敗北数 -->
-                      <TextBlock Grid.Column="6" Text="{Binding Losses,  StringFormat='敗北 {0}'}" FontWeight="Bold"/>
+                        <!-- Losses -->
+                        <TextBlock Grid.Column="6" Text="{Binding Losses, Converter={StaticResource FormatText}, ConverterParameter='Format.Lose'}" FontWeight="Bold"/>
                       <Rectangle Grid.Column="7" Width="16"/>
-                      <!-- Rate -->
-                      <TextBlock Grid.Column="8" Text="{Binding WinRatePct}" FontWeight="Bold"/>
+                        <!-- Rate -->
+                        <TextBlock Grid.Column="8" Text="{Binding WinRatePct, Converter={StaticResource FormatText}, ConverterParameter='Format.Rate'}" FontWeight="Bold"/>
                     </Grid>
                   </Border>
                 </DataTemplate>
@@ -238,11 +238,11 @@
                           <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassGlyph}}"
                                      HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
                         </Border>
-                        <TextBlock Text="{Binding Opponent}" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassName}}" FontWeight="Bold"/>
                       </StackPanel>
-                      <TextBlock Text="{Binding Wins,    StringFormat='勝利 {0}'}"/>
-                      <TextBlock Text="{Binding Losses,  StringFormat='敗北 {0}'}"/>
-                      <TextBlock Text="{Binding WinRatePct, StringFormat='Rate {0}'}" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding Wins, Converter={StaticResource FormatText}, ConverterParameter='Format.Win'}"/>
+                        <TextBlock Text="{Binding Losses, Converter={StaticResource FormatText}, ConverterParameter='Format.Lose'}"/>
+                        <TextBlock Text="{Binding WinRatePct, Converter={StaticResource FormatText}, ConverterParameter='Format.Rate'}" FontWeight="Bold"/>
                     </StackPanel>
                   </Border>
                 </DataTemplate>
@@ -253,15 +253,20 @@
       </TabItem>
 
       <!-- クラス（自分クラス選択 → 相手クラス別） -->
-      <TabItem Header="クラス" FontSize="18">
+      <TabItem Header="{Binding Source='Header.Class', Converter={StaticResource UiText}}" FontSize="18">
         <DockPanel Margin="12">
           <StackPanel Orientation="Horizontal" Spacing="12" DockPanel.Dock="Top">
-            <TextBlock Text="自分のクラス:" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding Source='Label.SelfClass', Converter={StaticResource UiText}}" VerticalAlignment="Center"/>
             <ComboBox ItemsSource="{Binding SelfClassOptions}" SelectedItem="{Binding SelectedSelfClass}" Width="180"/>
             <StackPanel Orientation="Horizontal" Spacing="8">
-              <TextBlock Text="勝利:"/><TextBlock Text="{Binding SelfTotals.Wins}" FontWeight="Bold"/>
-              <TextBlock Text=" / 敗北:" Margin="8,0,0,0"/><TextBlock Text="{Binding SelfTotals.Losses}" FontWeight="Bold"/>
-              <TextBlock Text=" / Rate:" Margin="8,0,0,0"/><TextBlock Text="{Binding SelfTotals.WinRatePct}" FontWeight="Bold"/>
+              <TextBlock Text="{Binding Source='Label.WinCount', Converter={StaticResource UiText}}"/>
+              <TextBlock Text="{Binding SelfTotals.Wins}" FontWeight="Bold"/>
+              <TextBlock Text=" / " Margin="8,0,0,0"/>
+              <TextBlock Text="{Binding Source='Label.LoseCount', Converter={StaticResource UiText}}"/>
+              <TextBlock Text="{Binding SelfTotals.Losses}" FontWeight="Bold"/>
+              <TextBlock Text=" / " Margin="8,0,0,0"/>
+              <TextBlock Text="{Binding Source='Label.Rate', Converter={StaticResource UiText}}"/>
+              <TextBlock Text="{Binding SelfTotals.WinRatePct}" FontWeight="Bold"/>
             </StackPanel>
           </StackPanel>
 
@@ -287,16 +292,16 @@
                       </Border>
                       <Rectangle Grid.Column="1" Width="8"/>
                       <!-- 相手クラス名 -->
-                      <TextBlock Grid.Column="2" Text="{Binding Opponent}"/>
+                      <TextBlock Grid.Column="2" Text="{Binding Opponent, Converter={StaticResource ClassName}}"/>
                       <Rectangle Grid.Column="3" Width="16"/>
-                      <!-- 勝利数 -->
-                      <TextBlock Grid.Column="4" Text="{Binding Wins,    StringFormat='勝利 {0}'}" FontWeight="Bold"/>
+                        <!-- Wins -->
+                        <TextBlock Grid.Column="4" Text="{Binding Wins, Converter={StaticResource FormatText}, ConverterParameter='Format.Win'}" FontWeight="Bold"/>
                       <Rectangle Grid.Column="5" Width="8"/>
-                      <!-- 敗北数 -->
-                      <TextBlock Grid.Column="6" Text="{Binding Losses,  StringFormat='敗北 {0}'}" FontWeight="Bold"/>
+                        <!-- Losses -->
+                        <TextBlock Grid.Column="6" Text="{Binding Losses, Converter={StaticResource FormatText}, ConverterParameter='Format.Lose'}" FontWeight="Bold"/>
                       <Rectangle Grid.Column="7" Width="16"/>
-                      <!-- Rate -->
-                      <TextBlock Grid.Column="8" Text="{Binding WinRatePct}" FontWeight="Bold"/>
+                        <!-- Rate -->
+                        <TextBlock Grid.Column="8" Text="{Binding WinRatePct, Converter={StaticResource FormatText}, ConverterParameter='Format.Rate'}" FontWeight="Bold"/>
                     </Grid>
                   </Border>
                 </DataTemplate>
@@ -330,11 +335,11 @@
                           <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassGlyph}}"
                                      HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
                         </Border>
-                        <TextBlock Text="{Binding Opponent}" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassName}}" FontWeight="Bold"/>
                       </StackPanel>
-                      <TextBlock Text="{Binding Wins,    StringFormat='勝利 {0}'}"/>
-                      <TextBlock Text="{Binding Losses,  StringFormat='敗北 {0}'}"/>
-                      <TextBlock Text="{Binding WinRatePct, StringFormat='Rate {0}'}" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding Wins, Converter={StaticResource FormatText}, ConverterParameter='Format.Win'}"/>
+                        <TextBlock Text="{Binding Losses, Converter={StaticResource FormatText}, ConverterParameter='Format.Lose'}"/>
+                        <TextBlock Text="{Binding WinRatePct, Converter={StaticResource FormatText}, ConverterParameter='Format.Rate'}" FontWeight="Bold"/>
                     </StackPanel>
                   </Border>
                 </DataTemplate>

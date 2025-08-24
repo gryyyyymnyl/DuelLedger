@@ -23,8 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Assets/ClassAssets.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <AvaloniaResource Include="Assets/**" />
+    <AvaloniaResource Include="ui_map*.json" />
   </ItemGroup>
 </Project>
