@@ -137,3 +137,21 @@ public sealed class FormatTextConverter : IValueConverter
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
 }
+
+public sealed class FormatNameConverter : IValueConverter
+{
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (Application.Current?.Resources["UiMap"] is UiMapProvider map)
+        {
+            var key = value is MatchFormat f
+                ? $"Format.{f}"
+                : "Format.All";
+            return map.Get(key).name;
+        }
+        return string.Empty;
+    }
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}

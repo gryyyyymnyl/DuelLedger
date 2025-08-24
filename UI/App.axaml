@@ -18,5 +18,6 @@
     <conv:OpponentResult    x:Key="OppResult"/>
     <conv:UiTextConverter   x:Key="UiText"/>
     <conv:FormatTextConverter x:Key="FormatText"/>
+    <conv:FormatNameConverter x:Key="FormatName"/>
   </Application.Resources>
 </Application>
