@@ -48,10 +48,6 @@
             "OpenCvSharp4": {
               "target": "Package",
               "version": "[4.11.0.20250507, )"
-            },
-            "System.Drawing.Common": {
-              "target": "Package",
-              "version": "[9.0.8, )"
             }
           },
           "imports": [

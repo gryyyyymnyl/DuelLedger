@@ -40,9 +40,3 @@ public sealed class JsonStreamPublisher : IMatchPublisher
         ));
     }
 }
-
-public sealed class NullPublisher : IMatchPublisher
-{
-    public void PublishSnapshot(MatchSnapshot s) { }
-    public void PublishFinal(MatchSummary s) { }
-}

@@ -1,0 +1,12 @@
+C:\Users\MW\Documents\Projects\DuelLedger\Contracts\bin\Release\net8.0\DuelLedger.Contracts.deps.json
+C:\Users\MW\Documents\Projects\DuelLedger\Contracts\bin\Release\net8.0\DuelLedger.Contracts.dll
+C:\Users\MW\Documents\Projects\DuelLedger\Contracts\bin\Release\net8.0\DuelLedger.Contracts.pdb
+C:\Users\MW\Documents\Projects\DuelLedger\Contracts\obj\Release\net8.0\DuelLedger.Contracts.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\MW\Documents\Projects\DuelLedger\Contracts\obj\Release\net8.0\DuelLedger.Contracts.AssemblyInfoInputs.cache
+C:\Users\MW\Documents\Projects\DuelLedger\Contracts\obj\Release\net8.0\DuelLedger.Contracts.AssemblyInfo.cs
+C:\Users\MW\Documents\Projects\DuelLedger\Contracts\obj\Release\net8.0\DuelLedger.Contracts.csproj.CoreCompileInputs.cache
+C:\Users\MW\Documents\Projects\DuelLedger\Contracts\obj\Release\net8.0\DuelLedger.Contracts.sourcelink.json
+C:\Users\MW\Documents\Projects\DuelLedger\Contracts\obj\Release\net8.0\DuelLedger.Contracts.dll
+C:\Users\MW\Documents\Projects\DuelLedger\Contracts\obj\Release\net8.0\refint\DuelLedger.Contracts.dll
+C:\Users\MW\Documents\Projects\DuelLedger\Contracts\obj\Release\net8.0\DuelLedger.Contracts.pdb
+C:\Users\MW\Documents\Projects\DuelLedger\Contracts\obj\Release\net8.0\ref\DuelLedger.Contracts.dll

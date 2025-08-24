@@ -1,0 +1,13 @@
+C:\Users\MW\Documents\Projects\DuelLedger\Vision\bin\Release\net8.0\DuelLedger.Vision.deps.json
+C:\Users\MW\Documents\Projects\DuelLedger\Vision\bin\Release\net8.0\DuelLedger.Vision.dll
+C:\Users\MW\Documents\Projects\DuelLedger\Vision\bin\Release\net8.0\DuelLedger.Vision.pdb
+C:\Users\MW\Documents\Projects\DuelLedger\Vision\obj\Release\net8.0\DuelLedger.Vision.csproj.AssemblyReference.cache
+C:\Users\MW\Documents\Projects\DuelLedger\Vision\obj\Release\net8.0\DuelLedger.Vision.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\MW\Documents\Projects\DuelLedger\Vision\obj\Release\net8.0\DuelLedger.Vision.AssemblyInfoInputs.cache
+C:\Users\MW\Documents\Projects\DuelLedger\Vision\obj\Release\net8.0\DuelLedger.Vision.AssemblyInfo.cs
+C:\Users\MW\Documents\Projects\DuelLedger\Vision\obj\Release\net8.0\DuelLedger.Vision.csproj.CoreCompileInputs.cache
+C:\Users\MW\Documents\Projects\DuelLedger\Vision\obj\Release\net8.0\DuelLedger.Vision.sourcelink.json
+C:\Users\MW\Documents\Projects\DuelLedger\Vision\obj\Release\net8.0\DuelLedger.Vision.dll
+C:\Users\MW\Documents\Projects\DuelLedger\Vision\obj\Release\net8.0\refint\DuelLedger.Vision.dll
+C:\Users\MW\Documents\Projects\DuelLedger\Vision\obj\Release\net8.0\DuelLedger.Vision.pdb
+C:\Users\MW\Documents\Projects\DuelLedger\Vision\obj\Release\net8.0\ref\DuelLedger.Vision.dll

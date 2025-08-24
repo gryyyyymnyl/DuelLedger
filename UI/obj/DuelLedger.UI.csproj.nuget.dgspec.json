@@ -90,6 +90,9 @@
             "projectReferences": {
               "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Contracts\\DuelLedger.Contracts.csproj": {
                 "projectPath": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Contracts\\DuelLedger.Contracts.csproj"
+              },
+              "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Vision\\DuelLedger.Vision.csproj": {
+                "projectPath": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Vision\\DuelLedger.Vision.csproj"
               }
             }
           }
@@ -112,14 +115,6 @@
             "OpenCvSharp4": {
               "target": "Package",
               "version": "[4.11.0.20250507, )"
-            },
-            "OpenCvSharp4.Extensions": {
-              "target": "Package",
-              "version": "[4.11.0.20250507, )"
-            },
-            "System.Drawing.Common": {
-              "target": "Package",
-              "version": "[9.0.8, )"
             }
           },
           "imports": [
@@ -428,10 +423,6 @@
             "OpenCvSharp4": {
               "target": "Package",
               "version": "[4.11.0.20250507, )"
-            },
-            "System.Drawing.Common": {
-              "target": "Package",
-              "version": "[9.0.8, )"
             }
           },
           "imports": [

@@ -21,10 +21,7 @@ internal static class Program
         IGameStateDetectorSet setForManager;
         try
         {
-            var tmp = new ShadowverseDetectorSet();
-            // Force template loading to ensure native libraries are available
-            _ = tmp.CreateDetectors();
-            setForManager = tmp;
+            setForManager = new ShadowverseDetectorSet();
         }
         catch (Exception ex)
         {
@@ -70,8 +67,10 @@ internal static class Program
     {
         if (OperatingSystem.IsWindows())
         {
+            Console.Write("on if");
             try
             {
+            Console.Write("on try");
                 var type = Type.GetType("DuelLedger.Vision.Windows.WinScreenSource, DuelLedger.Vision.Windows");
                 if (type != null)
                     return (IScreenSource)Activator.CreateInstance(type, processName)!;

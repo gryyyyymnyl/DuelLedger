@@ -20,43 +20,44 @@ namespace DuelLedger.Detectors.Shadowverse
 
         public List<IStateDetector> CreateDetectors()
         {
+            var tplRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..","..","..","..", "Detectors","Shadowverse","Templates"));
             return new List<IStateDetector>
         {
             new FormatDetector(new[]{
-                @"Games/Shadowverse/Templates/format__2pick__elem=MatchFormat.png",
-                @"Games/Shadowverse/Templates/format__Rank__elem=MatchFormat.png",
-                @"Games/Shadowverse/Templates/formatP__elem=MenuDock.png"
+                Path.Combine(tplRoot, @"format__2pick__elem=MatchFormat.png"),
+                Path.Combine(tplRoot, @"format__Rank__elem=MatchFormat.png"),
+                Path.Combine(tplRoot, @"formatP__elem=MenuDock.png")
                 }),
             new MatchStartDetector(new[]{
-                @"Games/Shadowverse/Templates/matchStart__1st__elem=FirstSecond.png",
-                @"Games/Shadowverse/Templates/matchStart__2nd__elem=FirstSecond.png",
-                @"Games/Shadowverse/Templates/matchStartP__elem=VS.png"
+                Path.Combine(tplRoot, @"matchStart__1st__elem=FirstSecond.png"),
+                Path.Combine(tplRoot, @"matchStart__2nd__elem=FirstSecond.png"),
+                Path.Combine(tplRoot, @"matchStartP__elem=VS.png")
                 }),
             new BattleDetector(
                 new[]{
-                @"Games/Shadowverse/Templates/battleClassOwn__Forest__elem=MyClass.jpg",
-                @"Games/Shadowverse/Templates/battleClassOwn__Sword__elem=MyClass.jpg",
-                @"Games/Shadowverse/Templates/battleClassOwn__Rune__elem=MyClass.jpg",
-                @"Games/Shadowverse/Templates/battleClassOwn__Dragon__elem=MyClass.jpg",
-                @"Games/Shadowverse/Templates/battleClassOwn__Haven__elem=MyClass.jpg",
-                @"Games/Shadowverse/Templates/battleClassOwn__Abyss__elem=MyClass.jpg",
-                @"Games/Shadowverse/Templates/battleClassOwn__Portal__elem=MyClass.jpg"
-                //@"Games/Shadowverse/Templates/battleClassOwnP__elem=.jpg",
+                Path.Combine(tplRoot, @"battleClassOwn__Forest__elem=MyClass.jpg"),
+                Path.Combine(tplRoot, @"battleClassOwn__Sword__elem=MyClass.jpg"),
+                Path.Combine(tplRoot, @"battleClassOwn__Rune__elem=MyClass.jpg"),
+                Path.Combine(tplRoot, @"battleClassOwn__Dragon__elem=MyClass.jpg"),
+                Path.Combine(tplRoot, @"battleClassOwn__Haven__elem=MyClass.jpg"),
+                Path.Combine(tplRoot, @"battleClassOwn__Abyss__elem=MyClass.jpg"),
+                Path.Combine(tplRoot, @"battleClassOwn__Portal__elem=MyClass.jpg")
+                //Path.Combine(tplRoot, @"battleClassOwnP__elem=.jpg"),
                 },
                 new[]{
-                @"Games/Shadowverse/Templates/battleClassEmy__Forest__elem=OppClass.jpg",
-                @"Games/Shadowverse/Templates/battleClassEmy__Sword__elem=OppClass.jpg",
-                @"Games/Shadowverse/Templates/battleClassEmy__Rune__elem=OppClass.jpg",
-                @"Games/Shadowverse/Templates/battleClassEmy__Dragon__elem=OppClass.jpg",
-                @"Games/Shadowverse/Templates/battleClassEmy__Haven__elem=OppClass.jpg",
-                @"Games/Shadowverse/Templates/battleClassEmy__Abyss__elem=OppClass.jpg",
-                @"Games/Shadowverse/Templates/battleClassEmy__Portal__elem=OppClass.jpg"
-                //@"Games/Shadowverse/Templates/battleClassEmyP__elem=.jpg",
+                Path.Combine(tplRoot, @"battleClassEmy__Forest__elem=OppClass.jpg"),
+                Path.Combine(tplRoot, @"battleClassEmy__Sword__elem=OppClass.jpg"),
+                Path.Combine(tplRoot, @"battleClassEmy__Rune__elem=OppClass.jpg"),
+                Path.Combine(tplRoot, @"battleClassEmy__Dragon__elem=OppClass.jpg"),
+                Path.Combine(tplRoot, @"battleClassEmy__Haven__elem=OppClass.jpg"),
+                Path.Combine(tplRoot, @"battleClassEmy__Abyss__elem=OppClass.jpg"),
+                Path.Combine(tplRoot, @"battleClassEmy__Portal__elem=OppClass.jpg")
+                //Path.Combine(tplRoot, @"battleClassEmyP__elem=.jpg"),
                 }),
             new ResultDetector(new[]{
-                @"Games/Shadowverse/Templates/result__win__elem=ResultBanner.png",
-                @"Games/Shadowverse/Templates/result__lose__elem=ResultBanner.png",
-                @"Games/Shadowverse/Templates/resultP__elem=NextMatch.png"
+                Path.Combine(tplRoot, @"result__win__elem=ResultBanner.png"),
+                Path.Combine(tplRoot, @"result__lose__elem=ResultBanner.png"),
+                Path.Combine(tplRoot, @"resultP__elem=NextMatch.png")
                 })/**/
         };
         }
