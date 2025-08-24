@@ -10,9 +10,11 @@ namespace DuelLedger.Detectors.Shadowverse
     {
         public string GameName => "Shadowverse";
         public string ProcessName => "ShadowverseWB";
+        private readonly string _tplRoot;
 
-        public ShadowverseDetectorSet()
+        public ShadowverseDetectorSet(string? templateRoot = null)
         {
+            _tplRoot = templateRoot ?? Path.Combine(AppContext.BaseDirectory, "Templates");
             // IDマッパーをCoreに登録
             MatchContracts.SetClassIdMapper(ShadowverseClassIdMapper.Map);
             MatchContracts.SetFormatIdMapper(ShadowverseFormatIdMapper.Map);
@@ -20,7 +22,7 @@ namespace DuelLedger.Detectors.Shadowverse
 
         public List<IStateDetector> CreateDetectors()
         {
-            var tplRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..","..","..","..", "Detectors","Shadowverse","Templates"));
+            var tplRoot = _tplRoot;
             return new List<IStateDetector>
         {
             new FormatDetector(new[]{
