@@ -7,15 +7,15 @@ using DuelLedger.UI.Services;
 
 namespace DuelLedger.UI.Converters;
 
-public sealed class ClassIconConverter : IValueConverter
+public sealed class ClassNameConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (Application.Current?.Resources["UiMap"] is UiMapProvider map && value is PlayerClass cls)
         {
-            return map.Get($"Class.{cls}").icon;
+            return map.Get($"Class.{cls}").name;
         }
-        return "?";
+        return string.Empty;
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

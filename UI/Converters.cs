@@ -1,20 +1,23 @@
 using System;
 using System.Globalization;
 using System.Collections.Generic;
+using Avalonia;
 using Avalonia.Data.Converters;
 using DuelLedger.UI.Models;
+using DuelLedger.UI.Services;
 
 namespace DuelLedger.UI.Converters;
 
 public sealed class TurnOrderToText : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-        => value is TurnOrder o ? o switch
+    {
+        if (Application.Current?.Resources["UiMap"] is UiMapProvider map && value is TurnOrder o)
         {
-            TurnOrder.先行 => Res.Get("TurnOrder_First"),
-            TurnOrder.後攻 => Res.Get("TurnOrder_Second"),
-            _ => Res.Get("TurnOrder_Unknown"),
-        } : Res.Get("TurnOrder_Unknown");
+            return map.Get($"TurnOrder.{o}").name;
+        }
+        return (Application.Current?.Resources["UiMap"] as UiMapProvider)?.Get("TurnOrder.Unknown").name ?? string.Empty;
+    }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
@@ -23,13 +26,13 @@ public sealed class TurnOrderToText : IValueConverter
 public sealed class ResultToText : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-        => value is MatchResult r ? r switch
+    {
+        if (Application.Current?.Resources["UiMap"] is UiMapProvider map && value is MatchResult r)
         {
-            MatchResult.Win => Res.Get("Result_Win"),
-            MatchResult.Lose => Res.Get("Result_Lose"),
-            MatchResult.Draw => Res.Get("Result_Draw"),
-            _ => Res.Get("Result_Unknown"),
-        } : Res.Get("Result_Unknown");
+            return map.Get($"Result.{r}").name;
+        }
+        return (Application.Current?.Resources["UiMap"] as UiMapProvider)?.Get("Result.Unknown").name ?? string.Empty;
+    }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
@@ -38,12 +41,19 @@ public sealed class ResultToText : IValueConverter
 public sealed class OpponentTurnOrder : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-        => value is TurnOrder o ? o switch
+    {
+        if (Application.Current?.Resources["UiMap"] is UiMapProvider map && value is TurnOrder o)
         {
-            TurnOrder.先行 => Res.Get("TurnOrder_Second"),
-            TurnOrder.後攻 => Res.Get("TurnOrder_First"),
-            _ => Res.Get("TurnOrder_Unknown"),
-        } : Res.Get("TurnOrder_Unknown");
+            var key = o switch
+            {
+                TurnOrder.先行 => "TurnOrder.後攻",
+                TurnOrder.後攻 => "TurnOrder.先行",
+                _ => "TurnOrder.Unknown",
+            };
+            return map.Get(key).name;
+        }
+        return (Application.Current?.Resources["UiMap"] as UiMapProvider)?.Get("TurnOrder.Unknown").name ?? string.Empty;
+    }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
@@ -52,13 +62,20 @@ public sealed class OpponentTurnOrder : IValueConverter
 public sealed class OpponentResult : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-        => value is MatchResult r ? r switch
+    {
+        if (Application.Current?.Resources["UiMap"] is UiMapProvider map && value is MatchResult r)
         {
-            MatchResult.Win => Res.Get("Result_Lose"),
-            MatchResult.Lose => Res.Get("Result_Win"),
-            MatchResult.Draw => Res.Get("Result_Draw"),
-            _ => Res.Get("Result_Unknown"),
-        } : Res.Get("Result_Unknown");
+            var key = r switch
+            {
+                MatchResult.Win => "Result.Lose",
+                MatchResult.Lose => "Result.Win",
+                MatchResult.Draw => "Result.Draw",
+                _ => "Result.Unknown",
+            };
+            return map.Get(key).name;
+        }
+        return (Application.Current?.Resources["UiMap"] as UiMapProvider)?.Get("Result.Unknown").name ?? string.Empty;
+    }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
@@ -84,6 +101,38 @@ public sealed class AspectNarrowByRatio : IMultiValueConverter
     private readonly AspectWideByRatio _wide = new();
     public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
         => !((bool)(_wide.Convert(values, typeof(bool), parameter, culture) ?? false));
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
+public sealed class UiTextConverter : IValueConverter
+{
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        var key = value as string ?? parameter as string ?? string.Empty;
+        if (Application.Current?.Resources["UiMap"] is UiMapProvider map)
+        {
+            return map.Get(key).name;
+        }
+        return string.Empty;
+    }
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
+public sealed class FormatTextConverter : IValueConverter
+{
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (Application.Current?.Resources["UiMap"] is UiMapProvider map && parameter is string key)
+        {
+            var fmt = map.Get(key).name;
+            return string.Format(fmt, value);
+        }
+        return value;
+    }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
