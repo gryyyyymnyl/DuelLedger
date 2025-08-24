@@ -21,4 +21,10 @@
     <ProjectReference Include="..\Publishers\DuelLedger.Publishers.csproj" />
     <ProjectReference Include="..\Detectors\DuelLedger.Detectors.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Assets/ClassAssets.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

@@ -6,7 +6,6 @@
         xmlns:vm="using:DuelLedger.UI.ViewModels"
         xmlns:models="using:DuelLedger.UI.Models"
         xmlns:sys="clr-namespace:System;assembly=System.Runtime"
-        xmlns:conv="using:DuelLedger.UI.Converters"
         x:Class="DuelLedger.UI.Views.MainWindow"
         Width="250" Height="800"
         MinWidth="{DynamicResource MinWindowWidth}"
@@ -19,16 +18,6 @@
     <sys:Double x:Key="MinWindowHeight">100</sys:Double>
     <!-- 横長切替の比率しきい値（W/H） -->
     <sys:Double x:Key="WideAspectThreshold">1.6</sys:Double>
-    <!-- レイアウト切替（比率のみ） -->
-    <conv:AspectWideByRatio   x:Key="AspectWideByRatio"/>
-    <conv:AspectNarrowByRatio x:Key="AspectNarrowByRatio"/>
-    <!-- 表示用コンバータ -->
-    <conv:PlayerClassToBrush x:Key="ClassBrush"/>
-    <conv:PlayerClassToGlyph x:Key="ClassGlyph"/>
-    <conv:TurnOrderToText   x:Key="OrderText"/>
-    <conv:ResultToText      x:Key="ResultText"/>
-    <conv:OpponentTurnOrder x:Key="OppOrder"/>
-    <conv:OpponentResult    x:Key="OppResult"/>
   </Window.Resources>
 
   <Design.DataContext>
