@@ -27,6 +27,11 @@
   "Header.Opponent": { "name": "相手" },
   "Header.Order": { "name": "先/後" },
   "Header.Result": { "name": "勝敗" },
+  "Format.All": { "name": "すべて" },
+  "Format.Unknown": { "name": "不明" },
+  "Format.Rank": { "name": "ランクマッチ" },
+  "Format.TwoPick": { "name": "2Pick" },
+  "Format.GrandPrix": { "name": "グランプリ" },
   "Format.Win": { "name": "勝利 {0}" },
   "Format.Lose": { "name": "敗北 {0}" },
   "Format.Rate": { "name": "Rate {0}" }

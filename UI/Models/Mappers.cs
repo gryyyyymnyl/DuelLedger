@@ -14,6 +14,7 @@ public static class Mappers
     {
         return new MatchRecord
         {
+            Format = SafeEnum(dto.Format, MatchFormat.Unknown),
             SelfClass = SafeEnum(dto.SelfClass, PlayerClass.Unknown),
             OppClass = SafeEnum(dto.OppClass, PlayerClass.Unknown),
             Order = SafeEnum(dto.Order, TurnOrder.Unknown),

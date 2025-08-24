@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 // Publisher(JSON)のキーに合わせる（StartedAt/EndedAt）
 public sealed class MatchSummaryDto
 {
+    public int Format { get; set; }
     public int SelfClass { get; set; }
     public int OppClass { get; set; }
     public int Order { get; set; }
@@ -16,6 +17,7 @@ public sealed class MatchSummaryDto
 
 public sealed class MatchSnapshotDto
 {
+    public int Format { get; set; }
     public int SelfClass { get; set; }
     public int OppClass { get; set; }
     public int Order { get; set; }

@@ -44,21 +44,31 @@
         <!-- 履歴 -->
         <TabItem Header="{Binding Source='Header.History', Converter={StaticResource UiText}}" FontSize="18">
         <DockPanel Margin="12">
-          <!--StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="16">
-            <TextBlock Text="試合履歴（新しい順）" FontSize="12"/>
-          </StackPanel-->
+          <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
+            <ComboBox ItemsSource="{Binding AvailableFormats}" SelectedItem="{Binding SelectedFormat}" Width="140">
+              <ComboBox.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding Converter={StaticResource FormatName}}"/>
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
+          </StackPanel>
 
           <!-- ▼通常表示：表＋横並び装飾行 -->
-          <StackPanel>
-            <StackPanel.IsVisible>
+          <Grid>
+            <Grid.IsVisible>
               <MultiBinding Converter="{StaticResource AspectNarrowByRatio}">
                 <Binding Path="$parent[Window].Bounds.Width"/>
                 <Binding Path="$parent[Window].Bounds.Height"/>
                 <Binding Source="{StaticResource WideAspectThreshold}"/>
               </MultiBinding>
-            </StackPanel.IsVisible>
+            </Grid.IsVisible>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto"/>
+              <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
             <!-- 表（新しい順） -->
-            <DataGrid ItemsSource="{Binding HistoryDesc}" AutoGenerateColumns="False"
+            <DataGrid Grid.Row="0" ItemsSource="{Binding HistoryDesc}" AutoGenerateColumns="False"
                       GridLinesVisibility="All" Margin="0,12,0,16">
                 <DataGrid.Columns>
                   <DataGridTextColumn Header="{Binding Source='Header.EndedAt', Converter={StaticResource UiText}}" Binding="{Binding EndedAtLocal}" Width="180"/>
@@ -70,51 +80,53 @@
             </DataGrid>
 
             <!-- タイムライン（横並び1行装飾） -->
-            <StackPanel>
-              <!--TextBlock Text="タイムライン（新しい順）" FontWeight="Bold" Margin="0,0,0,8"/-->
-              <ItemsControl ItemsSource="{Binding HistoryDesc}">
+            <ListBox Grid.Row="1" ItemsSource="{Binding HistoryDesc}" Margin="0,0,0,0"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+              <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <VirtualizingStackPanel/>
+                </ItemsPanelTemplate>
+              </ListBox.ItemsPanel>
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <Border Margin="0,2" Padding="8" CornerRadius="8" BorderBrush="#2D2D2D" BorderThickness="1">
+                    <Grid ColumnDefinitions="Auto,8,Auto,16,Auto,8,Auto,16,Auto,8,Auto,8,Auto" VerticalAlignment="Center">
+                      <!-- 自分クラス（アイコン） -->
+                      <Border Grid.Column="0" Width="28" Height="28" CornerRadius="14"
+                              Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}">
+                        <TextBlock Text="{Binding SelfClass, Converter={StaticResource ClassGlyph}}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                      </Border>
+                      <Rectangle Grid.Column="1" Width="8"/>
 
-                <ItemsControl.ItemTemplate>
-                  <DataTemplate>
-                    <Border Margin="0,2" Padding="8" CornerRadius="8" BorderBrush="#2D2D2D" BorderThickness="1">
-                      <Grid ColumnDefinitions="Auto,8,Auto,16,Auto,8,Auto,16,Auto,8,Auto,8,Auto" VerticalAlignment="Center">
-                        <!-- 自分クラス（アイコン） -->
-                        <Border Grid.Column="0" Width="28" Height="28" CornerRadius="14"
-                                Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}">
-                          <TextBlock Text="{Binding SelfClass, Converter={StaticResource ClassGlyph}}"
-                                     HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
-                        </Border>
-                        <Rectangle Grid.Column="1" Width="8"/>
+                      <!-- 自分の先行/後攻 -->
+                      <TextBlock Grid.Column="2" Text="{Binding Order, Converter={StaticResource OrderText}}"/>
+                      <Rectangle Grid.Column="3" Width="16"/>
 
-                        <!-- 自分の先行/後攻 -->
-                        <TextBlock Grid.Column="2" Text="{Binding Order, Converter={StaticResource OrderText}}"/>
-                        <Rectangle Grid.Column="3" Width="16"/>
+                      <!-- 自分の勝敗 -->
+                      <TextBlock Grid.Column="4" Text="{Binding Result, Converter={StaticResource ResultText}}" FontWeight="Bold"/>
+                      <Rectangle Grid.Column="5" Width="8"/>
 
-                        <!-- 自分の勝敗 -->
-                        <TextBlock Grid.Column="4" Text="{Binding Result, Converter={StaticResource ResultText}}" FontWeight="Bold"/>
-                        <Rectangle Grid.Column="5" Width="8"/>
+                      <!-- 相手の勝敗（反転） -->
+                      <TextBlock Grid.Column="6" Text="{Binding Result, Converter={StaticResource OppResult}}"/>
+                      <Rectangle Grid.Column="7" Width="16"/>
 
-                        <!-- 相手の勝敗（反転） -->
-                        <TextBlock Grid.Column="6" Text="{Binding Result, Converter={StaticResource OppResult}}"/>
-                        <Rectangle Grid.Column="7" Width="16"/>
+                      <!-- 相手の先行/後攻（反転） -->
+                      <TextBlock Grid.Column="8" Text="{Binding Order, Converter={StaticResource OppOrder}}"/>
+                      <Rectangle Grid.Column="9" Width="8"/>
 
-                        <!-- 相手の先行/後攻（反転） -->
-                        <TextBlock Grid.Column="8" Text="{Binding Order, Converter={StaticResource OppOrder}}"/>
-                        <Rectangle Grid.Column="9" Width="8"/>
-
-                        <!-- 相手クラス（アイコン） -->
-                        <Border Grid.Column="10" Width="28" Height="28" CornerRadius="14"
-                                Background="{Binding OppClass, Converter={StaticResource ClassBrush}}">
-                          <TextBlock Text="{Binding OppClass, Converter={StaticResource ClassGlyph}}"
-                                     HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
-                        </Border>
-                      </Grid>
-                    </Border>
-                  </DataTemplate>
-                </ItemsControl.ItemTemplate>
-              </ItemsControl>
-            </StackPanel>
-          </StackPanel>
+                      <!-- 相手クラス（アイコン） -->
+                      <Border Grid.Column="10" Width="28" Height="28" CornerRadius="14"
+                              Background="{Binding OppClass, Converter={StaticResource ClassBrush}}">
+                        <TextBlock Text="{Binding OppClass, Converter={StaticResource ClassGlyph}}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                      </Border>
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </Grid>
 
           <!-- ▼ワイド表示（幅 >= 1200px）“縦カード”を横に並べる -->
           <ScrollViewer HorizontalScrollBarVisibility="Auto"
@@ -171,7 +183,15 @@
         <!-- Result summary by opponent -->
         <TabItem Header="{Binding Source='Header.Result', Converter={StaticResource UiText}}" FontSize="18">
         <DockPanel Margin="12">
-            <!-- summary header removed -->
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
+              <ComboBox ItemsSource="{Binding AvailableFormats}" SelectedItem="{Binding SelectedFormat}" Width="140">
+                <ComboBox.ItemTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding Converter={StaticResource FormatName}}"/>
+                  </DataTemplate>
+                </ComboBox.ItemTemplate>
+              </ComboBox>
+            </StackPanel>
 
           <!-- ▼通常表示（行の装飾） -->
           <StackPanel>
