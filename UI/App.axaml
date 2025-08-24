@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="using:DuelLedger.UI.Converters"
              x:Class="DuelLedger.UI.App">
   <Application.Styles>
     <FluentTheme />
   </Application.Styles>
+  <Application.Resources>
+    <conv:AspectWideByRatio   x:Key="AspectWideByRatio"/>
+    <conv:AspectNarrowByRatio x:Key="AspectNarrowByRatio"/>
+    <conv:ClassColorConverter x:Key="ClassBrush"/>
+    <conv:ClassIconConverter  x:Key="ClassGlyph"/>
+    <conv:TurnOrderToText   x:Key="OrderText"/>
+    <conv:ResultToText      x:Key="ResultText"/>
+    <conv:OpponentTurnOrder x:Key="OppOrder"/>
+    <conv:OpponentResult    x:Key="OppResult"/>
+  </Application.Resources>
 </Application>
