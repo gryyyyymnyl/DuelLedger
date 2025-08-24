@@ -15,6 +15,10 @@
     <OutputType>WinExe</OutputType>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)'=='Debug' and '$(TargetFramework)'=='net8.0-windows'">
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.1.0" />
     <PackageReference Include="Avalonia.Desktop" Version="11.1.0" />

@@ -12,9 +12,10 @@ using DuelLedger.Vision;
 using System.IO;
 using System.Threading;
 using System.Collections.Generic;
-#if NET8_0_WINDOWS
+#if WINDOWS
 using DuelLedger.Vision.Windows;
 #endif
+
 namespace DuelLedger.UI;
 
 public partial class App : Application
@@ -29,12 +30,13 @@ public partial class App : Application
     {
         Directory.SetCurrentDirectory(AppContext.BaseDirectory);
 
-#if NET8_0_WINDOWS
-        var nativePath = Path.Combine(AppContext.BaseDirectory, "runtimes", "win-x64", "native");
-        var current = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
-        Environment.SetEnvironmentVariable("PATH", nativePath + ";" + current);
-#endif
-
+        if (OperatingSystem.IsWindows())
+        {
+            var nativePath = Path.Combine(AppContext.BaseDirectory, "runtimes", "win-x64", "native");
+            var current = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+            Environment.SetEnvironmentVariable("PATH", nativePath + ";" + current);
+        }
+        
         var templateRoot = Path.Combine(AppContext.BaseDirectory, "Templates");
         var outDir = Path.Combine(AppContext.BaseDirectory, "out");
         Directory.CreateDirectory(outDir);
@@ -51,11 +53,11 @@ public partial class App : Application
         }
 
         IScreenSource screenSource;
-#if NET8_0_WINDOWS
-        screenSource = new WinScreenSource(detectorSet.ProcessName);
-#else
-        screenSource = new DummyScreenSource();
-#endif
+        
+        if (OperatingSystem.IsWindows())
+            screenSource = new WinScreenSource(detectorSet.ProcessName);
+        else
+            screenSource = new DummyScreenSource();
 
         var publisher = new JsonStreamPublisher(outDir);
 

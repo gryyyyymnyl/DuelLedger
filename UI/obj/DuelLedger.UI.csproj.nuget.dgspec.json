@@ -289,12 +289,14 @@
         "packagesPath": "C:\\Users\\MW\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\UI\\obj\\",
         "projectStyle": "PackageReference",
+        "crossTargeting": true,
         "configFilePaths": [
           "C:\\Users\\MW\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net8.0"
+          "net8.0",
+          "net8.0-windows"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -315,6 +317,26 @@
               },
               "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Publishers\\DuelLedger.Publishers.csproj": {
                 "projectPath": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Publishers\\DuelLedger.Publishers.csproj"
+              }
+            }
+          },
+          "net8.0-windows7.0": {
+            "targetAlias": "net8.0-windows",
+            "projectReferences": {
+              "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Contracts\\DuelLedger.Contracts.csproj": {
+                "projectPath": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Contracts\\DuelLedger.Contracts.csproj"
+              },
+              "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Core\\DuelLedger.Core.csproj": {
+                "projectPath": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Core\\DuelLedger.Core.csproj"
+              },
+              "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Detectors\\DuelLedger.Detectors.csproj": {
+                "projectPath": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Detectors\\DuelLedger.Detectors.csproj"
+              },
+              "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Publishers\\DuelLedger.Publishers.csproj": {
+                "projectPath": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Publishers\\DuelLedger.Publishers.csproj"
+              },
+              "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Vision.Windows\\DuelLedger.Vision.Windows.csproj": {
+                "projectPath": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Vision.Windows\\DuelLedger.Vision.Windows.csproj"
               }
             }
           }
@@ -357,6 +379,134 @@
             "Avalonia.Themes.Fluent": {
               "target": "Package",
               "version": "[11.1.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+        },
+        "net8.0-windows7.0": {
+          "targetAlias": "net8.0-windows",
+          "dependencies": {
+            "Avalonia": {
+              "target": "Package",
+              "version": "[11.1.0, )"
+            },
+            "Avalonia.Controls.DataGrid": {
+              "target": "Package",
+              "version": "[11.1.0, )"
+            },
+            "Avalonia.Desktop": {
+              "target": "Package",
+              "version": "[11.1.0, )"
+            },
+            "Avalonia.Fonts.Inter": {
+              "target": "Package",
+              "version": "[11.1.0, )"
+            },
+            "Avalonia.ReactiveUI": {
+              "target": "Package",
+              "version": "[11.1.0, )"
+            },
+            "Avalonia.Themes.Fluent": {
+              "target": "Package",
+              "version": "[11.1.0, )"
+            },
+            "OpenCvSharp4.runtime.win": {
+              "target": "Package",
+              "version": "[4.11.0.20250507, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Vision.Windows\\DuelLedger.Vision.Windows.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Vision.Windows\\DuelLedger.Vision.Windows.csproj",
+        "projectName": "DuelLedger.Vision.Windows",
+        "projectPath": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Vision.Windows\\DuelLedger.Vision.Windows.csproj",
+        "packagesPath": "C:\\Users\\MW\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Vision.Windows\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\MW\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0-windows"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0-windows7.0": {
+            "targetAlias": "net8.0-windows",
+            "projectReferences": {
+              "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Vision\\DuelLedger.Vision.csproj": {
+                "projectPath": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Vision\\DuelLedger.Vision.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0-windows7.0": {
+          "targetAlias": "net8.0-windows",
+          "dependencies": {
+            "OpenCvSharp4": {
+              "target": "Package",
+              "version": "[4.11.0.20250507, )"
+            },
+            "OpenCvSharp4.Extensions": {
+              "target": "Package",
+              "version": "[4.11.0.20250507, )"
+            },
+            "System.Drawing.Common": {
+              "target": "Package",
+              "version": "[9.0.8, )"
             }
           },
           "imports": [
