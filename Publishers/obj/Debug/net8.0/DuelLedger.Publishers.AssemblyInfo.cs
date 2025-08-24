@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DuelLedger.Publishers")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e44d648a8ffadf0df6142ca4ade21672af08811b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d5d5dba402b37272a13260fd9bbed115ed645e28")]
 [assembly: System.Reflection.AssemblyProductAttribute("DuelLedger.Publishers")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DuelLedger.Publishers")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
