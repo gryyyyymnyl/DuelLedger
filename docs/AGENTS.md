@@ -4,6 +4,6 @@
 ## Build
 - Run: `dotnet --info`
 - Run: `dotnet restore`
-- Run: `dotnet build -c Release --nologo`
+- Run: `dotnet build -c Debug --nologo`
 ## Test
-- Run: `dotnet test -c Release --no-build --nologo`
+- Run: `dotnet run -c Debug --no-build --nologo`
