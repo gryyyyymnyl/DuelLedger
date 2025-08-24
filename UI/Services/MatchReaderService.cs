@@ -23,7 +23,7 @@ public sealed class MatchReaderService : IDisposable
 
     public MatchReaderService(string? baseDir = null)
     {
-        _baseDir = baseDir ?? Path.Combine(@"C:\Users\MW\Documents\Projects\SWBT\bin\Debug\net8.0-windows", "out");
+        _baseDir = baseDir ?? Path.Combine(AppContext.BaseDirectory, "out");
         _matchesDir = Path.Combine(_baseDir, "matches");
         Directory.CreateDirectory(_matchesDir);
 

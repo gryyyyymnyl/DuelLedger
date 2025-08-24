@@ -1,10 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+    <PropertyGroup>
+      <OutputType>WinExe</OutputType>
+      <TargetFrameworks>net8.0;net8.0-windows</TargetFrameworks>
+      <Nullable>enable</Nullable>
+      <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)'=='net8.0-windows'">
+      <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+      <PlatformTarget>x64</PlatformTarget>
+    </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.1.0" />
@@ -15,12 +20,24 @@
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.1.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Core\DuelLedger.Core.csproj" />
-    <ProjectReference Include="..\Contracts\DuelLedger.Contracts.csproj" />
-    <ProjectReference Include="..\Publishers\DuelLedger.Publishers.csproj" />
-    <ProjectReference Include="..\Detectors\DuelLedger.Detectors.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Core\DuelLedger.Core.csproj" />
+      <ProjectReference Include="..\Contracts\DuelLedger.Contracts.csproj" />
+      <ProjectReference Include="..\Publishers\DuelLedger.Publishers.csproj" />
+      <ProjectReference Include="..\Detectors\DuelLedger.Detectors.csproj" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)'=='net8.0-windows'">
+      <ProjectReference Include="..\Vision.Windows\DuelLedger.Vision.Windows.csproj" />
+      <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.11.0.20250507" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\Detectors\Shadowverse\Templates\**">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <Link>Templates\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      </Content>
+    </ItemGroup>
 
   <ItemGroup>
     <AvaloniaResource Include="Assets/**" />
