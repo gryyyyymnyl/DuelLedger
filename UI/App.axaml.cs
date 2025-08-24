@@ -5,10 +5,21 @@ using Avalonia.Markup.Xaml;
 using DuelLedger.UI.Views;
 using DuelLedger.UI.ViewModels;
 using DuelLedger.UI.Services;
+using DuelLedger.Core;
+using DuelLedger.Publishers;
+using DuelLedger.Detectors.Shadowverse;
+using DuelLedger.Vision;
+using System.IO;
+using System.Threading;
+using System.Collections.Generic;
+#if NET8_0_WINDOWS
+using DuelLedger.Vision.Windows;
+#endif
 namespace DuelLedger.UI;
 
 public partial class App : Application
 {
+    private DetectionHost? _host;
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -16,16 +27,76 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+
+#if NET8_0_WINDOWS
+        var nativePath = Path.Combine(AppContext.BaseDirectory, "runtimes", "win-x64", "native");
+        var current = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+        Environment.SetEnvironmentVariable("PATH", nativePath + ";" + current);
+#endif
+
+        var templateRoot = Path.Combine(AppContext.BaseDirectory, "Templates");
+        var outDir = Path.Combine(AppContext.BaseDirectory, "out");
+        Directory.CreateDirectory(outDir);
+
+        IGameStateDetectorSet detectorSet;
+        try
+        {
+            detectorSet = new ShadowverseDetectorSet();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to initialize Shadowverse detectors: {ex.Message}");
+            detectorSet = new EmptyDetectorSet();
+        }
+
+        IScreenSource screenSource;
+#if NET8_0_WINDOWS
+        screenSource = new WinScreenSource(detectorSet.ProcessName);
+#else
+        screenSource = new DummyScreenSource();
+#endif
+
+        var publisher = new JsonStreamPublisher(outDir);
+
+        _host = new DetectionHost(detectorSet, screenSource, publisher);
+        _ = _host.StartAsync(CancellationToken.None);
+
+        Console.WriteLine($"ScreenSource: {screenSource.GetType().Name}");
+        Console.WriteLine($"TemplateRoot: {templateRoot}");
+        Console.WriteLine($"OutputRoot: {outDir}");
+
         Resources["UiMap"] = new UiMapProvider();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var vm = new MainWindowViewModel();
+            var reader = new MatchReaderService(outDir);
+            var vm = new MainWindowViewModel(reader);
             var window = new MainWindow { DataContext = vm };
             desktop.MainWindow = window;
+
+            desktop.ShutdownRequested += async (_, e) =>
+            {
+                e.Cancel = true;
+                if (_host is not null)
+                    await _host.StopAsync();
+                desktop.Shutdown();
+            };
+
+            desktop.Exit += async (_, _) =>
+            {
+                if (_host is not null)
+                    await _host.StopAsync();
+            };
         }
 
         base.OnFrameworkInitializationCompleted();
     }
 
+    private sealed class EmptyDetectorSet : IGameStateDetectorSet
+    {
+        public string GameName => "Shadowverse";
+        public string ProcessName => string.Empty;
+        public List<IStateDetector> CreateDetectors() => new();
+    }
 }

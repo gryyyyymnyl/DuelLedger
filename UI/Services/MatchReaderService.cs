@@ -21,9 +21,9 @@ public sealed class MatchReaderService : IDisposable
 
     public ObservableCollection<MatchRecord> Items { get; } = new();
 
-    public MatchReaderService(string? baseDir = null)
+    public MatchReaderService(string baseDir)
     {
-        _baseDir = baseDir ?? Path.Combine(@"C:\Users\MW\Documents\Projects\SWBT\bin\Debug\net8.0-windows", "out");
+        _baseDir = baseDir;
         _matchesDir = Path.Combine(_baseDir, "matches");
         Directory.CreateDirectory(_matchesDir);
 

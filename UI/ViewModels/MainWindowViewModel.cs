@@ -60,9 +60,9 @@ public sealed class MainWindowViewModel : NotifyBase
     private Totals _selfTotals = new();
     public Totals SelfTotals { get => _selfTotals; set => Set(ref _selfTotals, value); }
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(MatchReaderService reader)
     {
-        _reader = new MatchReaderService();
+        _reader = reader;
         _reader.Items.CollectionChanged += (_, __) => Recompute();
         SelectedSelfClass = SelfClassOptions.FirstOrDefault();
         SelectedFormat = null; // All
