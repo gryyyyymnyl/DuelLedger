@@ -150,16 +150,29 @@
               </MultiBinding>
             </ScrollViewer.IsVisible>
 
-            <ItemsControl ItemsSource="{Binding HistoryDesc}">
+            <ItemsControl x:Name="HistoryCanvas" ItemsSource="{Binding HistoryVm.Items}">
               <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                  <StackPanel Orientation="Horizontal"/>
+                  <Canvas/>
                 </ItemsPanelTemplate>
               </ItemsControl.ItemsPanel>
 
+              <ItemsControl.Styles>
+                  <Style Selector="ItemsControl#HistoryCanvas /template/ ContentPresenter">
+                    <Setter Property="Transitions">
+                      <Transitions>
+                        <DoubleTransition Property="(Canvas.Left)" Duration="0:0:0.2" Easing="Easings.EaseOut"/>
+                        <DoubleTransition Property="(Canvas.Top)" Duration="0:0:0.2" Easing="Easings.EaseOut"/>
+                      </Transitions>
+                    </Setter>
+                  </Style>
+              </ItemsControl.Styles>
+
               <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                  <Border Width="110" Margin="0,0,8,0" Padding="10" CornerRadius="8" BorderBrush="#2D2D2D" BorderThickness="1">
+                  <Border Width="{Binding Width}" Height="{Binding Height}"
+                          Canvas.Left="{Binding Left}" Canvas.Top="{Binding Top}"
+                          Padding="10" CornerRadius="8" BorderBrush="#2D2D2D" BorderThickness="1">
                     <StackPanel Spacing="6">
                       <TextBlock Text="{Binding EndedAtLocal, StringFormat='{}{0:MM/dd HH:mm}'}" FontWeight="Bold"/>
                       <!-- 自分 -->

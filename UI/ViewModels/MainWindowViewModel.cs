@@ -12,6 +12,7 @@ public sealed class MainWindowViewModel : NotifyBase
     private readonly MatchReaderService _reader;
 
     public ObservableCollection<MatchRecord> History => _reader.Items;
+    public HistoryViewModel HistoryVm { get; }
 
     public IReadOnlyList<MatchFormat?> AvailableFormats { get; }
         = new MatchFormat?[] { null, MatchFormat.Rank, MatchFormat.TwoPick, MatchFormat.GrandPrix };
@@ -63,6 +64,7 @@ public sealed class MainWindowViewModel : NotifyBase
         public MainWindowViewModel(MatchReaderService reader)
     {
         _reader = reader;
+        HistoryVm = new HistoryViewModel(_reader.Items);
         _reader.Items.CollectionChanged += (_, __) => Recompute();
         SelectedSelfClass = SelfClassOptions.FirstOrDefault();
         SelectedFormat = null; // All
