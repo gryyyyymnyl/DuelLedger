@@ -43,10 +43,13 @@ public sealed class MainWindowViewModel : NotifyBase
         .OrderByDescending(x => x.EndedAt.ToUnixTimeMilliseconds())
         .ThenByDescending(x => x.StartedAt.ToUnixTimeMilliseconds());
 
-    public IReadOnlyList<PlayerClass> SelfClassOptions { get; } = Enum.GetValues<PlayerClass>().Where(c => c != PlayerClass.Unknown).ToList();
+    public IReadOnlyList<PlayerClass?> SelfClassOptions { get; }
+        = new PlayerClass?[] { null }
+            .Concat(Enum.GetValues<PlayerClass>().Where(c => c != PlayerClass.Unknown).Cast<PlayerClass?>())
+            .ToList();
 
-    private PlayerClass _selectedSelfClass;
-    public PlayerClass SelectedSelfClass
+    private PlayerClass? _selectedSelfClass;
+    public PlayerClass? SelectedSelfClass
     {
         get => _selectedSelfClass;
         set { Set(ref _selectedSelfClass, value); Recompute(); }
@@ -80,7 +83,7 @@ public sealed class MainWindowViewModel : NotifyBase
     {
         _reader = reader;
         _reader.Items.CollectionChanged += (_, __) => Recompute();
-        SelectedSelfClass = SelfClassOptions.FirstOrDefault();
+        SelectedSelfClass = null; // All
         SelectedFormat = null; // All
         SetFormatCommand = new RelayCommand<MatchFormat?>(fmt => SelectedFormat = fmt);
         _reader.LoadInitial();
@@ -102,7 +105,9 @@ public sealed class MainWindowViewModel : NotifyBase
         };
 
         // Self-specific: 選択した自分クラスのみで、相手クラス別に集計
-        var subset = hist.Where(x => x.SelfClass == SelectedSelfClass).ToList();
+        var subset = SelectedSelfClass.HasValue
+            ? hist.Where(x => x.SelfClass == SelectedSelfClass.Value).ToList()
+            : hist;
         var selfRows = AllOpponentClasses()
             .Select(cls => new ClassVsRow
             {

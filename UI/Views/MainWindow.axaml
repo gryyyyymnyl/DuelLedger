@@ -23,6 +23,11 @@
       <Setter Property="MinHeight" Value="28"/>
       <Setter Property="FontSize" Value="14"/>
     </Style>
+    <Style Selector="MenuItem">
+      <Setter Property="Padding" Value="4,2"/>
+      <Setter Property="MinHeight" Value="20"/>
+      <Setter Property="FontSize" Value="14"/>
+    </Style>
   </Window.Styles>
 
   <Design.DataContext>
@@ -61,25 +66,26 @@
           <ListBox ItemsSource="{Binding HistoryDesc}">
             <ListBox.ItemTemplate>
               <DataTemplate DataType="models:MatchRecord">
-                <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,2" VerticalAlignment="Center">
+                <Grid ColumnDefinitions="Auto,Auto,Auto" Margin="0,2" VerticalAlignment="Center">
                   <Border Width="28" Height="28" CornerRadius="14"
                           Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}"
-                          BoxShadow="{Binding Result, Converter={StaticResource WinBox}, ConverterParameter=self}">
+                          BorderBrush="#FFD700"
+                          BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=self}">
                     <svg:Svg Path="{Binding SelfClass, Converter={StaticResource ClassIcon}}"
                              Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                   </Border>
 
-                  <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
-                    <Border Background="#DDD" CornerRadius="4" Padding="2">
+                  <Grid Grid.Column="1" RowDefinitions="Auto,Auto" HorizontalAlignment="Center">
+                    <Border Grid.Row="0" Background="#DDD" CornerRadius="4" Padding="2" HorizontalAlignment="Center">
                       <TextBlock Text="{Binding Order, Converter={StaticResource OrderBadge}}" FontSize="10"/>
                     </Border>
-                    <TextBlock Text="VS" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding Format, Converter={StaticResource FormatAbbrev}}" VerticalAlignment="Center"/>
-                  </StackPanel>
+                    <TextBlock Grid.Row="1" Text="{Binding Format, Converter={StaticResource FormatAbbrev}}" HorizontalAlignment="Center"/>
+                  </Grid>
 
                   <Border Grid.Column="2" Width="28" Height="28" CornerRadius="14"
                           Background="{Binding OppClass, Converter={StaticResource ClassBrush}}"
-                          BoxShadow="{Binding Result, Converter={StaticResource WinBox}, ConverterParameter=opp}">
+                          BorderBrush="#FFD700"
+                          BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=opp}">
                     <svg:Svg Path="{Binding OppClass, Converter={StaticResource ClassIcon}}"
                              Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                   </Border>
@@ -95,11 +101,16 @@
           <ComboBox DockPanel.Dock="Top" Width="80" ItemsSource="{Binding SelfClassOptions}" SelectedItem="{Binding SelectedSelfClass}">
             <ComboBox.ItemTemplate>
               <DataTemplate>
-                <Border Width="20" Height="20" CornerRadius="10"
-                        Background="{Binding Converter={StaticResource ClassBrush}}">
-                  <svg:Svg Path="{Binding Converter={StaticResource ClassIcon}}"
-                           Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                </Border>
+                <Grid>
+                  <Border Width="20" Height="20" CornerRadius="10"
+                          Background="{Binding Converter={StaticResource ClassBrush}}"
+                          IsVisible="{Binding Converter={StaticResource IsNull}, ConverterParameter=invert}">
+                    <svg:Svg Path="{Binding Converter={StaticResource ClassIcon}}"
+                             Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  </Border>
+                  <TextBlock Text="ALL" HorizontalAlignment="Center" VerticalAlignment="Center"
+                             IsVisible="{Binding Converter={StaticResource IsNull}}"/>
+                </Grid>
               </DataTemplate>
             </ComboBox.ItemTemplate>
           </ComboBox>
