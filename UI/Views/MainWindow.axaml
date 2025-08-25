@@ -150,23 +150,27 @@
               </MultiBinding>
             </ScrollViewer.IsVisible>
 
-            <ItemsControl ItemsSource="{Binding HistoryDesc}" HorizontalAlignment="Stretch">
+            <ItemsControl x:Name="HistoryCanvas" ItemsSource="{Binding HistoryDesc}" Width="{Binding $parent[ScrollViewer].Bounds.Width}" Height="{Binding CanvasHeight}">
                 <ItemsControl.ItemsPanel>
                   <ItemsPanelTemplate>
-                    <WrapPanel ItemWidth="110" HorizontalAlignment="Stretch"/>
+                    <Canvas/>
                   </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
 
                 <ItemsControl.Styles>
                   <Style Selector="Border.history-tile">
-                    <Setter Property="Margin" Value="0,0,8,8"/>
+                    <Setter Property="Margin" Value="0"/>
                     <Setter Property="Opacity" Value="1"/>
                     <Setter Property="RenderTransform">
                       <TranslateTransform X="0"/>
                     </Setter>
+                    <Setter Property="Canvas.Left" Value="{Binding Left}"/>
+                    <Setter Property="Canvas.Top" Value="{Binding Top}"/>
                     <Setter Property="Transitions">
                       <Transitions>
                         <DoubleTransition Property="Opacity" Duration="0:0:0.2"/>
+                        <DoubleTransition Property="Canvas.Left" Duration="0:0:0.2"/>
+                        <DoubleTransition Property="Canvas.Top" Duration="0:0:0.2"/>
                         <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2"/>
                       </Transitions>
                     </Setter>
@@ -184,7 +188,7 @@
 
               <ItemsControl.ItemTemplate>
                   <DataTemplate>
-                    <Border Classes="history-tile" Width="110" Padding="10" CornerRadius="8" BorderBrush="#2D2D2D" BorderThickness="1">
+                    <Border Classes="history-tile" Width="110" Height="110" Padding="10" CornerRadius="8" BorderBrush="#2D2D2D" BorderThickness="1">
                       <StackPanel Spacing="6">
                         <TextBlock Text="{Binding EndedAtLocal, StringFormat='{}{0:MM/dd HH:mm}'}" FontWeight="Bold"/>
                       <!-- 自分 -->

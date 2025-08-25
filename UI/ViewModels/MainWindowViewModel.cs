@@ -13,7 +13,28 @@ public sealed class MainWindowViewModel : NotifyBase
 
     public ObservableCollection<MatchRecord> History => _reader.Items;
 
-    public ObservableCollection<MatchRecord> HistoryDesc { get; } = new();
+    public ObservableCollection<HistoryTile> HistoryDesc { get; } = new();
+
+    private readonly Dictionary<MatchRecord, HistoryTile> _tileMap = new();
+
+    private double _canvasWidth;
+    public double CanvasWidth
+    {
+        get => _canvasWidth;
+        set { Set(ref _canvasWidth, value); UpdateTilePositions(); }
+    }
+
+    private const double TileWidth = 110;
+    private const double TileHeight = 110;
+    private const double TileSpacing = 8;
+    private const int MaxHistoryItems = 200;
+
+    private double _canvasHeight;
+    public double CanvasHeight
+    {
+        get => _canvasHeight;
+        private set => Set(ref _canvasHeight, value);
+    }
 
     public IReadOnlyList<MatchFormat?> AvailableFormats { get; }
         = new MatchFormat?[] { null, MatchFormat.Rank, MatchFormat.TwoPick, MatchFormat.GrandPrix };
@@ -78,7 +99,7 @@ public sealed class MainWindowViewModel : NotifyBase
 
     private void Recompute()
     {
-        var hist = SortDesc(FilteredHistory).ToList();
+        var hist = SortDesc(FilteredHistory).Take(MaxHistoryItems).ToList();
 
         // Overall: 相手クラス別に勝敗集計（自分クラスは全体）
         var overall = AllOpponentClasses()
@@ -116,23 +137,50 @@ public sealed class MainWindowViewModel : NotifyBase
         // sync HistoryDesc collection
         for (int i = HistoryDesc.Count - 1; i >= 0; i--)
         {
-            if (!hist.Contains(HistoryDesc[i])) HistoryDesc.RemoveAt(i);
+            if (!hist.Contains(HistoryDesc[i].Record))
+            {
+                _tileMap.Remove(HistoryDesc[i].Record);
+                HistoryDesc.RemoveAt(i);
+            }
         }
         for (int i = 0; i < hist.Count; i++)
         {
-            var item = hist[i];
+            var rec = hist[i];
+            if (!_tileMap.TryGetValue(rec, out var tile))
+            {
+                tile = new HistoryTile(rec);
+                _tileMap[rec] = tile;
+            }
             if (i >= HistoryDesc.Count)
             {
-                HistoryDesc.Add(item);
+                HistoryDesc.Add(tile);
             }
-            else if (!ReferenceEquals(HistoryDesc[i], item))
+            else if (!ReferenceEquals(HistoryDesc[i], tile))
             {
-                var index = HistoryDesc.IndexOf(item);
+                var index = HistoryDesc.IndexOf(tile);
                 if (index >= 0)
                     HistoryDesc.Move(index, i);
                 else
-                    HistoryDesc.Insert(i, item);
+                    HistoryDesc.Insert(i, tile);
             }
         }
+
+        UpdateTilePositions();
+    }
+
+    private void UpdateTilePositions()
+    {
+        if (CanvasWidth <= 0) return;
+        int cols = Math.Max(1, (int)((CanvasWidth + TileSpacing) / (TileWidth + TileSpacing)));
+        for (int i = 0; i < HistoryDesc.Count; i++)
+        {
+            var tile = HistoryDesc[i];
+            var col = i % cols;
+            var row = i / cols;
+            tile.Left = col * (TileWidth + TileSpacing);
+            tile.Top = row * (TileHeight + TileSpacing);
+        }
+        int rows = (int)Math.Ceiling((double)HistoryDesc.Count / cols);
+        CanvasHeight = rows * (TileHeight + TileSpacing);
     }
 }
