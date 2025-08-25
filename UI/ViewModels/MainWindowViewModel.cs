@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 using DuelLedger.UI.Models;
 using DuelLedger.UI.Services;
 
@@ -15,6 +16,8 @@ public sealed class MainWindowViewModel : NotifyBase
 
     public IReadOnlyList<MatchFormat?> AvailableFormats { get; }
         = new MatchFormat?[] { null, MatchFormat.Rank, MatchFormat.TwoPick, MatchFormat.GrandPrix };
+
+    public ICommand SelectFormatCommand { get; }
 
     private MatchFormat? _selectedFormat;
     public MatchFormat? SelectedFormat
@@ -49,7 +52,7 @@ public sealed class MainWindowViewModel : NotifyBase
     }
 
     private Totals _overallTotals = new();
-    public Totals OverallTotals { get => _overallTotals; set => Set(ref _overallTotals, value); }
+    public Totals OverallTotals { get => _overallTotals; set { Set(ref _overallTotals, value); Raise(nameof(OverallRateText)); Raise(nameof(FooterText)); } }
 
     private ObservableCollection<ClassVsRow> _selfFilteredRows = new();
     public ObservableCollection<ClassVsRow> SelfFilteredRows
@@ -58,14 +61,26 @@ public sealed class MainWindowViewModel : NotifyBase
     }
 
     private Totals _selfTotals = new();
-    public Totals SelfTotals { get => _selfTotals; set => Set(ref _selfTotals, value); }
+    public Totals SelfTotals { get => _selfTotals; set { Set(ref _selfTotals, value); Raise(nameof(SelfRateText)); Raise(nameof(FooterText)); } }
 
-        public MainWindowViewModel(MatchReaderService reader)
+    private int _selectedTabIndex;
+    public int SelectedTabIndex
+    {
+        get => _selectedTabIndex;
+        set { Set(ref _selectedTabIndex, value); Raise(nameof(FooterText)); }
+    }
+
+    public string OverallRateText => FormatRate(OverallTotals);
+    public string SelfRateText => FormatRate(SelfTotals);
+    public string FooterText => SelectedTabIndex == 0 ? OverallRateText : SelfRateText;
+
+    public MainWindowViewModel(MatchReaderService reader)
     {
         _reader = reader;
         _reader.Items.CollectionChanged += (_, __) => Recompute();
         SelectedSelfClass = SelfClassOptions.FirstOrDefault();
         SelectedFormat = null; // All
+        SelectFormatCommand = new RelayCommand<MatchFormat?>(fmt => SelectedFormat = fmt);
         _reader.LoadInitial();
         Recompute();
     }
@@ -111,5 +126,15 @@ public sealed class MainWindowViewModel : NotifyBase
         };
 
         Raise(nameof(HistoryDesc));
+        Raise(nameof(OverallRateText));
+        Raise(nameof(SelfRateText));
+        Raise(nameof(FooterText));
+    }
+
+    private static string FormatRate(Totals t)
+    {
+        var total = t.Wins + t.Losses;
+        var pct = total > 0 ? (double)t.Wins / total * 100.0 : 0.0;
+        return $"W:{t.Wins}/L:{t.Losses}/{pct:F1}%";
     }
 }

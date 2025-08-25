@@ -5,6 +5,7 @@
              x:Class="DuelLedger.UI.App">
   <Application.Styles>
     <FluentTheme />
+    <StyleInclude Source="avares://DuelLedger.UI/Styles.axaml"/>
   </Application.Styles>
   <Application.Resources>
     <conv:AspectWideByRatio   x:Key="AspectWideByRatio"/>
@@ -19,5 +20,6 @@
     <conv:UiTextConverter   x:Key="UiText"/>
     <conv:FormatTextConverter x:Key="FormatText"/>
     <conv:FormatNameConverter x:Key="FormatName"/>
+    <conv:EqualityConverter x:Key="EqualityConverter"/>
   </Application.Resources>
 </Application>

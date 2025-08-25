@@ -1,0 +1,7 @@
+<Styles xmlns="https://github.com/avaloniaui">
+  <Style Selector="TabItem">
+    <Setter Property="Padding" Value="8,4"/>
+    <Setter Property="MinHeight" Value="28"/>
+    <Setter Property="FontSize" Value="16"/>
+  </Style>
+</Styles>
