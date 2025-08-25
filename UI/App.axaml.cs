@@ -12,9 +12,7 @@ using DuelLedger.Vision;
 using System.IO;
 using System.Threading;
 using System.Collections.Generic;
-#if WINDOWS
 using DuelLedger.Vision.Windows;
-#endif
 
 namespace DuelLedger.UI;
 
@@ -53,11 +51,11 @@ public partial class App : Application
         }
 
         IScreenSource screenSource;
-        
-        if (OperatingSystem.IsWindows())
-            screenSource = new WinScreenSource(detectorSet.ProcessName);
-        else
-            screenSource = new DummyScreenSource();
+#if WINDOWS
+        screenSource = new WinScreenSource(detectorSet.ProcessName);
+#else
+        screenSource = new DummyScreenSource();
+#endif
 
         var publisher = new JsonStreamPublisher(outDir);
 

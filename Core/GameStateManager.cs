@@ -148,8 +148,22 @@ public class GameStateManager
                 var json = msgProp?.GetValue(matched) as string ?? "{}";
                 using var doc = JsonDocument.Parse(json);
                 var root = doc.RootElement;
-                var own = root.TryGetProperty("own_class", out var o) ? o.GetString() : null;
-                var enemy = root.TryGetProperty("enemy_class", out var e) ? e.GetString() : null;
+                var own = root.TryGetProperty("own_class", out var o)
+                    ? o.ValueKind switch
+                    {
+                        JsonValueKind.String => o.GetString(),
+                        JsonValueKind.Number => o.TryGetInt32(out var oi) ? oi.ToString() : o.GetDouble().ToString(),
+                        _ => null
+                    }
+                    : null;
+                var enemy = root.TryGetProperty("enemy_class", out var e)
+                    ? e.ValueKind switch
+                    {
+                        JsonValueKind.String => e.GetString(),
+                        JsonValueKind.Number => e.TryGetInt32(out var ei) ? ei.ToString() : e.GetDouble().ToString(),
+                        _ => null
+                    }
+                    : null;
 
                 if (!string.IsNullOrWhiteSpace(own))
                     EnqueueVote(_ownClassVotes, own!);
