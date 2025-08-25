@@ -167,8 +167,8 @@
                     <Setter Property="Canvas.Top" Value="{Binding Top}"/>
                     <Setter Property="Transitions">
                       <Transitions>
-                        <DoubleTransition Property="Canvas.Left" Duration="0:0:0.2"/>
-                        <DoubleTransition Property="Canvas.Top" Duration="0:0:0.2"/>
+                        <DoubleTransition Property="{x:Static Canvas.LeftProperty}" Duration="0:0:0.2"/>
+                        <DoubleTransition Property="{x:Static Canvas.TopProperty}" Duration="0:0:0.2"/>
                       </Transitions>
                     </Setter>
                   </Style>
