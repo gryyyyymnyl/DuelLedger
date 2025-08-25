@@ -155,3 +155,58 @@ public sealed class FormatNameConverter : IValueConverter
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
 }
+public sealed class FormatAbbrevConverter : IValueConverter
+{
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        return value switch
+        {
+            MatchFormat.Rank => "R",
+            MatchFormat.TwoPick => "2P",
+            MatchFormat.GrandPrix => "GP",
+            MatchFormat.Unknown => "?",
+            MatchFormat _ => "?",
+            _ => "?",
+        };
+    }
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
+public sealed class TurnOrderBadgeConverter : IValueConverter
+{
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        return value is TurnOrder o ? (o == TurnOrder.先行 ? "先" : o == TurnOrder.後攻 ? "後" : "?") : "?";
+    }
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
+public sealed class EqualityMultiConverter : IMultiValueConverter
+{
+    public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (values.Count < 2) return false;
+        return Equals(values[0], values[1]);
+    }
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
+public sealed class WinBoxShadowConverter : IValueConverter
+{
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is MatchResult r && parameter is string p)
+        {
+            if ((r == MatchResult.Win && p == "self") || (r == MatchResult.Lose && p == "opp"))
+            {
+                return "0 0 6 2 #FFD700";
+            }
+        }
+        return null;
+    }
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
