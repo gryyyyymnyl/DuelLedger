@@ -143,44 +143,35 @@ public sealed class MainWindowViewModel : NotifyBase
                 HistoryDesc.RemoveAt(i);
             }
         }
-        for (int i = 0; i < hist.Count; i++)
+        foreach (var rec in hist)
         {
-            var rec = hist[i];
             if (!_tileMap.TryGetValue(rec, out var tile))
             {
                 tile = new HistoryTile(rec);
                 _tileMap[rec] = tile;
-            }
-            if (i >= HistoryDesc.Count)
-            {
                 HistoryDesc.Add(tile);
-            }
-            else if (!ReferenceEquals(HistoryDesc[i], tile))
-            {
-                var index = HistoryDesc.IndexOf(tile);
-                if (index >= 0)
-                    HistoryDesc.Move(index, i);
-                else
-                    HistoryDesc.Insert(i, tile);
             }
         }
 
+        _histOrder = hist;
         UpdateTilePositions();
     }
 
+    private List<MatchRecord> _histOrder = new();
+
     private void UpdateTilePositions()
     {
-        if (CanvasWidth <= 0) return;
+        if (CanvasWidth <= 0 || _histOrder.Count == 0) return;
         int cols = Math.Max(1, (int)((CanvasWidth + TileSpacing) / (TileWidth + TileSpacing)));
-        for (int i = 0; i < HistoryDesc.Count; i++)
+        for (int i = 0; i < _histOrder.Count; i++)
         {
-            var tile = HistoryDesc[i];
+            var tile = _tileMap[_histOrder[i]];
             var col = i % cols;
             var row = i / cols;
             tile.Left = col * (TileWidth + TileSpacing);
             tile.Top = row * (TileHeight + TileSpacing);
         }
-        int rows = (int)Math.Ceiling((double)HistoryDesc.Count / cols);
+        int rows = (int)Math.Ceiling((double)_histOrder.Count / cols);
         CanvasHeight = rows * (TileHeight + TileSpacing);
     }
 }
