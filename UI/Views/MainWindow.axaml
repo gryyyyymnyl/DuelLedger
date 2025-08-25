@@ -97,7 +97,8 @@
                               Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}">
                         <Grid>
                           <TextBlock Text="{Binding SelfClass, Converter={StaticResource ClassName}}"
-                                     HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                                     HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                                     IsVisible="{Binding SelfClass, Converter={StaticResource ClassIcon}}"/>
                           <svg:Svg Path="{Binding SelfClass, Converter={StaticResource ClassIcon}}"
                                    Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Grid>
@@ -125,7 +126,8 @@
                               Background="{Binding OppClass, Converter={StaticResource ClassBrush}}">
                         <Grid>
                           <TextBlock Text="{Binding OppClass, Converter={StaticResource ClassName}}"
-                                     HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                                     HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                                     IsVisible="{Binding OppClass, Converter={StaticResource ClassIcon}}"/>
                           <svg:Svg Path="{Binding OppClass, Converter={StaticResource ClassIcon}}"
                                    Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Grid>
@@ -166,7 +168,8 @@
                                 Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}">
                           <Grid>
                             <TextBlock Text="{Binding SelfClass, Converter={StaticResource ClassName}}"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                                       IsVisible="{Binding SelfClass, Converter={StaticResource ClassIcon}}"/>
                             <svg:Svg Path="{Binding SelfClass, Converter={StaticResource ClassIcon}}"
                                      Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                           </Grid>
@@ -180,7 +183,8 @@
                                 Background="{Binding OppClass, Converter={StaticResource ClassBrush}}">
                           <Grid>
                             <TextBlock Text="{Binding OppClass, Converter={StaticResource ClassName}}"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                                       IsVisible="{Binding OppClass, Converter={StaticResource ClassIcon}}"/>
                             <svg:Svg Path="{Binding OppClass, Converter={StaticResource ClassIcon}}"
                                      Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                           </Grid>
@@ -229,7 +233,8 @@
                               Background="{Binding Opponent, Converter={StaticResource ClassBrush}}">
                         <Grid>
                           <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassName}}"
-                                     HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                                     HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                                     IsVisible="{Binding Opponent, Converter={StaticResource ClassIcon}}"/>
                           <svg:Svg Path="{Binding Opponent, Converter={StaticResource ClassIcon}}"
                                    Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Grid>
@@ -278,7 +283,8 @@
                                 Background="{Binding Opponent, Converter={StaticResource ClassBrush}}">
                           <Grid>
                             <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassName}}"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                                       IsVisible="{Binding Opponent, Converter={StaticResource ClassIcon}}"/>
                             <svg:Svg Path="{Binding Opponent, Converter={StaticResource ClassIcon}}"
                                      Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                           </Grid>
@@ -334,7 +340,8 @@
                               Background="{Binding Opponent, Converter={StaticResource ClassBrush}}">
                         <Grid>
                           <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassName}}"
-                                     HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                                     HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                                     IsVisible="{Binding Opponent, Converter={StaticResource ClassIcon}}"/>
                           <svg:Svg Path="{Binding Opponent, Converter={StaticResource ClassIcon}}"
                                    Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Grid>
@@ -383,7 +390,8 @@
                                 Background="{Binding Opponent, Converter={StaticResource ClassBrush}}">
                           <Grid>
                             <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassName}}"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                                       IsVisible="{Binding Opponent, Converter={StaticResource ClassIcon}}"/>
                             <svg:Svg Path="{Binding Opponent, Converter={StaticResource ClassIcon}}"
                                      Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                           </Grid>
