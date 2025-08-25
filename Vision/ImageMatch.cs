@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using OpenCvSharp;
 using OpenCvSharp.Features2D;
+using SkiaSharp;
+using Svg.Skia;
 namespace DuelLedger.Vision
 {
     public static class ImageMatch
@@ -25,6 +27,117 @@ namespace DuelLedger.Vision
             public ORBScoreType ScoreType { get; init; } = ORBScoreType.Harris;
             public int PatchSize { get; init; } = 31;
             public int FastThreshold { get; init; } = 20;
+        }
+
+        // SVG → Mat（GRAY/8U, alpha>0を1として2値も返せる）
+        public static (Mat gray, Mat binary) RenderSvgToMat(string svgXml, int w, int h, bool antialias = true)
+        {
+            using var svg = new SKSvg();
+            svg.FromSvg(svgXml);
+            var bmp = new SKBitmap(w, h, true);
+            using (var canvas = new SKCanvas(bmp))
+            {
+                canvas.Clear(SKColors.Transparent);
+                var pic = svg.Picture;
+                if (pic != null)
+                {
+                    float scaleX = w / pic.CullRect.Width;
+                    float scaleY = h / pic.CullRect.Height;
+                    canvas.Scale(scaleX, scaleY);
+                    canvas.DrawPicture(pic);
+                }
+            }
+            using var matTmp = Mat.FromPixelData(h, w, MatType.CV_8UC4, bmp.GetPixels(), bmp.RowBytes);
+            var mat = matTmp.Clone();
+            var gray = new Mat();
+            Cv2.CvtColor(mat, gray, ColorConversionCodes.BGRA2GRAY);
+            var alpha = new Mat();
+            Cv2.ExtractChannel(mat, alpha, 3);
+            var binary = new Mat();
+            Cv2.Threshold(alpha, binary, 0, 255, ThresholdTypes.Binary);
+            return (gray, binary);
+        }
+
+        // 2値画像から距離テンプレート（正規化SDF）
+        public static Mat BuildDistanceTemplate(Mat binary)
+        {
+            if (binary.Empty()) return new Mat();
+            using var inv = new Mat();
+            Cv2.BitwiseNot(binary, inv);
+            using var dist = new Mat();
+            Cv2.DistanceTransform(inv, dist, DistanceTypes.L2, DistanceTransformMasks.Mask3);
+            Cv2.Normalize(dist, dist, 0, 1, NormTypes.MinMax);
+            return dist.Clone();
+        }
+
+        // 距離場テンプレ vs 画面エッジのZNCC（スケール・回転を少数試行）
+        public static bool ChamferZNCC(Mat roiGray, Mat tplDist, out double score, out OpenCvSharp.Point loc,
+                        double[] scales, double[] rotsDeg, int canny1 = 80, int canny2 = 200)
+        {
+            score = 0; loc = new OpenCvSharp.Point();
+            if (roiGray.Empty() || tplDist.Empty()) return false;
+            using var edges = new Mat();
+            Cv2.Canny(roiGray, edges, canny1, canny2);
+            edges.ConvertTo(edges, MatType.CV_32F, 1.0 / 255);
+
+            bool ok = false;
+            double best = double.NegativeInfinity;
+            OpenCvSharp.Point bestLoc = default;
+            foreach (var s in scales ?? Array.Empty<double>())
+            {
+                foreach (var r in rotsDeg ?? Array.Empty<double>())
+                {
+                    using var t = TransformTpl(tplDist, s, r);
+                    if (edges.Width < t.Width || edges.Height < t.Height) continue;
+                    using var result = new Mat();
+                    Cv2.MatchTemplate(edges, t, result, TemplateMatchModes.CCoeffNormed);
+                    Cv2.MinMaxLoc(result, out _, out double maxVal, out _, out OpenCvSharp.Point maxLoc);
+                    if (maxVal > best)
+                    {
+                        best = maxVal; bestLoc = maxLoc; ok = true;
+                    }
+                }
+            }
+            score = best; loc = bestLoc;
+            return ok;
+        }
+
+        private static Mat TransformTpl(Mat tpl, double scale, double rot)
+        {
+            var size = new OpenCvSharp.Size(
+                Math.Max(1, (int)Math.Round(tpl.Width * scale)),
+                Math.Max(1, (int)Math.Round(tpl.Height * scale)));
+            using var m = Cv2.GetRotationMatrix2D(new Point2f(tpl.Width / 2f, tpl.Height / 2f), rot, scale);
+            var dst = new Mat();
+            Cv2.WarpAffine(tpl, dst, m, size, InterpolationFlags.Linear, BorderTypes.Constant, Scalar.All(0));
+            return dst;
+        }
+
+        // Hu/Zernike代替：OpenCV標準のMatchShapesを用いスコア化
+        public static double MatchShapesScore(Mat roiBinary, Mat tplBinary)
+        {
+            if (roiBinary.Empty() || tplBinary.Empty()) return 0;
+            Cv2.FindContours(roiBinary, out var cnt1, out _, RetrievalModes.External, ContourApproximationModes.ApproxSimple);
+            Cv2.FindContours(tplBinary, out var cnt2, out _, RetrievalModes.External, ContourApproximationModes.ApproxSimple);
+            if (cnt1.Length == 0 || cnt2.Length == 0) return 0;
+            double min = double.MaxValue;
+            foreach (var c1 in cnt1)
+            {
+                foreach (var c2 in cnt2)
+                {
+                    double v = Cv2.MatchShapes(c1, c2, ShapeMatchModes.I1);
+                    if (v < min) min = v;
+                }
+            }
+            return 1.0 / (1.0 + min);
+        }
+
+        // （任意のバックアップ）SVGラスタを高解像にしてORBホモグラフィ
+        public static bool TryOrbHomographyMatch(Mat roiGray, Mat tplGray, out double score)
+        {
+            var rect = new Rect(0, 0, roiGray.Width, roiGray.Height);
+            var tplRR = new RelativeRegion(0, 0, 1, 1, tplGray.Width, tplGray.Height);
+            return TryOrbHomographyMatch(roiGray, tplGray, rect, tplRR, out score, out _);
         }
 
         // -------------- 共通：特徴量マッチ用コア --------------
