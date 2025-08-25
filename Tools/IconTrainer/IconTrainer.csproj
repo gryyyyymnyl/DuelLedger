@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="OpenCvSharp4" Version="4.11.0.20250507" />
+    <PackageReference Include="SkiaSharp" Version="2.88.8" />
+    <PackageReference Include="Svg.Skia" Version="2.0.0" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.8" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Vision\DuelLedger.Vision.csproj" />
+    <ProjectReference Include="..\..\Net\DuelLedger.Net.csproj" />
+  </ItemGroup>
+</Project>
