@@ -12,7 +12,7 @@ public partial class MainWindow : Window
         InitializeComponent();
 
         var canvas = this.FindControl<ItemsControl>("HistoryCanvas");
-        canvas.GetObservable(BoundsProperty).Subscribe(b =>
+        canvas?.GetObservable(BoundsProperty).Subscribe(b =>
         {
             if (DataContext is MainWindowViewModel vm)
                 vm.CanvasWidth = b.Width;
