@@ -1,9 +1,13 @@
 .vscode/
 Templates/
 bin/
-obj/Debug/
+obj/
 *.png
 *.jpg
 *.exe
 *.dll
 *.pdb
+*.cache
+*.g.cs
+*.AssemblyInfo.cs
+*.user
