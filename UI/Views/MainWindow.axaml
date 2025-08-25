@@ -164,7 +164,7 @@
                   <Setter Property="Transitions">
                     <Transitions>
                       <DoubleTransition Property="Opacity" Duration="0:0:0.2"/>
-                      <DoubleTransition Property="Margin" Duration="0:0:0.2"/>
+                      <ThicknessTransition Property="Margin" Duration="0:0:0.2"/>
                     </Transitions>
                   </Setter>
                 </Style>
