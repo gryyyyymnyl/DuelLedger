@@ -18,6 +18,8 @@ public sealed class MatchReaderService : IDisposable
     private readonly JsonSerializerOptions _json = new(){ PropertyNameCaseInsensitive = true };
 
     private readonly Dictionary<string, MatchRecord> _byFile = new();
+    private readonly List<(string Path, MatchRecord Rec)> _pending = new();
+    private readonly DispatcherTimer _debounce;
 
     public ObservableCollection<MatchRecord> Items { get; } = new();
 
@@ -35,6 +37,9 @@ public sealed class MatchReaderService : IDisposable
         };
         _watcher.Created += (_, e) => _ = TryLoadAsync(e.FullPath);
         _watcher.Changed += (_, e) => _ = TryLoadAsync(e.FullPath);
+
+        _debounce = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(80) };
+        _debounce.Tick += (_, __) => Flush();
     }
 
     public void LoadInitial()
@@ -56,7 +61,7 @@ public sealed class MatchReaderService : IDisposable
                 var dto = await JsonSerializer.DeserializeAsync<MatchSummaryDto>(fs, _json);
                 if (dto is null) return;
                 var rec = dto.ToDomain();
-                await Dispatcher.UIThread.InvokeAsync(() => Upsert(path, rec));
+                await Dispatcher.UIThread.InvokeAsync(() => Enqueue(path, rec));
                 return;
             }
             catch (IOException)
@@ -74,37 +79,64 @@ public sealed class MatchReaderService : IDisposable
         }
     }
 
-    private void Upsert(string path, MatchRecord rec)
+    private void Enqueue(string path, MatchRecord rec)
+    {
+        _pending.RemoveAll(p => p.Path == path);
+        _pending.Add((path, rec));
+        _debounce.Stop();
+        _debounce.Start();
+    }
+
+    private void Flush()
+    {
+        _debounce.Stop();
+        var list = _pending
+            .OrderByDescending(x => x.Rec.EndedAt)
+            .ThenByDescending(x => x.Rec.StartedAt)
+            .ThenByDescending(x => x.Rec.Result)
+            .ThenBy(x => x.Rec.SelfClass)
+            .ThenBy(x => x.Rec.OppClass)
+            .ThenBy(x => x.Rec.Order)
+            .ToList();
+        _pending.Clear();
+
+        foreach (var (path, rec) in list)
+            UpsertCore(path, rec);
+    }
+
+    private void UpsertCore(string path, MatchRecord rec)
     {
         if (_byFile.TryGetValue(path, out var old))
         {
-            // 置き換え（通常は不要だが Changed で来た場合）
             var idx = Items.IndexOf(old);
-            if (idx >= 0) Items[idx] = rec;
+            if (idx >= 0) Items.RemoveAt(idx);
             _byFile[path] = rec;
-            Resort();
         }
         else
         {
             _byFile[path] = rec;
-            Items.Add(rec);
-            Resort();
         }
+
+        InsertAtSortPosition(rec);
     }
 
-    private void Resort()
+    private void InsertAtSortPosition(MatchRecord rec)
     {
-        // UTC基準 + 複合キーで安定ソート（新しい順）：同一終了時刻でも順番が揺れないように
-        var ordered = Items
-            .OrderByDescending(x => x.EndedAt)
-            .ThenByDescending(x => x.StartedAt)
-            .ThenByDescending(x => x.Result)
-            .ThenBy(x => x.SelfClass)
-            .ThenBy(x => x.OppClass)
-            .ThenBy(x => x.Order)
-            .ToList();
-        Items.Clear();
-        foreach (var x in ordered) Items.Add(x);
+        int idx = 0;
+        while (idx < Items.Count && CompareNewFirst(rec, Items[idx]) >= 0) idx++;
+        Items.Insert(idx, rec);
+    }
+
+    private static int CompareNewFirst(MatchRecord a, MatchRecord b)
+    {
+        int c;
+        if ((c = b.EndedAt.CompareTo(a.EndedAt)) != 0) return c;
+        if ((c = b.StartedAt.CompareTo(a.StartedAt)) != 0) return c;
+        if ((c = b.Result.CompareTo(a.Result)) != 0) return c;
+        if ((c = a.SelfClass.CompareTo(b.SelfClass)) != 0) return c;
+        if ((c = a.OppClass.CompareTo(b.OppClass)) != 0) return c;
+        if ((c = a.Order.CompareTo(b.Order)) != 0) return c;
+        return 0;
     }
 
     public void Dispose()

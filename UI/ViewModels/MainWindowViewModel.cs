@@ -13,6 +13,8 @@ public sealed class MainWindowViewModel : NotifyBase
 
     public ObservableCollection<MatchRecord> History => _reader.Items;
 
+    public ObservableCollection<MatchRecord> HistoryDesc { get; } = new();
+
     public IReadOnlyList<MatchFormat?> AvailableFormats { get; }
         = new MatchFormat?[] { null, MatchFormat.Rank, MatchFormat.TwoPick, MatchFormat.GrandPrix };
 
@@ -26,12 +28,13 @@ public sealed class MainWindowViewModel : NotifyBase
     private IEnumerable<MatchRecord> FilteredHistory
         => SelectedFormat.HasValue ? History.Where(x => x.Format == SelectedFormat.Value) : History;
 
-    // 降順（新しい順）の履歴ビュー（時系列降順）
-    // 時系列（新しい順）: UTC基準 + 複合キーで安定ソート
-    public IEnumerable<MatchRecord> HistoryDesc => FilteredHistory
-        // 完全に「時刻のみ」で安定ソート（新しい順）
-        .OrderByDescending(x => x.EndedAt.ToUnixTimeMilliseconds())
-        .ThenByDescending(x => x.StartedAt.ToUnixTimeMilliseconds());
+    private static IEnumerable<MatchRecord> SortDesc(IEnumerable<MatchRecord> src)
+        => src.OrderByDescending(x => x.EndedAt)
+               .ThenByDescending(x => x.StartedAt)
+               .ThenByDescending(x => x.Result)
+               .ThenBy(x => x.SelfClass)
+               .ThenBy(x => x.OppClass)
+               .ThenBy(x => x.Order);
 
     public IReadOnlyList<PlayerClass> SelfClassOptions { get; } = Enum.GetValues<PlayerClass>().Where(c => c != PlayerClass.Unknown).ToList();
 
@@ -75,7 +78,7 @@ public sealed class MainWindowViewModel : NotifyBase
 
     private void Recompute()
     {
-        var hist = FilteredHistory.ToList();
+        var hist = SortDesc(FilteredHistory).ToList();
 
         // Overall: 相手クラス別に勝敗集計（自分クラスは全体）
         var overall = AllOpponentClasses()
@@ -110,6 +113,26 @@ public sealed class MainWindowViewModel : NotifyBase
             Losses = subset.Count(x => x.Result == MatchResult.Lose),
         };
 
-        Raise(nameof(HistoryDesc));
+        // sync HistoryDesc collection
+        for (int i = HistoryDesc.Count - 1; i >= 0; i--)
+        {
+            if (!hist.Contains(HistoryDesc[i])) HistoryDesc.RemoveAt(i);
+        }
+        for (int i = 0; i < hist.Count; i++)
+        {
+            var item = hist[i];
+            if (i >= HistoryDesc.Count)
+            {
+                HistoryDesc.Add(item);
+            }
+            else if (!ReferenceEquals(HistoryDesc[i], item))
+            {
+                var index = HistoryDesc.IndexOf(item);
+                if (index >= 0)
+                    HistoryDesc.Move(index, i);
+                else
+                    HistoryDesc.Insert(i, item);
+            }
+        }
     }
 }
