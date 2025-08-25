@@ -6,6 +6,7 @@
         xmlns:vm="using:DuelLedger.UI.ViewModels"
         xmlns:models="using:DuelLedger.UI.Models"
         xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+        xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Avalonia.Svg.Skia"
         x:Class="DuelLedger.UI.Views.MainWindow"
         Width="250" Height="800"
         MinWidth="{DynamicResource MinWindowWidth}"
@@ -94,8 +95,13 @@
                       <!-- 自分クラス（アイコン） -->
                       <Border Grid.Column="0" Width="28" Height="28" CornerRadius="14"
                               Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}">
-                        <TextBlock Text="{Binding SelfClass, Converter={StaticResource ClassGlyph}}"
-                                   HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                        <Grid>
+                          <TextBlock Text="{Binding SelfClass, Converter={StaticResource ClassName}}"
+                                     HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                                     IsVisible="{Binding SelfClass, Converter={StaticResource ClassIcon}}"/>
+                          <svg:Svg Path="{Binding SelfClass, Converter={StaticResource ClassIcon}}"
+                                   Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
                       </Border>
                       <Rectangle Grid.Column="1" Width="8"/>
 
@@ -118,8 +124,13 @@
                       <!-- 相手クラス（アイコン） -->
                       <Border Grid.Column="10" Width="28" Height="28" CornerRadius="14"
                               Background="{Binding OppClass, Converter={StaticResource ClassBrush}}">
-                        <TextBlock Text="{Binding OppClass, Converter={StaticResource ClassGlyph}}"
-                                   HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                        <Grid>
+                          <TextBlock Text="{Binding OppClass, Converter={StaticResource ClassName}}"
+                                     HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                                     IsVisible="{Binding OppClass, Converter={StaticResource ClassIcon}}"/>
+                          <svg:Svg Path="{Binding OppClass, Converter={StaticResource ClassIcon}}"
+                                   Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
                       </Border>
                     </Grid>
                   </Border>
@@ -155,8 +166,13 @@
                       <StackPanel Orientation="Horizontal" Spacing="6">
                         <Border Width="24" Height="24" CornerRadius="12"
                                 Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}">
-                          <TextBlock Text="{Binding SelfClass, Converter={StaticResource ClassGlyph}}"
-                                    HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                          <Grid>
+                            <TextBlock Text="{Binding SelfClass, Converter={StaticResource ClassName}}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                                       IsVisible="{Binding SelfClass, Converter={StaticResource ClassIcon}}"/>
+                            <svg:Svg Path="{Binding SelfClass, Converter={StaticResource ClassIcon}}"
+                                     Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          </Grid>
                         </Border>
                         <TextBlock Text="{Binding Order, Converter={StaticResource OrderText}}"/>
                         <TextBlock Text="{Binding Result, Converter={StaticResource ResultText}}" FontWeight="Bold"/>
@@ -165,8 +181,13 @@
                       <StackPanel Orientation="Horizontal" Spacing="6">
                         <Border Width="24" Height="24" CornerRadius="12"
                                 Background="{Binding OppClass, Converter={StaticResource ClassBrush}}">
-                          <TextBlock Text="{Binding OppClass, Converter={StaticResource ClassGlyph}}"
-                                    HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                          <Grid>
+                            <TextBlock Text="{Binding OppClass, Converter={StaticResource ClassName}}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                                       IsVisible="{Binding OppClass, Converter={StaticResource ClassIcon}}"/>
+                            <svg:Svg Path="{Binding OppClass, Converter={StaticResource ClassIcon}}"
+                                     Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          </Grid>
                         </Border>
                         <TextBlock Text="{Binding Order, Converter={StaticResource OppOrder}}"/>
                         <TextBlock Text="{Binding Result, Converter={StaticResource OppResult}}"/>
@@ -210,8 +231,13 @@
                       <!-- 相手クラス（アイコン） -->
                       <Border Grid.Column="0" Width="28" Height="28" CornerRadius="14"
                               Background="{Binding Opponent, Converter={StaticResource ClassBrush}}">
-                        <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassGlyph}}"
-                                   HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                        <Grid>
+                          <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassName}}"
+                                     HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                                     IsVisible="{Binding Opponent, Converter={StaticResource ClassIcon}}"/>
+                          <svg:Svg Path="{Binding Opponent, Converter={StaticResource ClassIcon}}"
+                                   Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
                       </Border>
                       <Rectangle Grid.Column="1" Width="8"/>
                       <!-- 相手クラス名 -->
@@ -255,8 +281,13 @@
                       <StackPanel Orientation="Horizontal" Spacing="8">
                         <Border Width="24" Height="24" CornerRadius="12"
                                 Background="{Binding Opponent, Converter={StaticResource ClassBrush}}">
-                          <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassGlyph}}"
-                                     HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                          <Grid>
+                            <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassName}}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                                       IsVisible="{Binding Opponent, Converter={StaticResource ClassIcon}}"/>
+                            <svg:Svg Path="{Binding Opponent, Converter={StaticResource ClassIcon}}"
+                                     Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          </Grid>
                         </Border>
                         <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassName}}" FontWeight="Bold"/>
                       </StackPanel>
@@ -307,8 +338,13 @@
                       <!-- 相手クラス（アイコン） -->
                       <Border Grid.Column="0" Width="28" Height="28" CornerRadius="14"
                               Background="{Binding Opponent, Converter={StaticResource ClassBrush}}">
-                        <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassGlyph}}"
-                                   HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                        <Grid>
+                          <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassName}}"
+                                     HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                                     IsVisible="{Binding Opponent, Converter={StaticResource ClassIcon}}"/>
+                          <svg:Svg Path="{Binding Opponent, Converter={StaticResource ClassIcon}}"
+                                   Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
                       </Border>
                       <Rectangle Grid.Column="1" Width="8"/>
                       <!-- 相手クラス名 -->
@@ -352,8 +388,13 @@
                       <StackPanel Orientation="Horizontal" Spacing="8">
                         <Border Width="24" Height="24" CornerRadius="12"
                                 Background="{Binding Opponent, Converter={StaticResource ClassBrush}}">
-                          <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassGlyph}}"
-                                     HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                          <Grid>
+                            <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassName}}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                                       IsVisible="{Binding Opponent, Converter={StaticResource ClassIcon}}"/>
+                            <svg:Svg Path="{Binding Opponent, Converter={StaticResource ClassIcon}}"
+                                     Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          </Grid>
                         </Border>
                         <TextBlock Text="{Binding Opponent, Converter={StaticResource ClassName}}" FontWeight="Bold"/>
                       </StackPanel>

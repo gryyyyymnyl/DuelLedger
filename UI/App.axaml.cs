@@ -53,11 +53,14 @@ public partial class App : Application
         }
 
         IScreenSource screenSource;
-        
+#if WINDOWS
         if (OperatingSystem.IsWindows())
             screenSource = new WinScreenSource(detectorSet.ProcessName);
         else
             screenSource = new DummyScreenSource();
+#else
+        screenSource = new DummyScreenSource();
+#endif
 
         var publisher = new JsonStreamPublisher(outDir);
 
