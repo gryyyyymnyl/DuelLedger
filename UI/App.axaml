@@ -10,7 +10,7 @@
     <conv:AspectWideByRatio   x:Key="AspectWideByRatio"/>
     <conv:AspectNarrowByRatio x:Key="AspectNarrowByRatio"/>
     <conv:ClassColorConverter x:Key="ClassBrush"/>
-    <conv:ClassIconConverter  x:Key="ClassGlyph"/>
+    <conv:ClassIconConverter  x:Key="ClassIcon"/>
     <conv:ClassNameConverter  x:Key="ClassName"/>
     <conv:TurnOrderToText   x:Key="OrderText"/>
     <conv:ResultToText      x:Key="ResultText"/>

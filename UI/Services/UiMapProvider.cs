@@ -35,6 +35,7 @@ public sealed class UiMapItem
 {
     public string name { get; set; } = string.Empty;
     public string icon { get; set; } = string.Empty;
+    public string iconUrl { get; set; } = string.Empty;
     public string color { get; set; } = "#808080";
     public static UiMapItem Default { get; } = new();
 }
