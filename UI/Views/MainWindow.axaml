@@ -67,9 +67,9 @@
             <ListBox.ItemTemplate>
               <DataTemplate DataType="models:MatchRecord">
                 <Grid ColumnDefinitions="Auto,Auto,Auto" Margin="0,2" VerticalAlignment="Center">
-                  <Border Width="28" Height="28" CornerRadius="14"
+                  <Border Width="28" Height="28" CornerRadius="999"
                           Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}"
-                          BorderBrush="#FFD700"
+                          BorderBrush="#6E5A77"
                           BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=self}">
                     <svg:Svg Path="{Binding SelfClass, Converter={StaticResource ClassIcon}}"
                              Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -82,9 +82,9 @@
                     <TextBlock Grid.Row="1" Text="{Binding Format, Converter={StaticResource FormatAbbrev}}" HorizontalAlignment="Center"/>
                   </Grid>
 
-                  <Border Grid.Column="2" Width="28" Height="28" CornerRadius="14"
+                  <Border Grid.Column="2" Width="28" Height="28" CornerRadius="999"
                           Background="{Binding OppClass, Converter={StaticResource ClassBrush}}"
-                          BorderBrush="#FFD700"
+                          BorderBrush="#6E5A77"
                           BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=opp}">
                     <svg:Svg Path="{Binding OppClass, Converter={StaticResource ClassIcon}}"
                              Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>

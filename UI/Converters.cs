@@ -202,10 +202,10 @@ public sealed class WinBorderThicknessConverter : IValueConverter
         {
             if ((r == MatchResult.Win && p == "self") || (r == MatchResult.Lose && p == "opp"))
             {
-                return 2;
+                return new Avalonia.Thickness(3);
             }
         }
-        return 0;
+        return new Avalonia.Thickness(0);
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
