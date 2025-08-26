@@ -19,5 +19,10 @@
     <conv:UiTextConverter   x:Key="UiText"/>
     <conv:FormatTextConverter x:Key="FormatText"/>
     <conv:FormatNameConverter x:Key="FormatName"/>
+    <conv:FormatAbbrevConverter x:Key="FormatAbbrev"/>
+    <conv:TurnOrderBadgeConverter x:Key="OrderBadge"/>
+    <conv:EqualityMultiConverter x:Key="EqMulti"/>
+    <conv:WinBorderThicknessConverter x:Key="WinBorder"/>
+    <conv:NullToBoolConverter x:Key="IsNull"/>
   </Application.Resources>
 </Application>
