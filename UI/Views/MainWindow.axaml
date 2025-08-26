@@ -31,13 +31,16 @@
       <Setter Property="MinHeight" Value="20"/>
       <Setter Property="FontSize" Value="14"/>
     </Style>
+    <Style Selector="ListBox, ScrollViewer, TabControl, ContentControl">
+      <Setter Property="Background" Value="Transparent"/>
+    </Style>
   </Window.Styles>
 
   <Design.DataContext>
     <vm:MainWindowViewModel />
   </Design.DataContext>
 
-  <DockPanel x:Name="RootDock" Classes="backdrop">
+  <DockPanel x:Name="RootDock" Classes="backdrop" Background="{DynamicResource AppSurfaceBrush}">
     <Grid x:Name="TitleBar" Classes="backdrop" DockPanel.Dock="Top" PointerPressed="TitleBar_PointerPressed" Background="Transparent">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*"/>
@@ -79,7 +82,7 @@
             DockPanel.Dock="Bottom"
             Padding="4"
             Classes="backdrop"
-            Background="{DynamicResource SolidWindowBackgroundBrush}"
+            Background="{DynamicResource AppSurfaceBrush}"
             BorderBrush="#2D2D2D"
             BorderThickness="1">
       <TextBlock Text="{Binding RateTextForActiveTab}"/>

@@ -1,23 +1,23 @@
 using System;
 using System.ComponentModel;
-using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Avalonia.VisualTree;
 using DuelLedger.UI.ViewModels;
 
 namespace DuelLedger.UI.Views;
 
 public partial class MainWindow : Window
 {
+    private SolidColorBrush? _appSurfaceBrush;
+    private Color _opaqueColor = Color.FromRgb(0x1E, 0x1E, 0x1E);
+
     public MainWindow()
     {
         InitializeComponent();
 
-        // 透過は起動時に許可セットを固定
         TransparencyLevelHint = new[]
         {
             WindowTransparencyLevel.Transparent,
@@ -25,12 +25,11 @@ public partial class MainWindow : Window
             WindowTransparencyLevel.Mica
         };
 
-        // VM変更監視
         this.GetObservable(DataContextProperty).Subscribe(_ =>
         {
             if (DataContext is MainWindowViewModel vm)
             {
-                ApplyTransparency(vm.IsBackgroundTransparent);
+                SetTransparentMode(vm.IsBackgroundTransparent);
                 vm.PropertyChanged -= VmOnPropertyChanged;
                 vm.PropertyChanged += VmOnPropertyChanged;
             }
@@ -39,39 +38,45 @@ public partial class MainWindow : Window
 
     private void VmOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (sender is MainWindowViewModel vm && e.PropertyName == nameof(MainWindowViewModel.IsBackgroundTransparent))
+        if (sender is MainWindowViewModel vm &&
+            e.PropertyName == nameof(MainWindowViewModel.IsBackgroundTransparent))
         {
-            ApplyTransparency(vm.IsBackgroundTransparent);
+            SetTransparentMode(vm.IsBackgroundTransparent);
         }
     }
 
-    private void ApplyTransparency(bool on)
+    private void EnsureAppSurfaceBrush()
     {
-        var brush = on ? Brushes.Transparent : ResolveSolidWindowBackground();
-        Background = brush;
+        if (_appSurfaceBrush is not null)
+            return;
 
-        foreach (var ctl in this.GetVisualDescendants().OfType<Control>())
+        if (Application.Current?.TryFindResource("AppSurfaceBrush", out var obj) == true &&
+            obj is SolidColorBrush b)
         {
-            if (!ctl.Classes.Contains("backdrop"))
-                continue;
-
-            switch (ctl)
-            {
-                case Panel p:
-                    p.Background = brush;
-                    break;
-                case Border b:
-                    b.Background = brush;
-                    break;
-            }
+            _appSurfaceBrush = b;
+            _opaqueColor = Color.FromArgb(0xFF, b.Color.R, b.Color.G, b.Color.B);
+        }
+        else
+        {
+            _appSurfaceBrush = new SolidColorBrush(_opaqueColor);
+            Application.Current!.Resources["AppSurfaceBrush"] = _appSurfaceBrush;
         }
     }
 
-    private static IBrush ResolveSolidWindowBackground()
+    private void SetTransparentMode(bool on)
     {
-        if (Application.Current?.TryFindResource("SolidWindowBackgroundBrush", out var obj) == true && obj is IBrush brush)
-            return brush;
-        return Brushes.White;
+        EnsureAppSurfaceBrush();
+
+        if (on)
+        {
+            _appSurfaceBrush!.Color = Color.FromArgb(0x01, _opaqueColor.R, _opaqueColor.G, _opaqueColor.B);
+            Background = Brushes.Transparent;
+        }
+        else
+        {
+            _appSurfaceBrush!.Color = _opaqueColor;
+            Background = Brushes.Transparent;
+        }
     }
 
     private void MinimizeButton_Click(object? sender, RoutedEventArgs e)
@@ -82,7 +87,10 @@ public partial class MainWindow : Window
 
     private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (e.Source is Control c && c is not Button && e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+        var src = e.Source as Control;
+        if (src is Button || src is MenuItem) return;
+        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
             BeginMoveDrag(e);
     }
 }
+
