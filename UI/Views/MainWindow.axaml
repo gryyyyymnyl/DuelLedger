@@ -62,7 +62,10 @@
             </MenuItem.ItemTemplate>
           </MenuItem>
           <MenuItem Header="背景(_B)">
-            <MenuItem Header="透過(_T)" IsChecked="{Binding IsBackgroundTransparent, Mode=TwoWay}" />
+            <MenuItem Header="透過(_T)"
+                      IsChecked="{Binding Path=DataContext.IsBackgroundTransparent,
+                                           Mode=TwoWay,
+                                           RelativeSource={RelativeSource AncestorType=Window}}" />
           </MenuItem>
         </MenuItem>
       </Menu>
