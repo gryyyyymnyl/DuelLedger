@@ -37,8 +37,8 @@
     <vm:MainWindowViewModel />
   </Design.DataContext>
 
-  <DockPanel>
-    <Grid DockPanel.Dock="Top" PointerPressed="TitleBar_PointerPressed" Background="Transparent">
+  <DockPanel x:Name="RootDock" Classes="backdrop">
+    <Grid x:Name="TitleBar" Classes="backdrop" DockPanel.Dock="Top" PointerPressed="TitleBar_PointerPressed" Background="Transparent">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*"/>
         <ColumnDefinition Width="Auto"/>
@@ -75,7 +75,13 @@
       </StackPanel>
     </Grid>
 
-    <Border DockPanel.Dock="Bottom" Padding="4" Background="#FFFFFFFF" BorderBrush="#2D2D2D" BorderThickness="1">
+    <Border x:Name="StatusBar"
+            DockPanel.Dock="Bottom"
+            Padding="4"
+            Classes="backdrop"
+            Background="{DynamicResource SolidWindowBackgroundBrush}"
+            BorderBrush="#2D2D2D"
+            BorderThickness="1">
       <TextBlock Text="{Binding RateTextForActiveTab}"/>
     </Border>
 
