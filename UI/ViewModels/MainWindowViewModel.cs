@@ -33,6 +33,13 @@ public sealed class MainWindowViewModel : NotifyBase
         set { Set(ref _selectedTabIndex, value); Raise(nameof(RateTextForActiveTab)); }
     }
 
+    private bool _isBackgroundTransparent;
+    public bool IsBackgroundTransparent
+    {
+        get => _isBackgroundTransparent;
+        set => Set(ref _isBackgroundTransparent, value);
+    }
+
     private IEnumerable<MatchRecord> FilteredHistory
         => SelectedFormat.HasValue ? History.Where(x => x.Format == SelectedFormat.Value) : History;
 

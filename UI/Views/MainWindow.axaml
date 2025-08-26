@@ -11,7 +11,10 @@
         Width="170" Height="800"
         MinWidth="{DynamicResource MinWindowWidth}"
         MinHeight="{DynamicResource MinWindowHeight}"
-        Title="DuelLedger">
+        Title="DuelLedger"
+        SystemDecorations="BorderOnly"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome">
   <Window.Resources>
     <sys:Double x:Key="MinWindowWidth">100</sys:Double>
     <sys:Double x:Key="MinWindowHeight">100</sys:Double>
@@ -35,26 +38,39 @@
   </Design.DataContext>
 
   <DockPanel>
-    <Menu DockPanel.Dock="Top">
-      <MenuItem Header="表示(_V)">
-        <MenuItem Header="試合形式(_F)" ItemsSource="{Binding AvailableFormats}">
-          <MenuItem.ItemTemplate>
-            <DataTemplate>
-              <MenuItem Header="{Binding Converter={StaticResource FormatName}}"
-                        Command="{Binding DataContext.SetFormatCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                        CommandParameter="{Binding}">
-                <MenuItem.IsChecked>
-                  <MultiBinding Converter="{StaticResource EqMulti}">
-                    <Binding />
-                    <Binding Path="DataContext.SelectedFormat" RelativeSource="{RelativeSource AncestorType=Window}"/>
-                  </MultiBinding>
-                </MenuItem.IsChecked>
-              </MenuItem>
-            </DataTemplate>
-          </MenuItem.ItemTemplate>
+    <Grid DockPanel.Dock="Top" PointerPressed="TitleBar_PointerPressed" Background="Transparent">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+      <Menu Grid.Column="0">
+        <MenuItem Header="表示(_V)">
+          <MenuItem Header="試合形式(_F)" ItemsSource="{Binding AvailableFormats}">
+            <MenuItem.ItemTemplate>
+              <DataTemplate>
+                <MenuItem Header="{Binding Converter={StaticResource FormatName}}"
+                          Command="{Binding DataContext.SetFormatCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                          CommandParameter="{Binding}">
+                  <MenuItem.IsChecked>
+                    <MultiBinding Converter="{StaticResource EqMulti}">
+                      <Binding />
+                      <Binding Path="DataContext.SelectedFormat" RelativeSource="{RelativeSource AncestorType=Window}"/>
+                    </MultiBinding>
+                  </MenuItem.IsChecked>
+                </MenuItem>
+              </DataTemplate>
+            </MenuItem.ItemTemplate>
+          </MenuItem>
+          <MenuItem Header="背景(_B)">
+            <MenuItem Header="透過(_T)" IsChecked="{Binding IsBackgroundTransparent, Mode=TwoWay}" />
+          </MenuItem>
         </MenuItem>
-      </MenuItem>
-    </Menu>
+      </Menu>
+      <StackPanel Grid.Column="1" Orientation="Horizontal">
+        <Button Width="20" Height="20" Click="MinimizeButton_Click" Content="_"/>
+        <Button Width="20" Height="20" Click="CloseButton_Click" Content="✕"/>
+      </StackPanel>
+    </Grid>
 
     <Border DockPanel.Dock="Bottom" Padding="4" Background="#FFFFFFFF" BorderBrush="#2D2D2D" BorderThickness="1">
       <TextBlock Text="{Binding RateTextForActiveTab}"/>
