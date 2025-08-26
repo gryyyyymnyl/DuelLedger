@@ -39,7 +39,7 @@ public partial class MainWindow : Window
         TransparencyLevelHint = on
             ? new[] { WindowTransparencyLevel.Transparent, WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.Mica }
             : new[] { WindowTransparencyLevel.None };
-        Background = on ? Brushes.Transparent : (IBrush?)this.FindResource("SolidWindowBackgroundBrush") ?? Brushes.White;
+        Background = on ? Brushes.Transparent : this.FindResource("SolidWindowBackgroundBrush") as IBrush ?? Brushes.White;
     }
 
     private void MinimizeButton_Click(object? sender, RoutedEventArgs e)
