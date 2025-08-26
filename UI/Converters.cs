@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
 using Avalonia.Data.Converters;
 using DuelLedger.UI.Models;
@@ -219,4 +220,40 @@ public sealed class NullToBoolConverter : IValueConverter
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
+}
+
+public sealed class TransparencyModeToHintConverter : IMultiValueConverter
+{
+    private readonly TransparencyService _service = new();
+
+    public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
+    {
+        var mode = values.Count > 0 ? values[0] as string : null;
+        return _service.BuildHint(mode ?? "None").ToArray();
+    }
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
+public sealed class BoolToBrushConverter : IValueConverter
+{
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        Avalonia.Media.IBrush transparent = Avalonia.Media.Brushes.Transparent;
+        Avalonia.Media.IBrush theme = Application.Current?.Resources["ThemeBackgroundBrush"] as Avalonia.Media.IBrush ?? transparent;
+        return value is bool b && b ? transparent : theme;
+    }
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
+public sealed class BooleanNegationConverter : IValueConverter
+{
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => value is bool b ? !b : value;
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => value is bool b ? !b : value;
 }

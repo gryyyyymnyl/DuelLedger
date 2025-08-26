@@ -76,13 +76,15 @@ public partial class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var reader = new MatchReaderService(outDir);
-            var vm = new MainWindowViewModel(reader);
+            var settings = new SettingsService();
+            var vm = new MainWindowViewModel(reader, settings);
             var window = new MainWindow { DataContext = vm };
             desktop.MainWindow = window;
 
             desktop.ShutdownRequested += async (_, e) =>
             {
                 e.Cancel = true;
+                settings.Save();
                 if (_host is not null)
                     await _host.StopAsync();
                 desktop.Shutdown();
@@ -90,6 +92,7 @@ public partial class App : Application
 
             desktop.Exit += async (_, _) =>
             {
+                settings.Save();
                 if (_host is not null)
                     await _host.StopAsync();
             };

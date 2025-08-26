@@ -11,6 +11,10 @@ namespace DuelLedger.UI.ViewModels;
 public sealed class MainWindowViewModel : NotifyBase
 {
     private readonly MatchReaderService _reader;
+    private readonly ISettingsService _settingsService;
+
+    public UiSettings Settings => _settingsService.Current;
+    public ICommand SaveSettingsCommand { get; }
 
     public ObservableCollection<MatchRecord> History => _reader.Items;
 
@@ -79,9 +83,12 @@ public sealed class MainWindowViewModel : NotifyBase
     public string SelfRateText => FormatRate(SelfTotals);
     public string RateTextForActiveTab => SelectedTabIndex == 0 ? OverallRateText : SelfRateText;
 
-        public MainWindowViewModel(MatchReaderService reader)
+        public MainWindowViewModel(MatchReaderService reader, ISettingsService settingsService)
     {
         _reader = reader;
+        _settingsService = settingsService;
+        SaveSettingsCommand = new RelayCommand<object?>(_ => _settingsService.Save());
+        Settings.PropertyChanged += (_, __) => SaveSettingsCommand.Execute(null);
         _reader.Items.CollectionChanged += (_, __) => Recompute();
         SelectedSelfClass = null; // All
         SelectedFormat = null; // All

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DuelLedger.UI.Views.OverlayChrome">
+  <Border Background="#80000000" Padding="4" PointerPressed="OnDrag">
+    <StackPanel Orientation="Horizontal" Spacing="4">
+      <ToggleSwitch Content="Transparent" IsChecked="{Binding IsTransparent}"/>
+      <ToggleSwitch Content="ClickThrough" IsChecked="{Binding IsClickThrough}"/>
+      <ToggleSwitch Content="Topmost" IsChecked="{Binding IsTopmost}"/>
+      <Slider Width="100" Minimum="0.5" Maximum="1.0" Value="{Binding WindowOpacity}"/>
+      <ComboBox Width="110" SelectedItem="{Binding TransparencyMode}">
+        <ComboBoxItem Content="AcrylicBlur"/>
+        <ComboBoxItem Content="Blur"/>
+        <ComboBoxItem Content="None"/>
+      </ComboBox>
+    </StackPanel>
+  </Border>
+</UserControl>

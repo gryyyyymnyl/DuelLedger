@@ -24,5 +24,8 @@
     <conv:EqualityMultiConverter x:Key="EqMulti"/>
     <conv:WinBorderThicknessConverter x:Key="WinBorder"/>
     <conv:NullToBoolConverter x:Key="IsNull"/>
+    <conv:TransparencyModeToHintConverter x:Key="TransparencyHint"/>
+    <conv:BoolToBrushConverter x:Key="BoolToBrush"/>
+    <conv:BooleanNegationConverter x:Key="BoolNot"/>
   </Application.Resources>
 </Application>
