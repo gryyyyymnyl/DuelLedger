@@ -75,6 +75,12 @@ public sealed class MainWindowViewModel : NotifyBase
         return $"W:{w}/L:{l}/{rate:F1}%";
     }
 
+    private static string FormatBarText(int wins, int losses)
+    {
+        var rate = (wins + losses) == 0 ? 0 : 100.0 * wins / (wins + losses);
+        return $"{wins}/{losses} : {rate:F1}%";
+    }
+
     public string OverallRateText => FormatRate(OverallTotals);
     public string SelfRateText => FormatRate(SelfTotals);
     public string RateTextForActiveTab => SelectedTabIndex == 0 ? OverallRateText : SelfRateText;
@@ -109,11 +115,17 @@ public sealed class MainWindowViewModel : NotifyBase
             ? hist.Where(x => x.SelfClass == SelectedSelfClass.Value).ToList()
             : hist;
         var selfRows = AllOpponentClasses()
-            .Select(cls => new ClassVsRow
+            .Select(cls =>
             {
-                Opponent = cls,
-                Wins = subset.Count(x => x.OppClass == cls && x.Result == MatchResult.Win),
-                Losses = subset.Count(x => x.OppClass == cls && x.Result == MatchResult.Lose),
+                var wins = subset.Count(x => x.OppClass == cls && x.Result == MatchResult.Win);
+                var losses = subset.Count(x => x.OppClass == cls && x.Result == MatchResult.Lose);
+                return new ClassVsRow
+                {
+                    Opponent = cls,
+                    Wins = wins,
+                    Losses = losses,
+                    BarText = FormatBarText(wins, losses),
+                };
             })
             .ToList();
         SelfFilteredRows = new ObservableCollection<ClassVsRow>(selfRows);
