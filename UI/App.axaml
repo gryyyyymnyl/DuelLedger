@@ -2,9 +2,17 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:conv="using:DuelLedger.UI.Converters"
-             x:Class="DuelLedger.UI.App">
+             xmlns:themes="clr-namespace:Material.Styles.Themes;assembly=Material.Styles"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:dataGrid="clr-namespace:Material.Avalonia.DataGrid;assembly=Material.Avalonia.DataGrid"
+             x:Class="DuelLedger.UI.App"
+             RequestedThemeVariant="Default">
   <Application.Styles>
-    <FluentTheme />
+    <!-- ベース: Light。OS追従はRequestedThemeVariantで制御 -->
+    <themes:MaterialTheme BaseTheme="Light" PrimaryColor="Purple" SecondaryColor="Lime" />
+    <materialIcons:MaterialIconStyles />
+    <!-- DataGridを使用している場合のみ有効化 -->
+    <dataGrid:MaterialDataGridStyles />
   </Application.Styles>
   <Application.Resources>
     <conv:AspectWideByRatio   x:Key="AspectWideByRatio"/>
