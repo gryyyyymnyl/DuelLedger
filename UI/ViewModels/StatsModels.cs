@@ -11,6 +11,7 @@ public sealed class ClassVsRow
     public int Losses { get; init; }
     public double WinRate => (Wins + Losses) == 0 ? 0 : (double)Wins / (Wins + Losses);
     public string WinRatePct => (WinRate * 100).ToString("0.0") + "%";
+    public string BarText { get; init; } = string.Empty;
 }
 
 public sealed class Totals

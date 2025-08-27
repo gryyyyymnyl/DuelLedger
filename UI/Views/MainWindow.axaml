@@ -115,22 +115,29 @@
             </ComboBox.ItemTemplate>
           </ComboBox>
 
-          <ItemsControl ItemsSource="{Binding SelfFilteredRows}">
-            <ItemsControl.ItemTemplate>
+          <ListBox ItemsSource="{Binding SelfFilteredRows}" BorderThickness="0" Background="Transparent">
+            <ListBox.Styles>
+              <Style Selector="ListBoxItem">
+                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+              </Style>
+            </ListBox.Styles>
+            <ListBox.ItemTemplate>
               <DataTemplate>
-                <Grid ColumnDefinitions="Auto,*,*,*" Margin="0,2" VerticalAlignment="Center">
+                <Grid ColumnDefinitions="Auto,*" Margin="0,2" VerticalAlignment="Center">
                   <Border Grid.Column="0" Width="24" Height="24" CornerRadius="12"
-                          Background="{Binding Opponent, Converter={StaticResource ClassBrush}}">
+                          Background="{Binding Opponent, Converter={StaticResource ClassBrush}}"
+                          ZIndex="1">
                     <svg:Svg Path="{Binding Opponent, Converter={StaticResource ClassIcon}}"
                              Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                   </Border>
-                  <TextBlock Grid.Column="1" Text="{Binding Wins}" HorizontalAlignment="Center"/>
-                  <TextBlock Grid.Column="2" Text="{Binding Losses}" HorizontalAlignment="Center"/>
-                  <TextBlock Grid.Column="3" Text="{Binding WinRatePct}" HorizontalAlignment="Center"/>
+                  <Grid Grid.Column="1" Margin="4,0,0,0" MinWidth="0" ClipToBounds="True">
+                    <ProgressBar Minimum="0" Maximum="1" Value="{Binding WinRate}" Height="20" MinWidth="0"/>
+                    <TextBlock Text="{Binding BarText}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  </Grid>
                 </Grid>
               </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
+            </ListBox.ItemTemplate>
+          </ListBox>
         </DockPanel>
       </TabItem>
     </TabControl>
