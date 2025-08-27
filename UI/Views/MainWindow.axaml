@@ -125,12 +125,13 @@
               <DataTemplate>
                 <Grid ColumnDefinitions="Auto,*" Margin="0,2" VerticalAlignment="Center">
                   <Border Grid.Column="0" Width="24" Height="24" CornerRadius="12"
-                          Background="{Binding Opponent, Converter={StaticResource ClassBrush}}">
+                          Background="{Binding Opponent, Converter={StaticResource ClassBrush}}"
+                          ZIndex="1">
                     <svg:Svg Path="{Binding Opponent, Converter={StaticResource ClassIcon}}"
                              Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                   </Border>
-                  <Grid Grid.Column="1" Margin="4,0,0,0">
-                    <ProgressBar Minimum="0" Maximum="1" Value="{Binding WinRate}" Height="20"/>
+                  <Grid Grid.Column="1" Margin="4,0,0,0" MinWidth="0" ClipToBounds="True">
+                    <ProgressBar Minimum="0" Maximum="1" Value="{Binding WinRate}" Height="20" MinWidth="0"/>
                     <TextBlock Text="{Binding BarText}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                   </Grid>
                 </Grid>
