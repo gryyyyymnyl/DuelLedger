@@ -7,6 +7,7 @@
         xmlns:models="using:DuelLedger.UI.Models"
         xmlns:sys="clr-namespace:System;assembly=System.Runtime"
         xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Avalonia.Svg.Skia"
+        xmlns:views="using:DuelLedger.UI.Views"
         x:Class="DuelLedger.UI.Views.MainWindow"
         Width="170" Height="800"
         MinWidth="{DynamicResource MinWindowWidth}"
@@ -15,6 +16,7 @@
   <Window.Resources>
     <sys:Double x:Key="MinWindowWidth">100</sys:Double>
     <sys:Double x:Key="MinWindowHeight">100</sys:Double>
+    <views:BarWidthConverter x:Key="BarWidthConverter"/>
   </Window.Resources>
 
   <Window.Styles>
@@ -115,21 +117,36 @@
             </ComboBox.ItemTemplate>
           </ComboBox>
 
-          <ItemsControl ItemsSource="{Binding SelfFilteredRows}">
+          <ItemsControl ItemsSource="{Binding SelfBarRows}">
             <ItemsControl.ItemTemplate>
               <DataTemplate>
-                <Grid ColumnDefinitions="Auto,*,*,*" Margin="0,2" VerticalAlignment="Center">
-                  <Border Grid.Column="0" Width="24" Height="24" CornerRadius="12"
-                          Background="{Binding Opponent, Converter={StaticResource ClassBrush}}">
-                    <svg:Svg Path="{Binding Opponent, Converter={StaticResource ClassIcon}}"
-                             Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                  </Border>
-                  <TextBlock Grid.Column="1" Text="{Binding Wins}" HorizontalAlignment="Center"/>
-                  <TextBlock Grid.Column="2" Text="{Binding Losses}" HorizontalAlignment="Center"/>
-                  <TextBlock Grid.Column="3" Text="{Binding WinRatePct}" HorizontalAlignment="Center"/>
+                <Grid ColumnDefinitions="Auto,8,*" Margin="0,4">
+                  <TextBlock Grid.Column="0" Text="{Binding Opponent}" VerticalAlignment="Center"/>
+                  <Grid Grid.Column="2">
+                    <Border Background="{DynamicResource ThemeControlLowBrush}" CornerRadius="6" Height="22"/>
+                    <Canvas Height="22">
+                      <Rectangle Height="22" RadiusX="6" RadiusY="6" Fill="{DynamicResource AccentBrush}">
+                        <Rectangle.Width>
+                          <MultiBinding Converter="{StaticResource BarWidthConverter}">
+                            <Binding RelativeSource="{RelativeSource AncestorType=Grid}" Path="ActualWidth"/>
+                            <Binding Path="Rate"/>
+                          </MultiBinding>
+                        </Rectangle.Width>
+                      </Rectangle>
+                      <TextBlock Text="{Binding Label}" FontWeight="SemiBold" Foreground="White"
+                                 Canvas.Left="0" Canvas.Top="0"
+                                 Width="{Binding RelativeSource={RelativeSource AncestorType=Grid}, Path=ActualWidth}"
+                                 Height="22" TextAlignment="Center" VerticalAlignment="Center"/>
+                    </Canvas>
+                  </Grid>
                 </Grid>
               </DataTemplate>
             </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <StackPanel Orientation="Vertical"/>
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
           </ItemsControl>
         </DockPanel>
       </TabItem>

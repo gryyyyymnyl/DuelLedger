@@ -12,6 +12,8 @@ public sealed class MainWindowViewModel : NotifyBase
 {
     private readonly MatchReaderService _reader;
 
+    public sealed record BarRow(PlayerClass Opponent, int Wins, int Losses, double Rate, string Label);
+
     public ObservableCollection<MatchRecord> History => _reader.Items;
 
     public IReadOnlyList<MatchFormat?> AvailableFormats { get; }
@@ -64,6 +66,12 @@ public sealed class MainWindowViewModel : NotifyBase
         get => _selfFilteredRows; set => Set(ref _selfFilteredRows, value);
     }
 
+    private ObservableCollection<BarRow> _selfBarRows = new();
+    public ObservableCollection<BarRow> SelfBarRows
+    {
+        get => _selfBarRows; private set => Set(ref _selfBarRows, value);
+    }
+
     private Totals _selfTotals = new();
     public Totals SelfTotals { get => _selfTotals; set => Set(ref _selfTotals, value); }
 
@@ -79,7 +87,7 @@ public sealed class MainWindowViewModel : NotifyBase
     public string SelfRateText => FormatRate(SelfTotals);
     public string RateTextForActiveTab => SelectedTabIndex == 0 ? OverallRateText : SelfRateText;
 
-        public MainWindowViewModel(MatchReaderService reader)
+    public MainWindowViewModel(MatchReaderService reader)
     {
         _reader = reader;
         _reader.Items.CollectionChanged += (_, __) => Recompute();
@@ -117,6 +125,15 @@ public sealed class MainWindowViewModel : NotifyBase
             })
             .ToList();
         SelfFilteredRows = new ObservableCollection<ClassVsRow>(selfRows);
+        var barRows = selfRows.Select(r =>
+        {
+            var total = r.Wins + r.Losses;
+            var rate = total == 0 ? 0 : 100.0 * r.Wins / total;
+            var label = $"{r.Wins}/{r.Losses} : {rate:F1}%";
+            return new BarRow(r.Opponent, r.Wins, r.Losses, rate, label);
+        }).ToList();
+        SelfBarRows = new ObservableCollection<BarRow>(barRows);
+        Raise(nameof(SelfBarRows));
         SelfTotals = new Totals
         {
             Wins = subset.Count(x => x.Result == MatchResult.Win),
