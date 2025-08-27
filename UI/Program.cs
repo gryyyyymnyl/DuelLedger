@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using System;
+using FluentAvalonia.Styling;
 
 namespace DuelLedger.UI;
 
@@ -14,5 +15,6 @@ internal static class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
+            .With(new FluentAvaloniaTheme())
             .LogToTrace();
 }

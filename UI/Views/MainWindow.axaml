@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Window xmlns="https://github.com/avaloniaui"
+<fa:AppWindow xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -7,28 +7,16 @@
         xmlns:models="using:DuelLedger.UI.Models"
         xmlns:sys="clr-namespace:System;assembly=System.Runtime"
         xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Avalonia.Svg.Skia"
+        xmlns:fa="using:FluentAvalonia.UI.Windowing"
         x:Class="DuelLedger.UI.Views.MainWindow"
         Width="170" Height="800"
         MinWidth="{DynamicResource MinWindowWidth}"
         MinHeight="{DynamicResource MinWindowHeight}"
         Title="DuelLedger">
-  <Window.Resources>
+  <fa:AppWindow.Resources>
     <sys:Double x:Key="MinWindowWidth">100</sys:Double>
     <sys:Double x:Key="MinWindowHeight">100</sys:Double>
-  </Window.Resources>
-
-  <Window.Styles>
-    <Style Selector="TabItem">
-      <Setter Property="Padding" Value="8,4"/>
-      <Setter Property="MinHeight" Value="28"/>
-      <Setter Property="FontSize" Value="14"/>
-    </Style>
-    <Style Selector="MenuItem">
-      <Setter Property="Padding" Value="4,2"/>
-      <Setter Property="MinHeight" Value="20"/>
-      <Setter Property="FontSize" Value="14"/>
-    </Style>
-  </Window.Styles>
+  </fa:AppWindow.Resources>
 
   <Design.DataContext>
     <vm:MainWindowViewModel />
@@ -76,7 +64,7 @@
                   </Border>
 
                   <Grid Grid.Column="1" RowDefinitions="Auto,Auto" HorizontalAlignment="Center">
-                    <Border Grid.Row="0" Background="#DDD" CornerRadius="4" Padding="2" HorizontalAlignment="Center">
+                    <Border Grid.Row="0" CornerRadius="4" Padding="2" HorizontalAlignment="Center">
                       <TextBlock Text="{Binding Order, Converter={StaticResource OrderBadge}}" FontSize="10"/>
                     </Border>
                     <TextBlock Grid.Row="1" Text="{Binding Format, Converter={StaticResource FormatAbbrev}}" HorizontalAlignment="Center"/>
@@ -142,4 +130,4 @@
       </TabItem>
     </TabControl>
   </DockPanel>
-</Window>
+</fa:AppWindow>
