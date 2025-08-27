@@ -115,8 +115,13 @@
             </ComboBox.ItemTemplate>
           </ComboBox>
 
-          <ItemsControl ItemsSource="{Binding SelfFilteredRows}">
-            <ItemsControl.ItemTemplate>
+          <ListBox ItemsSource="{Binding SelfFilteredRows}" BorderThickness="0" Background="Transparent">
+            <ListBox.Styles>
+              <Style Selector="ListBoxItem">
+                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+              </Style>
+            </ListBox.Styles>
+            <ListBox.ItemTemplate>
               <DataTemplate>
                 <Grid ColumnDefinitions="Auto,*" Margin="0,2" VerticalAlignment="Center">
                   <Border Grid.Column="0" Width="24" Height="24" CornerRadius="12"
@@ -130,8 +135,8 @@
                   </Grid>
                 </Grid>
               </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
+            </ListBox.ItemTemplate>
+          </ListBox>
         </DockPanel>
       </TabItem>
     </TabControl>
