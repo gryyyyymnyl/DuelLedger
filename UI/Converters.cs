@@ -3,6 +3,8 @@ using System.Globalization;
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Data.Converters;
+using Avalonia.Media;
+using Avalonia.Styling;
 using DuelLedger.UI.Models;
 using DuelLedger.UI.Services;
 
@@ -206,6 +208,65 @@ public sealed class WinBorderThicknessConverter : IValueConverter
             }
         }
         return new Avalonia.Thickness(0);
+    }
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
+public sealed class WinBorderBrushConverter : IValueConverter
+{
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        var app = Application.Current;
+        if (app is null)
+            return Brushes.Transparent;
+
+        var resources = app.Resources;
+        var theme = app.ActualThemeVariant;
+        if (value is MatchResult r && parameter is string p)
+        {
+            if ((r == MatchResult.Win && p == "self") || (r == MatchResult.Lose && p == "opp"))
+            {
+                var key = p == "self" ? "WinSelfBorderBrush" : "WinOppBorderBrush";
+                if (resources.TryGetResource(key, theme, out var brush))
+                    return brush;
+            }
+        }
+        return resources.TryGetResource("ThemeBorderBrush", theme, out var defaultBrush)
+            ? defaultBrush
+            : Brushes.Transparent;
+    }
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
+public sealed class WinBorderBrushMultiConverter : IMultiValueConverter
+{
+    // values[0]: MatchResult, values[1]: "self"/"opp", values[2]: ThemeVariant
+    public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
+    {
+        var app = Application.Current;
+        if (app is null) return Brushes.Transparent;
+
+        var resources = app.Resources;
+        var theme = values.Count >= 3 && values[2] is ThemeVariant tv ? tv : app.ActualThemeVariant;
+
+        var r = values.Count >= 1 ? values[0] as MatchResult? : null;
+        var p = values.Count >= 2 ? values[1] as string : null;
+        if (r is MatchResult mr && p is not null)
+        {
+            if ((mr == MatchResult.Win && p == "self") || (mr == MatchResult.Lose && p == "opp"))
+            {
+                var key = p == "self" ? "WinSelfBorderBrush" : "WinOppBorderBrush";
+                if (resources.TryGetResource(key, theme, out var brush))
+                    return brush;
+            }
+        }
+        return resources.TryGetResource("ThemeBorderBrush", theme, out var defaultBrush)
+            ? defaultBrush
+            : Brushes.Transparent;
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

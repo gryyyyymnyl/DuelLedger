@@ -7,139 +7,205 @@
         xmlns:models="using:DuelLedger.UI.Models"
         xmlns:sys="clr-namespace:System;assembly=System.Runtime"
         xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Avalonia.Svg.Skia"
+        xmlns:styles="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+        xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:conv="using:DuelLedger.UI.Converters"
         x:Class="DuelLedger.UI.Views.MainWindow"
         Width="170" Height="800"
         MinWidth="{DynamicResource MinWindowWidth}"
         MinHeight="{DynamicResource MinWindowHeight}"
-        Title="DuelLedger">
+        Title="DuelLedger"
+        Background="{DynamicResource ThemeBackgroundBrush}"
+        Foreground="{DynamicResource ThemeForegroundBrush}"
+        SystemDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome">
+
   <Window.Resources>
     <sys:Double x:Key="MinWindowWidth">100</sys:Double>
     <sys:Double x:Key="MinWindowHeight">100</sys:Double>
+    <conv:WinBorderBrushMultiConverter x:Key="WinBorderBrushMultiConverter"/>
   </Window.Resources>
 
-  <Window.Styles>
-    <Style Selector="TabItem">
-      <Setter Property="Padding" Value="8,4"/>
-      <Setter Property="MinHeight" Value="28"/>
-      <Setter Property="FontSize" Value="14"/>
-    </Style>
-    <Style Selector="MenuItem">
-      <Setter Property="Padding" Value="4,2"/>
-      <Setter Property="MinHeight" Value="20"/>
-      <Setter Property="FontSize" Value="14"/>
-    </Style>
-  </Window.Styles>
+    <Window.Styles>
+      <Style Selector="Menu">
+        <Setter Property="Padding" Value="6,0"/>
+      </Style>
+      <Style Selector="MenuItem">
+        <Setter Property="Padding" Value="8,0"/>
+        <Setter Property="MinHeight" Value="12"/>
+      </Style>
+      <Style Selector="Separator:is(MenuItem)">
+        <Setter Property="Margin" Value="4,0"/>
+      </Style>
+      <Style Selector="TabItem">
+        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="MinHeight" Value="28"/>
+        <Setter Property="FontSize" Value="14"/>
+      </Style>
+      <!-- Theme-aware tab header color -->
+      <Style Selector="TabItem.ModeAwareHeader">
+        <Setter Property="Foreground" Value="{DynamicResource TabHeaderForegroundBrush}"/>
+      </Style>
+    </Window.Styles>
 
   <Design.DataContext>
     <vm:MainWindowViewModel />
   </Design.DataContext>
 
-  <DockPanel>
-    <Menu DockPanel.Dock="Top">
-      <MenuItem Header="表示(_V)">
-        <MenuItem Header="試合形式(_F)" ItemsSource="{Binding AvailableFormats}">
-          <MenuItem.ItemTemplate>
-            <DataTemplate>
-              <MenuItem Header="{Binding Converter={StaticResource FormatName}}"
-                        Command="{Binding DataContext.SetFormatCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                        CommandParameter="{Binding}">
-                <MenuItem.IsChecked>
-                  <MultiBinding Converter="{StaticResource EqMulti}">
-                    <Binding />
-                    <Binding Path="DataContext.SelectedFormat" RelativeSource="{RelativeSource AncestorType=Window}"/>
-                  </MultiBinding>
-                </MenuItem.IsChecked>
-              </MenuItem>
-            </DataTemplate>
-          </MenuItem.ItemTemplate>
+  <Grid RowDefinitions="Auto,Auto,*,Auto">
+    <styles:ColorZone Grid.Row="0" Mode="PrimaryMid" PointerPressed="OnPointerPressed">
+      <Grid ColumnDefinitions="Auto,*,Auto" Height="28" Margin="8,0">
+        <TextBlock Grid.Column="0" Classes="Headline6" VerticalAlignment="Center" Text="DuelLedger" Margin="12,0"
+                   Foreground="{DynamicResource ThemeForegroundBrush}"/>
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+          <Button Click="OnMinimize" Width="14" Height="14" Padding="0">
+            <materialIcons:MaterialIcon Kind="WindowMinimize" Width="14" Height="14" Foreground="{DynamicResource ThemeForegroundBrush}"/>
+          </Button>
+          <Button Click="OnClose" Width="14" Height="14" Padding="0">
+            <materialIcons:MaterialIcon Kind="WindowClose" Width="14" Height="14" Foreground="{DynamicResource ThemeForegroundBrush}"/>
+          </Button>
+        </StackPanel>
+      </Grid>
+    </styles:ColorZone>
+
+    <styles:ColorZone Grid.Row="1" Mode="PrimaryMid">
+      <Menu Margin="8,0" Foreground="{DynamicResource ThemeForegroundBrush}">
+        <MenuItem Header="表示(_V)" Height="12">
+          <MenuItem Header="試合形式(_F)" ItemsSource="{Binding AvailableFormats}">
+            <MenuItem.ItemTemplate>
+              <DataTemplate>
+                <MenuItem Header="{Binding Converter={StaticResource FormatName}}"
+                          Command="{Binding DataContext.SetFormatCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                          CommandParameter="{Binding}">
+                  <MenuItem.IsChecked>
+                    <MultiBinding Converter="{StaticResource EqMulti}">
+                      <Binding />
+                      <Binding Path="DataContext.SelectedFormat" RelativeSource="{RelativeSource AncestorType=Window}"/>
+                    </MultiBinding>
+                  </MenuItem.IsChecked>
+                </MenuItem>
+              </DataTemplate>
+            </MenuItem.ItemTemplate>
+          </MenuItem>
         </MenuItem>
-      </MenuItem>
-    </Menu>
+      </Menu>
+    </styles:ColorZone>
 
-    <Border DockPanel.Dock="Bottom" Padding="4" Background="#FFFFFFFF" BorderBrush="#2D2D2D" BorderThickness="1">
-      <TextBlock Text="{Binding RateTextForActiveTab}"/>
-    </Border>
+    <ScrollViewer Grid.Row="2">
+      <StackPanel Margin="16" Spacing="16">
+        <styles:Card Classes="Outlined" Padding="12" Background="{DynamicResource CardBackgroundBrush}">
+          <TabControl SelectedIndex="{Binding SelectedTabIndex}">
+            <TabItem Header="{Binding Source='Header.History', Converter={StaticResource UiText}}" Classes="ModeAwareHeader">
+              <ListBox Margin="4"
+                       ItemsSource="{Binding HistoryDesc}">
+                <ListBox.Styles>
+                  <Style Selector="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                  </Style>
+                </ListBox.Styles>
+                <ListBox.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <VirtualizingStackPanel/>
+                  </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                  <DataTemplate DataType="models:MatchRecord">
+                    <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,2" VerticalAlignment="Center">
+                        <Border Width="28" Height="28" CornerRadius="999"
+                                Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}"
+                                BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=self}">
+                          <Border.BorderBrush>
+                            <MultiBinding Converter="{StaticResource WinBorderBrushMultiConverter}">
+                              <Binding Path="Result"/>
+                              <Binding Source="self"/>
+                              <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="ActualThemeVariant"/>
+                            </MultiBinding>
+                          </Border.BorderBrush>
+                          <svg:Svg Path="{Binding SelfClass, Converter={StaticResource ClassIcon}}"
+                                   Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
 
-    <TabControl SelectedIndex="{Binding SelectedTabIndex}">
-      <TabItem Header="{Binding Source='Header.History', Converter={StaticResource UiText}}">
-        <ScrollViewer Margin="8">
-          <ListBox ItemsSource="{Binding HistoryDesc}">
-            <ListBox.ItemTemplate>
-              <DataTemplate DataType="models:MatchRecord">
-                <Grid ColumnDefinitions="Auto,Auto,Auto" Margin="0,2" VerticalAlignment="Center">
-                  <Border Width="28" Height="28" CornerRadius="999"
-                          Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}"
-                          BorderBrush="#6E5A77"
-                          BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=self}">
-                    <svg:Svg Path="{Binding SelfClass, Converter={StaticResource ClassIcon}}"
-                             Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                  </Border>
+                      <Grid Grid.Column="1" RowDefinitions="Auto,Auto" HorizontalAlignment="Center">
+                        <Border Grid.Row="0" Background="{DynamicResource ThemeBorderBrush}" CornerRadius="4" Padding="2" HorizontalAlignment="Center">
+                          <TextBlock Text="{Binding Order, Converter={StaticResource OrderBadge}}" FontSize="10" Foreground="{DynamicResource ThemeForegroundBrush}"/>
+                        </Border>
+                        <TextBlock Grid.Row="1" Text="{Binding Format, Converter={StaticResource FormatAbbrev}}" HorizontalAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}"/>
+                      </Grid>
 
-                  <Grid Grid.Column="1" RowDefinitions="Auto,Auto" HorizontalAlignment="Center">
-                    <Border Grid.Row="0" Background="#DDD" CornerRadius="4" Padding="2" HorizontalAlignment="Center">
-                      <TextBlock Text="{Binding Order, Converter={StaticResource OrderBadge}}" FontSize="10"/>
-                    </Border>
-                    <TextBlock Grid.Row="1" Text="{Binding Format, Converter={StaticResource FormatAbbrev}}" HorizontalAlignment="Center"/>
-                  </Grid>
+                        <Border Grid.Column="2" Width="28" Height="28" CornerRadius="999"
+                                Background="{Binding OppClass, Converter={StaticResource ClassBrush}}"
+                                BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=opp}">
+                          <Border.BorderBrush>
+                            <MultiBinding Converter="{StaticResource WinBorderBrushMultiConverter}">
+                              <Binding Path="Result"/>
+                              <Binding Source="opp"/>
+                              <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="ActualThemeVariant"/>
+                            </MultiBinding>
+                          </Border.BorderBrush>
+                          <svg:Svg Path="{Binding OppClass, Converter={StaticResource ClassIcon}}"
+                                   Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.Transitions/>
+              </ListBox>
+            </TabItem>
 
-                  <Border Grid.Column="2" Width="28" Height="28" CornerRadius="999"
-                          Background="{Binding OppClass, Converter={StaticResource ClassBrush}}"
-                          BorderBrush="#6E5A77"
-                          BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=opp}">
-                    <svg:Svg Path="{Binding OppClass, Converter={StaticResource ClassIcon}}"
-                             Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                  </Border>
-                </Grid>
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
-        </ScrollViewer>
-      </TabItem>
+            <TabItem Header="{Binding Source='Header.Result', Converter={StaticResource UiText}}" Classes="ModeAwareHeader">
+              <DockPanel Margin="4">
+                <ComboBox DockPanel.Dock="Top" Width="80" ItemsSource="{Binding SelfClassOptions}" SelectedItem="{Binding SelectedSelfClass}">
+                  <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                      <Grid>
+                        <Border Width="20" Height="20" CornerRadius="10"
+                                Background="{Binding Converter={StaticResource ClassBrush}}"
+                                IsVisible="{Binding Converter={StaticResource IsNull}, ConverterParameter=invert}">
+                          <svg:Svg Path="{Binding Converter={StaticResource ClassIcon}}"
+                                   Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="ALL" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource ThemeForegroundBrush}"
+                                   IsVisible="{Binding Converter={StaticResource IsNull}}"/>
+                      </Grid>
+                    </DataTemplate>
+                  </ComboBox.ItemTemplate>
+                </ComboBox>
 
-      <TabItem Header="{Binding Source='Header.Result', Converter={StaticResource UiText}}">
-        <DockPanel Margin="8">
-          <ComboBox DockPanel.Dock="Top" Width="80" ItemsSource="{Binding SelfClassOptions}" SelectedItem="{Binding SelectedSelfClass}">
-            <ComboBox.ItemTemplate>
-              <DataTemplate>
-                <Grid>
-                  <Border Width="20" Height="20" CornerRadius="10"
-                          Background="{Binding Converter={StaticResource ClassBrush}}"
-                          IsVisible="{Binding Converter={StaticResource IsNull}, ConverterParameter=invert}">
-                    <svg:Svg Path="{Binding Converter={StaticResource ClassIcon}}"
-                             Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                  </Border>
-                  <TextBlock Text="ALL" HorizontalAlignment="Center" VerticalAlignment="Center"
-                             IsVisible="{Binding Converter={StaticResource IsNull}}"/>
-                </Grid>
-              </DataTemplate>
-            </ComboBox.ItemTemplate>
-          </ComboBox>
+                <ListBox ItemsSource="{Binding SelfFilteredRows}" BorderThickness="0" Background="Transparent">
+                  <ListBox.Styles>
+                    <Style Selector="ListBoxItem">
+                      <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                  </ListBox.Styles>
+                  <ListBox.ItemTemplate>
+                    <DataTemplate>
+                      <Grid ColumnDefinitions="Auto,*" Margin="0,2" VerticalAlignment="Center">
+                        <Border Grid.Column="0" Width="24" Height="24" CornerRadius="12"
+                                Background="{Binding Opponent, Converter={StaticResource ClassBrush}}"
+                                Margin="0,0,4,0"
+                                ZIndex="1">
+                          <svg:Svg Path="{Binding Opponent, Converter={StaticResource ClassIcon}}"
+                                   Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Grid Grid.Column="1" MinWidth="0" ClipToBounds="True">
+                          <ProgressBar Minimum="0" Maximum="1" Value="{Binding WinRate}" Height="20" MinWidth="0" Foreground="{DynamicResource AccentBrush}"/>
+                          <TextBlock Text="{Binding BarText}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}"/>
+                        </Grid>
+                      </Grid>
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+              </DockPanel>
+            </TabItem>
+          </TabControl>
+        </styles:Card>
+      </StackPanel>
+    </ScrollViewer>
 
-          <ListBox ItemsSource="{Binding SelfFilteredRows}" BorderThickness="0" Background="Transparent">
-            <ListBox.Styles>
-              <Style Selector="ListBoxItem">
-                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-              </Style>
-            </ListBox.Styles>
-            <ListBox.ItemTemplate>
-              <DataTemplate>
-                <Grid ColumnDefinitions="Auto,*" Margin="0,2" VerticalAlignment="Center">
-                  <Border Grid.Column="0" Width="24" Height="24" CornerRadius="12"
-                          Background="{Binding Opponent, Converter={StaticResource ClassBrush}}"
-                          ZIndex="1">
-                    <svg:Svg Path="{Binding Opponent, Converter={StaticResource ClassIcon}}"
-                             Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                  </Border>
-                  <Grid Grid.Column="1" Margin="4,0,0,0" MinWidth="0" ClipToBounds="True">
-                    <ProgressBar Minimum="0" Maximum="1" Value="{Binding WinRate}" Height="20" MinWidth="0"/>
-                    <TextBlock Text="{Binding BarText}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                  </Grid>
-                </Grid>
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
-        </DockPanel>
-      </TabItem>
-    </TabControl>
-  </DockPanel>
-</Window>
+      <Border Grid.Row="3" Padding="4" Background="{DynamicResource ThemeBackgroundBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1">
+        <TextBlock Text="{Binding RateTextForActiveTab}" Foreground="{DynamicResource ThemeForegroundBrush}"/>
+      </Border>
+    </Grid>
+  </Window>

@@ -2,27 +2,63 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:conv="using:DuelLedger.UI.Converters"
-             x:Class="DuelLedger.UI.App">
+             xmlns:themes="clr-namespace:Material.Styles.Themes;assembly=Material.Styles"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:dataGrid="clr-namespace:Material.Avalonia.DataGrid;assembly=Material.Avalonia.DataGrid"
+             xmlns:avalonia="clr-namespace:Avalonia.Styling;assembly=Avalonia.Base"
+             x:Class="DuelLedger.UI.App"
+             RequestedThemeVariant="Default">
   <Application.Styles>
-    <FluentTheme />
+    <!-- ベース: Light。OS追従はRequestedThemeVariantで制御 -->
+    <themes:MaterialTheme BaseTheme="Light" PrimaryColor="Purple" SecondaryColor="Lime" />
+    <materialIcons:MaterialIconStyles />
+    <!-- DataGridを使用している場合のみ有効化 -->
+    <dataGrid:MaterialDataGridStyles />
   </Application.Styles>
   <Application.Resources>
-    <conv:AspectWideByRatio   x:Key="AspectWideByRatio"/>
-    <conv:AspectNarrowByRatio x:Key="AspectNarrowByRatio"/>
-    <conv:ClassColorConverter x:Key="ClassBrush"/>
-    <conv:ClassIconConverter  x:Key="ClassIcon"/>
-    <conv:ClassNameConverter  x:Key="ClassName"/>
-    <conv:TurnOrderToText   x:Key="OrderText"/>
-    <conv:ResultToText      x:Key="ResultText"/>
-    <conv:OpponentTurnOrder x:Key="OppOrder"/>
-    <conv:OpponentResult    x:Key="OppResult"/>
-    <conv:UiTextConverter   x:Key="UiText"/>
-    <conv:FormatTextConverter x:Key="FormatText"/>
-    <conv:FormatNameConverter x:Key="FormatName"/>
-    <conv:FormatAbbrevConverter x:Key="FormatAbbrev"/>
-    <conv:TurnOrderBadgeConverter x:Key="OrderBadge"/>
-    <conv:EqualityMultiConverter x:Key="EqMulti"/>
-    <conv:WinBorderThicknessConverter x:Key="WinBorder"/>
-    <conv:NullToBoolConverter x:Key="IsNull"/>
+    <ResourceDictionary>
+      <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="{x:Static avalonia:ThemeVariant.Light}">
+          <SolidColorBrush x:Key="ThemeBackgroundBrush" Color="#FFFFFFFF"/>
+          <SolidColorBrush x:Key="ThemeForegroundBrush" Color="#FF1B1B1F"/>
+          <SolidColorBrush x:Key="ThemeBorderBrush" Color="#FFDDDDDD"/>
+          <SolidColorBrush x:Key="CardBackgroundBrush" Color="#FFFFFFFF"/>
+          <SolidColorBrush x:Key="MutedForegroundBrush" Color="#FF5E5E5E"/>
+          <SolidColorBrush x:Key="AccentBrush" Color="#FF6750A4"/>
+          <SolidColorBrush x:Key="WinSelfBorderBrush" Color="#FF4CAF50"/>
+          <SolidColorBrush x:Key="WinOppBorderBrush" Color="#FF03A9F4"/>
+          <SolidColorBrush x:Key="TabHeaderForegroundBrush" Color="#000000"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="{x:Static avalonia:ThemeVariant.Dark}">
+          <SolidColorBrush x:Key="ThemeBackgroundBrush" Color="#FF121212"/>
+          <SolidColorBrush x:Key="ThemeForegroundBrush" Color="#FFE6E1E5"/>
+          <SolidColorBrush x:Key="ThemeBorderBrush" Color="#FF2C2C2C"/>
+          <SolidColorBrush x:Key="CardBackgroundBrush" Color="#FF1E1E1E"/>
+          <SolidColorBrush x:Key="MutedForegroundBrush" Color="#FF9E9E9E"/>
+          <SolidColorBrush x:Key="AccentBrush" Color="#FFCFBCFF"/>
+          <SolidColorBrush x:Key="WinSelfBorderBrush" Color="#FF81C784"/>
+          <SolidColorBrush x:Key="WinOppBorderBrush" Color="#FF81D4FA"/>
+          <SolidColorBrush x:Key="TabHeaderForegroundBrush" Color="#FFFFFF"/>
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+
+      <conv:AspectWideByRatio   x:Key="AspectWideByRatio"/>
+      <conv:AspectNarrowByRatio x:Key="AspectNarrowByRatio"/>
+      <conv:ClassColorConverter x:Key="ClassBrush"/>
+      <conv:ClassIconConverter  x:Key="ClassIcon"/>
+      <conv:ClassNameConverter  x:Key="ClassName"/>
+      <conv:TurnOrderToText   x:Key="OrderText"/>
+      <conv:ResultToText      x:Key="ResultText"/>
+      <conv:OpponentTurnOrder x:Key="OppOrder"/>
+      <conv:OpponentResult    x:Key="OppResult"/>
+      <conv:UiTextConverter   x:Key="UiText"/>
+      <conv:FormatTextConverter x:Key="FormatText"/>
+      <conv:FormatNameConverter x:Key="FormatName"/>
+      <conv:FormatAbbrevConverter x:Key="FormatAbbrev"/>
+      <conv:TurnOrderBadgeConverter x:Key="OrderBadge"/>
+      <conv:EqualityMultiConverter x:Key="EqMulti"/>
+      <conv:WinBorderThicknessConverter x:Key="WinBorder"/>
+      <conv:NullToBoolConverter x:Key="IsNull"/>
+    </ResourceDictionary>
   </Application.Resources>
 </Application>
