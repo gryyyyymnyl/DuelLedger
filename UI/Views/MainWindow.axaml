@@ -42,31 +42,11 @@
     <vm:MainWindowViewModel />
   </Design.DataContext>
 
-  <Grid RowDefinitions="Auto,*,Auto">
+  <Grid RowDefinitions="Auto,Auto,*,Auto">
     <styles:ColorZone Grid.Row="0" Mode="PrimaryMid" PointerPressed="OnPointerPressed">
       <Grid ColumnDefinitions="Auto,*,Auto" Height="28" Margin="8,0">
         <TextBlock Grid.Column="0" Classes="Headline6" VerticalAlignment="Center" Text="DuelLedger" Margin="12,0"
                    Foreground="{DynamicResource ThemeForegroundBrush}"/>
-        <Menu Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}">
-          <MenuItem Header="表示(_V)">
-            <MenuItem Header="試合形式(_F)" ItemsSource="{Binding AvailableFormats}">
-              <MenuItem.ItemTemplate>
-                <DataTemplate>
-                  <MenuItem Header="{Binding Converter={StaticResource FormatName}}"
-                            Command="{Binding DataContext.SetFormatCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                            CommandParameter="{Binding}">
-                    <MenuItem.IsChecked>
-                      <MultiBinding Converter="{StaticResource EqMulti}">
-                        <Binding />
-                        <Binding Path="DataContext.SelectedFormat" RelativeSource="{RelativeSource AncestorType=Window}"/>
-                      </MultiBinding>
-                    </MenuItem.IsChecked>
-                  </MenuItem>
-                </DataTemplate>
-              </MenuItem.ItemTemplate>
-            </MenuItem>
-          </MenuItem>
-        </Menu>
         <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
           <Button Click="OnMinimize" Width="14" Height="14" Padding="0">
             <materialIcons:MaterialIcon Kind="WindowMinimize" Width="14" Height="14"/>
@@ -78,7 +58,30 @@
       </Grid>
     </styles:ColorZone>
 
-    <ScrollViewer Grid.Row="1">
+    <styles:ColorZone Grid.Row="1" Mode="PrimaryMid">
+      <Menu Margin="8,0" Foreground="{DynamicResource ThemeForegroundBrush}">
+        <MenuItem Header="表示(_V)">
+          <MenuItem Header="試合形式(_F)" ItemsSource="{Binding AvailableFormats}">
+            <MenuItem.ItemTemplate>
+              <DataTemplate>
+                <MenuItem Header="{Binding Converter={StaticResource FormatName}}"
+                          Command="{Binding DataContext.SetFormatCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                          CommandParameter="{Binding}">
+                  <MenuItem.IsChecked>
+                    <MultiBinding Converter="{StaticResource EqMulti}">
+                      <Binding />
+                      <Binding Path="DataContext.SelectedFormat" RelativeSource="{RelativeSource AncestorType=Window}"/>
+                    </MultiBinding>
+                  </MenuItem.IsChecked>
+                </MenuItem>
+              </DataTemplate>
+            </MenuItem.ItemTemplate>
+          </MenuItem>
+        </MenuItem>
+      </Menu>
+    </styles:ColorZone>
+
+    <ScrollViewer Grid.Row="2">
       <StackPanel Margin="16" Spacing="16">
         <styles:Card Classes="Outlined" Padding="12">
           <TabControl SelectedIndex="{Binding SelectedTabIndex}">
@@ -90,7 +93,7 @@
                       <Grid ColumnDefinitions="Auto,Auto,Auto" Margin="0,2" VerticalAlignment="Center">
                           <Border Width="28" Height="28" CornerRadius="999"
                                   Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}"
-                                  BorderBrush="{DynamicResource ThemeBorderBrush}"
+                                  BorderBrush="{Binding Result, Converter={StaticResource WinBrush}, ConverterParameter=self}"
                                   BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=self}">
                           <svg:Svg Path="{Binding SelfClass, Converter={StaticResource ClassIcon}}"
                                    Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -105,7 +108,7 @@
 
                           <Border Grid.Column="2" Width="28" Height="28" CornerRadius="999"
                                   Background="{Binding OppClass, Converter={StaticResource ClassBrush}}"
-                                  BorderBrush="{DynamicResource ThemeBorderBrush}"
+                                  BorderBrush="{Binding Result, Converter={StaticResource WinBrush}, ConverterParameter=opp}"
                                   BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=opp}">
                           <svg:Svg Path="{Binding OppClass, Converter={StaticResource ClassIcon}}"
                                    Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -166,7 +169,7 @@
       </StackPanel>
     </ScrollViewer>
 
-      <Border Grid.Row="2" Padding="4" Background="{DynamicResource ThemeBackgroundBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1">
+      <Border Grid.Row="3" Padding="4" Background="{DynamicResource ThemeBackgroundBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1">
         <TextBlock Text="{Binding RateTextForActiveTab}" Foreground="{DynamicResource ThemeForegroundBrush}"/>
       </Border>
     </Grid>

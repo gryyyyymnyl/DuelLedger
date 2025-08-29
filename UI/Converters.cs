@@ -3,6 +3,8 @@ using System.Globalization;
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Data.Converters;
+using Avalonia.Media;
+using Avalonia.Styling;
 using DuelLedger.UI.Models;
 using DuelLedger.UI.Services;
 
@@ -206,6 +208,34 @@ public sealed class WinBorderThicknessConverter : IValueConverter
             }
         }
         return new Avalonia.Thickness(0);
+    }
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
+public sealed class WinBorderBrushConverter : IValueConverter
+{
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        var app = Application.Current;
+        if (app is null)
+            return Brushes.Transparent;
+
+        var resources = app.Resources;
+        var theme = app.ActualThemeVariant;
+        if (value is MatchResult r && parameter is string p)
+        {
+            if ((r == MatchResult.Win && p == "self") || (r == MatchResult.Lose && p == "opp"))
+            {
+                var key = p == "self" ? "WinSelfBorderBrush" : "WinOppBorderBrush";
+                if (resources.TryGetResource(key, theme, out var brush))
+                    return brush;
+            }
+        }
+        return resources.TryGetResource("ThemeBorderBrush", theme, out var defaultBrush)
+            ? defaultBrush
+            : Brushes.Transparent;
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

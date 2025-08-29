@@ -15,22 +15,44 @@
     <dataGrid:MaterialDataGridStyles />
   </Application.Styles>
   <Application.Resources>
-    <conv:AspectWideByRatio   x:Key="AspectWideByRatio"/>
-    <conv:AspectNarrowByRatio x:Key="AspectNarrowByRatio"/>
-    <conv:ClassColorConverter x:Key="ClassBrush"/>
-    <conv:ClassIconConverter  x:Key="ClassIcon"/>
-    <conv:ClassNameConverter  x:Key="ClassName"/>
-    <conv:TurnOrderToText   x:Key="OrderText"/>
-    <conv:ResultToText      x:Key="ResultText"/>
-    <conv:OpponentTurnOrder x:Key="OppOrder"/>
-    <conv:OpponentResult    x:Key="OppResult"/>
-    <conv:UiTextConverter   x:Key="UiText"/>
-    <conv:FormatTextConverter x:Key="FormatText"/>
-    <conv:FormatNameConverter x:Key="FormatName"/>
-    <conv:FormatAbbrevConverter x:Key="FormatAbbrev"/>
-    <conv:TurnOrderBadgeConverter x:Key="OrderBadge"/>
-    <conv:EqualityMultiConverter x:Key="EqMulti"/>
-    <conv:WinBorderThicknessConverter x:Key="WinBorder"/>
-    <conv:NullToBoolConverter x:Key="IsNull"/>
+    <ResourceDictionary>
+      <Color x:Key="ThemeBackgroundColor">#FFFFFFFF</Color>
+      <Color x:Key="ThemeForegroundColor">#000000</Color>
+      <Color x:Key="ThemeBorderColor">#2D2D2D</Color>
+      <Color x:Key="WinSelfBorderColor">#FF4081</Color>
+      <Color x:Key="WinOppBorderColor">#00ACC1</Color>
+      <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Dark">
+          <Color x:Key="ThemeBackgroundColor">#FF202020</Color>
+          <Color x:Key="ThemeForegroundColor">#FFFFFFFF</Color>
+          <Color x:Key="ThemeBorderColor">#FF707070</Color>
+          <Color x:Key="WinSelfBorderColor">#F48FB1</Color>
+          <Color x:Key="WinOppBorderColor">#4DD0E1</Color>
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+      <SolidColorBrush x:Key="ThemeBackgroundBrush" Color="{DynamicResource ThemeBackgroundColor}"/>
+      <SolidColorBrush x:Key="ThemeForegroundBrush" Color="{DynamicResource ThemeForegroundColor}"/>
+      <SolidColorBrush x:Key="ThemeBorderBrush" Color="{DynamicResource ThemeBorderColor}"/>
+      <SolidColorBrush x:Key="WinSelfBorderBrush" Color="{DynamicResource WinSelfBorderColor}"/>
+      <SolidColorBrush x:Key="WinOppBorderBrush" Color="{DynamicResource WinOppBorderColor}"/>
+      <conv:AspectWideByRatio   x:Key="AspectWideByRatio"/>
+      <conv:AspectNarrowByRatio x:Key="AspectNarrowByRatio"/>
+      <conv:ClassColorConverter x:Key="ClassBrush"/>
+      <conv:ClassIconConverter  x:Key="ClassIcon"/>
+      <conv:ClassNameConverter  x:Key="ClassName"/>
+      <conv:TurnOrderToText   x:Key="OrderText"/>
+      <conv:ResultToText      x:Key="ResultText"/>
+      <conv:OpponentTurnOrder x:Key="OppOrder"/>
+      <conv:OpponentResult    x:Key="OppResult"/>
+      <conv:UiTextConverter   x:Key="UiText"/>
+      <conv:FormatTextConverter x:Key="FormatText"/>
+      <conv:FormatNameConverter x:Key="FormatName"/>
+      <conv:FormatAbbrevConverter x:Key="FormatAbbrev"/>
+      <conv:TurnOrderBadgeConverter x:Key="OrderBadge"/>
+      <conv:EqualityMultiConverter x:Key="EqMulti"/>
+      <conv:WinBorderThicknessConverter x:Key="WinBorder"/>
+      <conv:WinBorderBrushConverter x:Key="WinBrush"/>
+      <conv:NullToBoolConverter x:Key="IsNull"/>
+    </ResourceDictionary>
   </Application.Resources>
 </Application>
