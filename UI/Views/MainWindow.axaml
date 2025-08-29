@@ -25,6 +25,8 @@
     <sys:Double x:Key="MinWindowWidth">100</sys:Double>
     <sys:Double x:Key="MinWindowHeight">100</sys:Double>
     <conv:WinBorderBrushMultiConverter x:Key="WinBorderBrushMultiConverter"/>
+    <!-- 等価比較（SelectedFormat と 各項目値の一致判定） -->
+    <conv:EqualityMultiConverter x:Key="EqualityMultiConverter"/>
   </Window.Resources>
 
     <Window.Styles>
@@ -76,12 +78,13 @@
             <MenuItem.ItemTemplate>
               <DataTemplate>
                 <MenuItem Header="{Binding Converter={StaticResource FormatName}}"
+                          ToggleType="CheckBox"
                           Command="{Binding DataContext.SetFormatCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                           CommandParameter="{Binding}">
                   <MenuItem.IsChecked>
-                    <MultiBinding Converter="{StaticResource EqMulti}">
-                      <Binding />
+                    <MultiBinding Converter="{StaticResource EqualityMultiConverter}">
                       <Binding Path="DataContext.SelectedFormat" RelativeSource="{RelativeSource AncestorType=Window}"/>
+                      <Binding />
                     </MultiBinding>
                   </MenuItem.IsChecked>
                 </MenuItem>

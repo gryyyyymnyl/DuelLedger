@@ -90,8 +90,14 @@ public sealed class MainWindowViewModel : NotifyBase
         _reader = reader;
         _reader.Items.CollectionChanged += (_, __) => Recompute();
         SelectedSelfClass = null; // All
-        SelectedFormat = null; // All
-        SetFormatCommand = new RelayCommand<MatchFormat?>(fmt => SelectedFormat = fmt);
+        SelectedFormat = null;    // All
+        // Menu からの CommandParameter を安全に受け取る（null/enum/stringに対応）
+        SetFormatCommand = new RelayCommand<object?>(o =>
+        {
+            if (o is null) { SelectedFormat = null; return; }
+            if (o is MatchFormat mf) { SelectedFormat = mf; return; }
+            if (o is string s && Enum.TryParse<MatchFormat>(s, out var parsed)) { SelectedFormat = parsed; return; }
+        });
         _reader.LoadInitial();
         Recompute();
     }
