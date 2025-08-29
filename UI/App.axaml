@@ -5,6 +5,7 @@
              xmlns:themes="clr-namespace:Material.Styles.Themes;assembly=Material.Styles"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:dataGrid="clr-namespace:Material.Avalonia.DataGrid;assembly=Material.Avalonia.DataGrid"
+             xmlns:avalonia="clr-namespace:Avalonia.Styling;assembly=Avalonia.Base"
              x:Class="DuelLedger.UI.App"
              RequestedThemeVariant="Default">
   <Application.Styles>
@@ -16,25 +17,28 @@
   </Application.Styles>
   <Application.Resources>
     <ResourceDictionary>
-      <Color x:Key="ThemeBackgroundColor">#FFFFFFFF</Color>
-      <Color x:Key="ThemeForegroundColor">#000000</Color>
-      <Color x:Key="ThemeBorderColor">#2D2D2D</Color>
-      <Color x:Key="WinSelfBorderColor">#FF4081</Color>
-      <Color x:Key="WinOppBorderColor">#00ACC1</Color>
       <ResourceDictionary.ThemeDictionaries>
-        <ResourceDictionary x:Key="Dark">
-          <Color x:Key="ThemeBackgroundColor">#FF202020</Color>
-          <Color x:Key="ThemeForegroundColor">#FFFFFFFF</Color>
-          <Color x:Key="ThemeBorderColor">#FF707070</Color>
-          <Color x:Key="WinSelfBorderColor">#F48FB1</Color>
-          <Color x:Key="WinOppBorderColor">#4DD0E1</Color>
+        <ResourceDictionary x:Key="{x:Static avalonia:ThemeVariant.Light}">
+          <SolidColorBrush x:Key="ThemeBackgroundBrush" Color="#FFFFFFFF"/>
+          <SolidColorBrush x:Key="ThemeForegroundBrush" Color="#FF1B1B1F"/>
+          <SolidColorBrush x:Key="ThemeBorderBrush" Color="#FFDDDDDD"/>
+          <SolidColorBrush x:Key="CardBackgroundBrush" Color="#FFFFFFFF"/>
+          <SolidColorBrush x:Key="MutedForegroundBrush" Color="#FF5E5E5E"/>
+          <SolidColorBrush x:Key="AccentBrush" Color="#FF6750A4"/>
+          <SolidColorBrush x:Key="WinSelfBorderBrush" Color="#FF4CAF50"/>
+          <SolidColorBrush x:Key="WinOppBorderBrush" Color="#FF03A9F4"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="{x:Static avalonia:ThemeVariant.Dark}">
+          <SolidColorBrush x:Key="ThemeBackgroundBrush" Color="#FF121212"/>
+          <SolidColorBrush x:Key="ThemeForegroundBrush" Color="#FFE6E1E5"/>
+          <SolidColorBrush x:Key="ThemeBorderBrush" Color="#FF2C2C2C"/>
+          <SolidColorBrush x:Key="CardBackgroundBrush" Color="#FF1E1E1E"/>
+          <SolidColorBrush x:Key="MutedForegroundBrush" Color="#FF9E9E9E"/>
+          <SolidColorBrush x:Key="AccentBrush" Color="#FFCFBCFF"/>
+          <SolidColorBrush x:Key="WinSelfBorderBrush" Color="#FF81C784"/>
+          <SolidColorBrush x:Key="WinOppBorderBrush" Color="#FF81D4FA"/>
         </ResourceDictionary>
       </ResourceDictionary.ThemeDictionaries>
-      <SolidColorBrush x:Key="ThemeBackgroundBrush" Color="{DynamicResource ThemeBackgroundColor}"/>
-      <SolidColorBrush x:Key="ThemeForegroundBrush" Color="{DynamicResource ThemeForegroundColor}"/>
-      <SolidColorBrush x:Key="ThemeBorderBrush" Color="{DynamicResource ThemeBorderColor}"/>
-      <SolidColorBrush x:Key="WinSelfBorderBrush" Color="{DynamicResource WinSelfBorderColor}"/>
-      <SolidColorBrush x:Key="WinOppBorderBrush" Color="{DynamicResource WinOppBorderColor}"/>
       <conv:AspectWideByRatio   x:Key="AspectWideByRatio"/>
       <conv:AspectNarrowByRatio x:Key="AspectNarrowByRatio"/>
       <conv:ClassColorConverter x:Key="ClassBrush"/>
@@ -51,7 +55,6 @@
       <conv:TurnOrderBadgeConverter x:Key="OrderBadge"/>
       <conv:EqualityMultiConverter x:Key="EqMulti"/>
       <conv:WinBorderThicknessConverter x:Key="WinBorder"/>
-      <conv:WinBorderBrushConverter x:Key="WinBrush"/>
       <conv:NullToBoolConverter x:Key="IsNull"/>
     </ResourceDictionary>
   </Application.Resources>

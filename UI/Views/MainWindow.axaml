@@ -9,6 +9,7 @@
         xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Avalonia.Svg.Skia"
         xmlns:styles="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
         xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:conv="using:DuelLedger.UI.Converters"
         x:Class="DuelLedger.UI.Views.MainWindow"
         Width="170" Height="800"
         MinWidth="{DynamicResource MinWindowWidth}"
@@ -23,6 +24,7 @@
   <Window.Resources>
     <sys:Double x:Key="MinWindowWidth">100</sys:Double>
     <sys:Double x:Key="MinWindowHeight">100</sys:Double>
+    <conv:WinBorderBrushMultiConverter x:Key="WinBorderBrushMultiConverter"/>
   </Window.Resources>
 
     <Window.Styles>
@@ -49,10 +51,10 @@
                    Foreground="{DynamicResource ThemeForegroundBrush}"/>
         <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
           <Button Click="OnMinimize" Width="14" Height="14" Padding="0">
-            <materialIcons:MaterialIcon Kind="WindowMinimize" Width="14" Height="14"/>
+            <materialIcons:MaterialIcon Kind="WindowMinimize" Width="14" Height="14" Foreground="{DynamicResource ThemeForegroundBrush}"/>
           </Button>
           <Button Click="OnClose" Width="14" Height="14" Padding="0">
-            <materialIcons:MaterialIcon Kind="WindowClose" Width="14" Height="14"/>
+            <materialIcons:MaterialIcon Kind="WindowClose" Width="14" Height="14" Foreground="{DynamicResource ThemeForegroundBrush}"/>
           </Button>
         </StackPanel>
       </Grid>
@@ -83,7 +85,7 @@
 
     <ScrollViewer Grid.Row="2">
       <StackPanel Margin="16" Spacing="16">
-        <styles:Card Classes="Outlined" Padding="12">
+        <styles:Card Classes="Outlined" Padding="12" Background="{DynamicResource CardBackgroundBrush}">
           <TabControl SelectedIndex="{Binding SelectedTabIndex}">
             <TabItem Header="{Binding Source='Header.History', Converter={StaticResource UiText}}">
               <ScrollViewer Margin="8">
@@ -93,26 +95,38 @@
                       <Grid ColumnDefinitions="Auto,Auto,Auto" Margin="0,2" VerticalAlignment="Center">
                           <Border Width="28" Height="28" CornerRadius="999"
                                   Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}"
-                                  BorderBrush="{Binding Result, Converter={StaticResource WinBrush}, ConverterParameter=self}"
                                   BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=self}">
-                          <svg:Svg Path="{Binding SelfClass, Converter={StaticResource ClassIcon}}"
-                                   Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
+                            <Border.BorderBrush>
+                              <MultiBinding Converter="{StaticResource WinBorderBrushMultiConverter}">
+                                <Binding Path="Result"/>
+                                <Binding Source="self"/>
+                                <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="ActualThemeVariant"/>
+                              </MultiBinding>
+                            </Border.BorderBrush>
+                            <svg:Svg Path="{Binding SelfClass, Converter={StaticResource ClassIcon}}"
+                                     Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          </Border>
 
                         <Grid Grid.Column="1" RowDefinitions="Auto,Auto" HorizontalAlignment="Center">
                           <Border Grid.Row="0" Background="{DynamicResource ThemeBorderBrush}" CornerRadius="4" Padding="2" HorizontalAlignment="Center">
-                            <TextBlock Text="{Binding Order, Converter={StaticResource OrderBadge}}" FontSize="10"/>
+                            <TextBlock Text="{Binding Order, Converter={StaticResource OrderBadge}}" FontSize="10" Foreground="{DynamicResource ThemeForegroundBrush}"/>
                           </Border>
-                          <TextBlock Grid.Row="1" Text="{Binding Format, Converter={StaticResource FormatAbbrev}}" HorizontalAlignment="Center"/>
+                          <TextBlock Grid.Row="1" Text="{Binding Format, Converter={StaticResource FormatAbbrev}}" HorizontalAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}"/>
                         </Grid>
 
                           <Border Grid.Column="2" Width="28" Height="28" CornerRadius="999"
                                   Background="{Binding OppClass, Converter={StaticResource ClassBrush}}"
-                                  BorderBrush="{Binding Result, Converter={StaticResource WinBrush}, ConverterParameter=opp}"
                                   BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=opp}">
-                          <svg:Svg Path="{Binding OppClass, Converter={StaticResource ClassIcon}}"
-                                   Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
+                            <Border.BorderBrush>
+                              <MultiBinding Converter="{StaticResource WinBorderBrushMultiConverter}">
+                                <Binding Path="Result"/>
+                                <Binding Source="opp"/>
+                                <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="ActualThemeVariant"/>
+                              </MultiBinding>
+                            </Border.BorderBrush>
+                            <svg:Svg Path="{Binding OppClass, Converter={StaticResource ClassIcon}}"
+                                     Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          </Border>
                       </Grid>
                     </DataTemplate>
                   </ListBox.ItemTemplate>
@@ -133,6 +147,7 @@
                                    Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <TextBlock Text="ALL" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource ThemeForegroundBrush}"
                                    IsVisible="{Binding Converter={StaticResource IsNull}}"/>
                       </Grid>
                     </DataTemplate>
@@ -155,8 +170,8 @@
                                    Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <Grid Grid.Column="1" Margin="4,0,0,0" MinWidth="0" ClipToBounds="True">
-                          <ProgressBar Minimum="0" Maximum="1" Value="{Binding WinRate}" Height="20" MinWidth="0"/>
-                          <TextBlock Text="{Binding BarText}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          <ProgressBar Minimum="0" Maximum="1" Value="{Binding WinRate}" Height="20" MinWidth="0" Foreground="{DynamicResource AccentBrush}"/>
+                          <TextBlock Text="{Binding BarText}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}"/>
                         </Grid>
                       </Grid>
                     </DataTemplate>
