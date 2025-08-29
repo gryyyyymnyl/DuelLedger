@@ -8,39 +8,46 @@
         xmlns:sys="clr-namespace:System;assembly=System.Runtime"
         xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Avalonia.Svg.Skia"
         xmlns:styles="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+        xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
         x:Class="DuelLedger.UI.Views.MainWindow"
         Width="170" Height="800"
         MinWidth="{DynamicResource MinWindowWidth}"
         MinHeight="{DynamicResource MinWindowHeight}"
-        Title="DuelLedger">
+        Title="DuelLedger"
+        Background="{DynamicResource ThemeBackgroundBrush}"
+        Foreground="{DynamicResource ThemeForegroundBrush}"
+        SystemDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome">
 
   <Window.Resources>
     <sys:Double x:Key="MinWindowWidth">100</sys:Double>
     <sys:Double x:Key="MinWindowHeight">100</sys:Double>
   </Window.Resources>
 
-  <Window.Styles>
-    <Style Selector="TabItem">
-      <Setter Property="Padding" Value="8,4"/>
-      <Setter Property="MinHeight" Value="28"/>
-      <Setter Property="FontSize" Value="14"/>
-    </Style>
-    <Style Selector="MenuItem">
-      <Setter Property="Padding" Value="4,2"/>
-      <Setter Property="MinHeight" Value="20"/>
-      <Setter Property="FontSize" Value="14"/>
-    </Style>
-  </Window.Styles>
+    <Window.Styles>
+      <Style Selector="TabItem">
+        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="MinHeight" Value="28"/>
+        <Setter Property="FontSize" Value="14"/>
+      </Style>
+      <Style Selector="MenuItem">
+        <Setter Property="Padding" Value="2,1"/>
+        <Setter Property="MinHeight" Value="10"/>
+        <Setter Property="FontSize" Value="14"/>
+      </Style>
+    </Window.Styles>
 
   <Design.DataContext>
     <vm:MainWindowViewModel />
   </Design.DataContext>
 
   <Grid RowDefinitions="Auto,*,Auto">
-    <styles:ColorZone Grid.Row="0" Mode="PrimaryMid">
-      <Grid ColumnDefinitions="Auto,*" Height="56" Margin="8,0">
-        <TextBlock Grid.Column="0" Classes="Headline6" VerticalAlignment="Center" Text="DuelLedger" Margin="12,0"/>
-        <Menu Grid.Column="1" Margin="8,0,0,0">
+    <styles:ColorZone Grid.Row="0" Mode="PrimaryMid" PointerPressed="OnPointerPressed">
+      <Grid ColumnDefinitions="Auto,*,Auto" Height="28" Margin="8,0">
+        <TextBlock Grid.Column="0" Classes="Headline6" VerticalAlignment="Center" Text="DuelLedger" Margin="12,0"
+                   Foreground="{DynamicResource ThemeForegroundBrush}"/>
+        <Menu Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}">
           <MenuItem Header="表示(_V)">
             <MenuItem Header="試合形式(_F)" ItemsSource="{Binding AvailableFormats}">
               <MenuItem.ItemTemplate>
@@ -60,6 +67,14 @@
             </MenuItem>
           </MenuItem>
         </Menu>
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+          <Button Click="OnMinimize" Width="14" Height="14" Padding="0">
+            <materialIcons:MaterialIcon Kind="WindowMinimize" Width="14" Height="14"/>
+          </Button>
+          <Button Click="OnClose" Width="14" Height="14" Padding="0">
+            <materialIcons:MaterialIcon Kind="WindowClose" Width="14" Height="14"/>
+          </Button>
+        </StackPanel>
       </Grid>
     </styles:ColorZone>
 
@@ -73,25 +88,25 @@
                   <ListBox.ItemTemplate>
                     <DataTemplate DataType="models:MatchRecord">
                       <Grid ColumnDefinitions="Auto,Auto,Auto" Margin="0,2" VerticalAlignment="Center">
-                        <Border Width="28" Height="28" CornerRadius="999"
-                                Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}"
-                                BorderBrush="#6E5A77"
-                                BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=self}">
+                          <Border Width="28" Height="28" CornerRadius="999"
+                                  Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}"
+                                  BorderBrush="{DynamicResource ThemeBorderBrush}"
+                                  BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=self}">
                           <svg:Svg Path="{Binding SelfClass, Converter={StaticResource ClassIcon}}"
                                    Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
 
                         <Grid Grid.Column="1" RowDefinitions="Auto,Auto" HorizontalAlignment="Center">
-                          <Border Grid.Row="0" Background="#DDD" CornerRadius="4" Padding="2" HorizontalAlignment="Center">
+                          <Border Grid.Row="0" Background="{DynamicResource ThemeBorderBrush}" CornerRadius="4" Padding="2" HorizontalAlignment="Center">
                             <TextBlock Text="{Binding Order, Converter={StaticResource OrderBadge}}" FontSize="10"/>
                           </Border>
                           <TextBlock Grid.Row="1" Text="{Binding Format, Converter={StaticResource FormatAbbrev}}" HorizontalAlignment="Center"/>
                         </Grid>
 
-                        <Border Grid.Column="2" Width="28" Height="28" CornerRadius="999"
-                                Background="{Binding OppClass, Converter={StaticResource ClassBrush}}"
-                                BorderBrush="#6E5A77"
-                                BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=opp}">
+                          <Border Grid.Column="2" Width="28" Height="28" CornerRadius="999"
+                                  Background="{Binding OppClass, Converter={StaticResource ClassBrush}}"
+                                  BorderBrush="{DynamicResource ThemeBorderBrush}"
+                                  BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=opp}">
                           <svg:Svg Path="{Binding OppClass, Converter={StaticResource ClassIcon}}"
                                    Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
@@ -151,8 +166,8 @@
       </StackPanel>
     </ScrollViewer>
 
-    <Border Grid.Row="2" Padding="4" Background="#FFFFFFFF" BorderBrush="#2D2D2D" BorderThickness="1">
-      <TextBlock Text="{Binding RateTextForActiveTab}"/>
-    </Border>
-  </Grid>
-</Window>
+      <Border Grid.Row="2" Padding="4" Background="{DynamicResource ThemeBackgroundBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1">
+        <TextBlock Text="{Binding RateTextForActiveTab}" Foreground="{DynamicResource ThemeForegroundBrush}"/>
+      </Border>
+    </Grid>
+  </Window>
