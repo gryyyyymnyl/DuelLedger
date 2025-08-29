@@ -28,6 +28,17 @@
   </Window.Resources>
 
     <Window.Styles>
+      <Style Selector="Menu">
+        <Setter Property="Height" Value="12"/>
+        <Setter Property="Padding" Value="6,0"/>
+      </Style>
+      <Style Selector="MenuItem">
+        <Setter Property="Padding" Value="8,0"/>
+        <Setter Property="MinHeight" Value="12"/>
+      </Style>
+      <Style Selector="Separator:is(MenuItem)">
+        <Setter Property="Margin" Value="4,0"/>
+      </Style>
       <Style Selector="TabItem">
         <Setter Property="Padding" Value="8,4"/>
         <Setter Property="MinHeight" Value="28"/>
@@ -60,7 +71,7 @@
     </styles:ColorZone>
 
     <styles:ColorZone Grid.Row="1" Mode="PrimaryMid">
-      <Menu Margin="8,0" Foreground="{DynamicResource ThemeForegroundBrush}">
+      <Menu Margin="8,0" Foreground="{DynamicResource ThemeForegroundBrush}" Height="12">
         <MenuItem Header="表示(_V)">
           <MenuItem Header="試合形式(_F)" ItemsSource="{Binding AvailableFormats}">
             <MenuItem.ItemTemplate>
@@ -87,7 +98,7 @@
         <styles:Card Classes="Outlined" Padding="12" Background="{DynamicResource CardBackgroundBrush}">
           <TabControl SelectedIndex="{Binding SelectedTabIndex}">
             <TabItem Header="{Binding Source='Header.History', Converter={StaticResource UiText}}" Classes="ModeAwareHeader">
-              <ListBox Margin="8"
+              <ListBox Margin="4"
                        ItemsSource="{Binding HistoryDesc}">
                 <ListBox.ItemsPanel>
                   <ItemsPanelTemplate>
@@ -139,7 +150,7 @@
             </TabItem>
 
             <TabItem Header="{Binding Source='Header.Result', Converter={StaticResource UiText}}" Classes="ModeAwareHeader">
-              <DockPanel Margin="8">
+              <DockPanel Margin="4">
                 <ComboBox DockPanel.Dock="Top" Width="80" ItemsSource="{Binding SelfClassOptions}" SelectedItem="{Binding SelectedSelfClass}">
                   <ComboBox.ItemTemplate>
                     <DataTemplate>
