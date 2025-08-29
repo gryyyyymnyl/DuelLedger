@@ -29,7 +29,6 @@
 
     <Window.Styles>
       <Style Selector="Menu">
-        <Setter Property="Height" Value="12"/>
         <Setter Property="Padding" Value="6,0"/>
       </Style>
       <Style Selector="MenuItem">
@@ -71,8 +70,8 @@
     </styles:ColorZone>
 
     <styles:ColorZone Grid.Row="1" Mode="PrimaryMid">
-      <Menu Margin="8,0" Foreground="{DynamicResource ThemeForegroundBrush}" Height="12">
-        <MenuItem Header="表示(_V)">
+      <Menu Margin="8,0" Foreground="{DynamicResource ThemeForegroundBrush}">
+        <MenuItem Header="表示(_V)" Height="12">
           <MenuItem Header="試合形式(_F)" ItemsSource="{Binding AvailableFormats}">
             <MenuItem.ItemTemplate>
               <DataTemplate>
@@ -100,6 +99,11 @@
             <TabItem Header="{Binding Source='Header.History', Converter={StaticResource UiText}}" Classes="ModeAwareHeader">
               <ListBox Margin="4"
                        ItemsSource="{Binding HistoryDesc}">
+                <ListBox.Styles>
+                  <Style Selector="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                  </Style>
+                </ListBox.Styles>
                 <ListBox.ItemsPanel>
                   <ItemsPanelTemplate>
                     <VirtualizingStackPanel/>
@@ -107,7 +111,7 @@
                 </ListBox.ItemsPanel>
                 <ListBox.ItemTemplate>
                   <DataTemplate DataType="models:MatchRecord">
-                    <Grid ColumnDefinitions="Auto,Auto,Auto" Margin="0,2" VerticalAlignment="Center">
+                    <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,2" VerticalAlignment="Center">
                         <Border Width="28" Height="28" CornerRadius="999"
                                 Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}"
                                 BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=self}">
@@ -180,11 +184,12 @@
                       <Grid ColumnDefinitions="Auto,*" Margin="0,2" VerticalAlignment="Center">
                         <Border Grid.Column="0" Width="24" Height="24" CornerRadius="12"
                                 Background="{Binding Opponent, Converter={StaticResource ClassBrush}}"
+                                Margin="0,0,4,0"
                                 ZIndex="1">
                           <svg:Svg Path="{Binding Opponent, Converter={StaticResource ClassIcon}}"
                                    Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
-                        <Grid Grid.Column="1" Margin="4,0,0,0" MinWidth="0" ClipToBounds="True">
+                        <Grid Grid.Column="1" MinWidth="0" ClipToBounds="True">
                           <ProgressBar Minimum="0" Maximum="1" Value="{Binding WinRate}" Height="20" MinWidth="0" Foreground="{DynamicResource AccentBrush}"/>
                           <TextBlock Text="{Binding BarText}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}"/>
                         </Grid>
