@@ -33,10 +33,9 @@
         <Setter Property="MinHeight" Value="28"/>
         <Setter Property="FontSize" Value="14"/>
       </Style>
-      <Style Selector="MenuItem">
-        <Setter Property="Padding" Value="2,1"/>
-        <Setter Property="MinHeight" Value="10"/>
-        <Setter Property="FontSize" Value="14"/>
+      <!-- Theme-aware tab header color -->
+      <Style Selector="TabItem.ModeAwareHeader">
+        <Setter Property="Foreground" Value="{DynamicResource TabHeaderForegroundBrush}"/>
       </Style>
     </Window.Styles>
 
@@ -87,54 +86,59 @@
       <StackPanel Margin="16" Spacing="16">
         <styles:Card Classes="Outlined" Padding="12" Background="{DynamicResource CardBackgroundBrush}">
           <TabControl SelectedIndex="{Binding SelectedTabIndex}">
-            <TabItem Header="{Binding Source='Header.History', Converter={StaticResource UiText}}">
-              <ScrollViewer Margin="8">
-                <ListBox ItemsSource="{Binding HistoryDesc}">
-                  <ListBox.ItemTemplate>
-                    <DataTemplate DataType="models:MatchRecord">
-                      <Grid ColumnDefinitions="Auto,Auto,Auto" Margin="0,2" VerticalAlignment="Center">
-                          <Border Width="28" Height="28" CornerRadius="999"
-                                  Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}"
-                                  BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=self}">
-                            <Border.BorderBrush>
-                              <MultiBinding Converter="{StaticResource WinBorderBrushMultiConverter}">
-                                <Binding Path="Result"/>
-                                <Binding Source="self"/>
-                                <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="ActualThemeVariant"/>
-                              </MultiBinding>
-                            </Border.BorderBrush>
-                            <svg:Svg Path="{Binding SelfClass, Converter={StaticResource ClassIcon}}"
-                                     Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                          </Border>
+            <TabItem Header="{Binding Source='Header.History', Converter={StaticResource UiText}}" Classes="ModeAwareHeader">
+              <ListBox Margin="8"
+                       ItemsSource="{Binding HistoryDesc}">
+                <ListBox.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <VirtualizingStackPanel/>
+                  </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                  <DataTemplate DataType="models:MatchRecord">
+                    <Grid ColumnDefinitions="Auto,Auto,Auto" Margin="0,2" VerticalAlignment="Center">
+                        <Border Width="28" Height="28" CornerRadius="999"
+                                Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}"
+                                BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=self}">
+                          <Border.BorderBrush>
+                            <MultiBinding Converter="{StaticResource WinBorderBrushMultiConverter}">
+                              <Binding Path="Result"/>
+                              <Binding Source="self"/>
+                              <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="ActualThemeVariant"/>
+                            </MultiBinding>
+                          </Border.BorderBrush>
+                          <svg:Svg Path="{Binding SelfClass, Converter={StaticResource ClassIcon}}"
+                                   Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
 
-                        <Grid Grid.Column="1" RowDefinitions="Auto,Auto" HorizontalAlignment="Center">
-                          <Border Grid.Row="0" Background="{DynamicResource ThemeBorderBrush}" CornerRadius="4" Padding="2" HorizontalAlignment="Center">
-                            <TextBlock Text="{Binding Order, Converter={StaticResource OrderBadge}}" FontSize="10" Foreground="{DynamicResource ThemeForegroundBrush}"/>
-                          </Border>
-                          <TextBlock Grid.Row="1" Text="{Binding Format, Converter={StaticResource FormatAbbrev}}" HorizontalAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}"/>
-                        </Grid>
-
-                          <Border Grid.Column="2" Width="28" Height="28" CornerRadius="999"
-                                  Background="{Binding OppClass, Converter={StaticResource ClassBrush}}"
-                                  BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=opp}">
-                            <Border.BorderBrush>
-                              <MultiBinding Converter="{StaticResource WinBorderBrushMultiConverter}">
-                                <Binding Path="Result"/>
-                                <Binding Source="opp"/>
-                                <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="ActualThemeVariant"/>
-                              </MultiBinding>
-                            </Border.BorderBrush>
-                            <svg:Svg Path="{Binding OppClass, Converter={StaticResource ClassIcon}}"
-                                     Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                          </Border>
+                      <Grid Grid.Column="1" RowDefinitions="Auto,Auto" HorizontalAlignment="Center">
+                        <Border Grid.Row="0" Background="{DynamicResource ThemeBorderBrush}" CornerRadius="4" Padding="2" HorizontalAlignment="Center">
+                          <TextBlock Text="{Binding Order, Converter={StaticResource OrderBadge}}" FontSize="10" Foreground="{DynamicResource ThemeForegroundBrush}"/>
+                        </Border>
+                        <TextBlock Grid.Row="1" Text="{Binding Format, Converter={StaticResource FormatAbbrev}}" HorizontalAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}"/>
                       </Grid>
-                    </DataTemplate>
-                  </ListBox.ItemTemplate>
-                </ListBox>
-              </ScrollViewer>
+
+                        <Border Grid.Column="2" Width="28" Height="28" CornerRadius="999"
+                                Background="{Binding OppClass, Converter={StaticResource ClassBrush}}"
+                                BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=opp}">
+                          <Border.BorderBrush>
+                            <MultiBinding Converter="{StaticResource WinBorderBrushMultiConverter}">
+                              <Binding Path="Result"/>
+                              <Binding Source="opp"/>
+                              <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="ActualThemeVariant"/>
+                            </MultiBinding>
+                          </Border.BorderBrush>
+                          <svg:Svg Path="{Binding OppClass, Converter={StaticResource ClassIcon}}"
+                                   Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.Transitions/>
+              </ListBox>
             </TabItem>
 
-            <TabItem Header="{Binding Source='Header.Result', Converter={StaticResource UiText}}">
+            <TabItem Header="{Binding Source='Header.Result', Converter={StaticResource UiText}}" Classes="ModeAwareHeader">
               <DockPanel Margin="8">
                 <ComboBox DockPanel.Dock="Top" Width="80" ItemsSource="{Binding SelfClassOptions}" SelectedItem="{Binding SelectedSelfClass}">
                   <ComboBox.ItemTemplate>

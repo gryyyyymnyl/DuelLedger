@@ -14,6 +14,18 @@
     <materialIcons:MaterialIconStyles />
     <!-- DataGridを使用している場合のみ有効化 -->
     <dataGrid:MaterialDataGridStyles />
+    <!-- Menu and MenuItem size adjustments -->
+    <Style Selector="Menu">
+      <Setter Property="Padding" Value="6,0"/>
+      <Setter Property="Height" Value="28"/>
+    </Style>
+    <Style Selector="MenuItem">
+      <Setter Property="Padding" Value="8,2"/>
+      <Setter Property="MinHeight" Value="24"/>
+    </Style>
+    <Style Selector="Separator:is(MenuItem)">
+      <Setter Property="Margin" Value="4,2"/>
+    </Style>
   </Application.Styles>
   <Application.Resources>
     <ResourceDictionary>
@@ -27,6 +39,7 @@
           <SolidColorBrush x:Key="AccentBrush" Color="#FF6750A4"/>
           <SolidColorBrush x:Key="WinSelfBorderBrush" Color="#FF4CAF50"/>
           <SolidColorBrush x:Key="WinOppBorderBrush" Color="#FF03A9F4"/>
+          <SolidColorBrush x:Key="TabHeaderForegroundBrush" Color="#000000"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="{x:Static avalonia:ThemeVariant.Dark}">
           <SolidColorBrush x:Key="ThemeBackgroundBrush" Color="#FF121212"/>
@@ -37,8 +50,10 @@
           <SolidColorBrush x:Key="AccentBrush" Color="#FFCFBCFF"/>
           <SolidColorBrush x:Key="WinSelfBorderBrush" Color="#FF81C784"/>
           <SolidColorBrush x:Key="WinOppBorderBrush" Color="#FF81D4FA"/>
+          <SolidColorBrush x:Key="TabHeaderForegroundBrush" Color="#FFFFFF"/>
         </ResourceDictionary>
       </ResourceDictionary.ThemeDictionaries>
+
       <conv:AspectWideByRatio   x:Key="AspectWideByRatio"/>
       <conv:AspectNarrowByRatio x:Key="AspectNarrowByRatio"/>
       <conv:ClassColorConverter x:Key="ClassBrush"/>
