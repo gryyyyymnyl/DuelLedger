@@ -72,56 +72,61 @@
 
     <styles:ColorZone Grid.Row="1" Mode="PrimaryMid">
       <Menu Margin="8,0" Foreground="{DynamicResource ThemeForegroundBrush}">
-        <MenuItem Header="表示(_V)" Height="12">
-          <!-- 表示→試合形式 -->
-          <MenuItem Header="{Binding Source={StaticResource UiMap}, Path=FormatMenuTitle}"
-                    x:Name="FormatRoot"
+        <MenuItem Header="{Binding Converter={StaticResource UiText}, ConverterParameter=Menu.View}">
+          <!-- 試合形式ルート -->
+          <MenuItem x:Name="FormatRoot"
+                    Header="{Binding Converter={StaticResource UiText}, ConverterParameter=Menu.Format}"
                     DataContext="{Binding $parent[Window].DataContext}">
+
             <!-- すべて -->
-            <MenuItem Header="{Binding Source={StaticResource UiMap}, Path=Format.All}"
-                      ToggleType="Radio"
+            <MenuItem ToggleType="CheckBox"
+                      Header="{Binding Converter={StaticResource UiText}, ConverterParameter=Format.All}"
                       Command="{Binding SetFormatCommand}"
                       CommandParameter="{x:Null}"
-                      IsChecked="{Binding Path=SelectedFormat,
-                                          Converter={StaticResource NullToBoolConverter}}" />
+                      IsChecked="{Binding SelectedFormat, Converter={StaticResource NullToBoolConverter}}"/>
+
             <!-- Rank -->
-            <MenuItem Header="{Binding Source={StaticResource UiMap}, Path=Format.Rank}"
-                      ToggleType="Radio"
+            <MenuItem ToggleType="CheckBox"
+                      Tag="{x:Static models:MatchFormat.Rank}"
+                      Header="{Binding Tag, RelativeSource={RelativeSource Self}, Converter={StaticResource FormatName}}"
                       Command="{Binding SetFormatCommand}"
-                      CommandParameter="{x:Static models:MatchFormat.Rank}">
+                      CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}">
               <MenuItem.IsChecked>
                 <MultiBinding Converter="{StaticResource EqualityMultiConverter}">
                   <Binding Path="SelectedFormat"/>
-                  <Binding Source="{x:Static models:MatchFormat.Rank}"/>
+                  <Binding Path="Tag" RelativeSource="{RelativeSource Self}"/>
                 </MultiBinding>
               </MenuItem.IsChecked>
             </MenuItem>
 
             <!-- TwoPick -->
-            <MenuItem Header="{Binding Source={StaticResource UiMap}, Path=Format.TwoPick}"
-                      ToggleType="Radio"
+            <MenuItem ToggleType="CheckBox"
+                      Tag="{x:Static models:MatchFormat.TwoPick}"
+                      Header="{Binding Tag, RelativeSource={RelativeSource Self}, Converter={StaticResource FormatName}}"
                       Command="{Binding SetFormatCommand}"
-                      CommandParameter="{x:Static models:MatchFormat.TwoPick}">
+                      CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}">
               <MenuItem.IsChecked>
                 <MultiBinding Converter="{StaticResource EqualityMultiConverter}">
                   <Binding Path="SelectedFormat"/>
-                  <Binding Source="{x:Static models:MatchFormat.TwoPick}"/>
+                  <Binding Path="Tag" RelativeSource="{RelativeSource Self}"/>
                 </MultiBinding>
               </MenuItem.IsChecked>
             </MenuItem>
 
             <!-- GrandPrix -->
-            <MenuItem Header="{Binding Source={StaticResource UiMap}, Path=Format.GrandPrix}"
-                      ToggleType="Radio"
+            <MenuItem ToggleType="CheckBox"
+                      Tag="{x:Static models:MatchFormat.GrandPrix}"
+                      Header="{Binding Tag, RelativeSource={RelativeSource Self}, Converter={StaticResource FormatName}}"
                       Command="{Binding SetFormatCommand}"
-                      CommandParameter="{x:Static models:MatchFormat.GrandPrix}">
+                      CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}">
               <MenuItem.IsChecked>
                 <MultiBinding Converter="{StaticResource EqualityMultiConverter}">
                   <Binding Path="SelectedFormat"/>
-                  <Binding Source="{x:Static models:MatchFormat.GrandPrix}"/>
+                  <Binding Path="Tag" RelativeSource="{RelativeSource Self}"/>
                 </MultiBinding>
               </MenuItem.IsChecked>
             </MenuItem>
+
           </MenuItem>
         </MenuItem>
       </Menu>
