@@ -53,7 +53,7 @@
       <conv:OpponentResult    x:Key="OppResult"/>
       <conv:UiTextConverter   x:Key="UiText"/>
       <conv:FormatTextConverter x:Key="FormatText"/>
-      <conv:FormatNameConverter x:Key="FormatName"/>
+      <conv:FormatNameConverter x:Key="FormatNameConverter"/>
       <conv:FormatAbbrevConverter x:Key="FormatAbbrev"/>
       <conv:TurnOrderBadgeConverter x:Key="OrderBadge"/>
       <conv:EqualityMultiConverter x:Key="EqMulti"/>

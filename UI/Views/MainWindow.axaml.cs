@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using DuelLedger.UI.ViewModels;
 
 namespace DuelLedger.UI.Views;
 
@@ -9,6 +10,11 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+    }
+
+    public MainWindow(MainWindowViewModel vm) : this()
+    {
+        DataContext = vm;
     }
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)

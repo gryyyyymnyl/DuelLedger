@@ -77,8 +77,9 @@ public partial class App : Application
         {
             var reader = new MatchReaderService(outDir);
             var vm = new MainWindowViewModel(reader);
-            var window = new MainWindow { DataContext = vm };
+            var window = new MainWindow(vm);
             desktop.MainWindow = window;
+            window.Show();
 
             desktop.ShutdownRequested += async (_, e) =>
             {

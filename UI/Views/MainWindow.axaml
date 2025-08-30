@@ -78,7 +78,7 @@
             <MenuItem.ItemTemplate>
               <DataTemplate>
                 <MenuItem ToggleType="CheckBox"
-                          Header="{Binding ., Converter={StaticResource FormatName}}"
+                          Header="{Binding ., Converter={StaticResource FormatNameConverter}}"
                           Command="{Binding DataContext.SetFormatCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                           CommandParameter="{Binding .}">
                   <MenuItem.IsChecked>
