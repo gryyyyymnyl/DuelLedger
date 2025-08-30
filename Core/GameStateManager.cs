@@ -19,7 +19,11 @@ public class GameStateManager
     private readonly List<IStateDetector> _battleDetectors;
     private readonly List<IStateDetector> _resultDetectors;
     // ===== 試合形式の保持 =====
-    private string? _lastFormatLabel; // 直前に検知した試合形式（次試合の開始時に引き継いで出力）
+    private string? _lastFormatLabel; // 現在の安定形式（検知が外れても保持）
+    private static string? s_lastFormatLabel;
+    private readonly int _instanceId = Environment.TickCount;
+    // 試合単位でフォーマットをPublisherに送ったか
+    private bool _formatPublishedForThisMatch = false;
     // ===== クラス検出 多数決 =====
     private const int ClassVoteWindow = 3; //クラス検出試行数
     private readonly Queue<string> _ownClassVotes = new();
@@ -41,6 +45,8 @@ public class GameStateManager
         _resultDetectors = _detectors.Where(d => IsType(d, "ResultDetector")).ToList();
 
         _matchAgg = new MatchAggregator(publisher ?? new NullPublisher());
+        _lastFormatLabel = s_lastFormatLabel ?? _lastFormatLabel;
+        Console.WriteLine($"[GSM] ctor id={_instanceId} carryFormat={_lastFormatLabel ?? "(none)"}");
     }
 
     public void Update()
@@ -49,6 +55,7 @@ public class GameStateManager
             return;
         using (screen)
         {
+            Console.WriteLine($"[Format] Hold={_lastFormatLabel ?? "(none)"} state={_currentState} id={_instanceId}");
             Cv2.CvtColor(screen, screen, ColorConversionCodes.BGR2GRAY);
 
             double scale = 0.4; // 0.4〜0.6くらいが実務的にバランス良い
@@ -64,13 +71,18 @@ public class GameStateManager
                 if (TryDetect(_matchStartDetectors, screen, out var ms, out var msScore, out var msLoc))
                 {
                     Console.WriteLine($"[{_detectorSet.GameName}] 開始→バトル開始検知 (score: {msScore:F3}, at: {msLoc})");
+                    // 1) 保持済みフォーマットを先に送る（試合ごと一回）
+                    if (!_formatPublishedForThisMatch && !string.IsNullOrWhiteSpace(_lastFormatLabel) && _lastFormatLabel != "Unknown")
+                    {
+                        Console.WriteLine($"[Format] PublishBeforeMatchStart={_lastFormatLabel}");
+                        _matchAgg.OnFormatDetected(_lastFormatLabel!);
+                        _formatPublishedForThisMatch = true;
+                    }
+
+                    // 2) 試合開始を送る
                     _matchAgg.OnMatchStarted(DateTimeOffset.UtcNow);
                     TrySetTurnOrderFromMatchStart(ms);
-                    // ◆要件: InBattleへ遷移するタイミングで、直前に検知した試合形式を出力
-                    if (!string.IsNullOrWhiteSpace(_lastFormatLabel))
-                    {
-                        _matchAgg.OnFormatDetected(_lastFormatLabel!);
-                    }
+
                     _currentState = GameState.InBattle;
                     return;
                 }
@@ -78,10 +90,22 @@ public class GameStateManager
                 {
                     // Formatのみ検知：状態は維持（Unknown＝開始待機のまま）
                     Console.WriteLine($"[{_detectorSet.GameName}] 開始: Format継続 (score: {fScore:F3}, at: {fLoc})");
-                    // 形式を保持（次の開始時に出力するため）
                     var label = TryExtractFormat(fmt);
-                    if (!string.IsNullOrWhiteSpace(label))
-                        _lastFormatLabel = label!.Trim();
+                    if (!string.IsNullOrWhiteSpace(label) && label != "Unknown")
+                    {
+                        var normalized = label!;
+                        if (_lastFormatLabel != normalized)
+                        {
+                            _lastFormatLabel = normalized;
+                            s_lastFormatLabel = _lastFormatLabel;
+                            Console.WriteLine($"[Format] Update={_lastFormatLabel} (id={_instanceId})");
+                            if (_lastFormatLabel != "Unknown")
+                            {
+                                _matchAgg.OnFormatDetected(normalized);
+                                _formatPublishedForThisMatch = true; // この試合で既に送った扱い
+                            }
+                        }
+                    }
                     return;
                 }
                 Console.WriteLine($"[{_detectorSet.GameName}] 開始: 未検出、継続待機");
@@ -226,6 +250,8 @@ public class GameStateManager
             msg.Contains("LOSE", StringComparison.OrdinalIgnoreCase) ? MatchResult.Lose :
             MatchResult.Unknown;
         _matchAgg.OnMatchEnded(result, DateTimeOffset.UtcNow);
+        _formatPublishedForThisMatch = false;
+        Console.WriteLine("[Format] Reset flag");
     }
 
     // --- FormatDetector.Message から試合形式ラベルを抽出（キー名称は複数に対応） ---
