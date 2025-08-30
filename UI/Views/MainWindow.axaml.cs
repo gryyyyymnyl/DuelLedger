@@ -23,11 +23,21 @@ public partial class MainWindow : Window
     {
         if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed) return;
 
-        if (e.Source is Control src)
+        if (e.Source is Control c)
         {
-            bool inMenu = src.GetSelfAndVisualAncestors().OfType<Menu>().Any()
-                        || src.GetSelfAndVisualAncestors().OfType<MenuItem>().Any();
-            if (inMenu) return;
+            if (c is Menu || c is MenuItem || c is Button || c is Avalonia.Controls.Primitives.ToggleButton ||
+                c is ComboBox || c is TextBox || c is Slider || c is ListBox ||
+                c is DataGrid || c is CheckBox || c is RadioButton)
+                return;
+
+            if (c.GetSelfAndVisualAncestors().OfType<Menu>().Any() ||
+                c.GetSelfAndVisualAncestors().OfType<MenuItem>().Any() ||
+                c.GetSelfAndVisualAncestors().OfType<ComboBox>().Any())
+                return;
+
+            if (c.Classes.Contains("NoDrag") ||
+                c.GetSelfAndVisualAncestors().Any(a => a.Classes.Contains("NoDrag")))
+                return;
         }
         BeginMoveDrag(e);
     }

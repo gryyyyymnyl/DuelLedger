@@ -25,7 +25,6 @@
     <sys:Double x:Key="MinWindowWidth">100</sys:Double>
     <sys:Double x:Key="MinWindowHeight">100</sys:Double>
     <conv:WinBorderBrushMultiConverter x:Key="WinBorderBrushMultiConverter"/>
-    <conv:EqualityMultiConverter x:Key="EqualityMultiConverter"/>
   </Window.Resources>
 
     <Window.Styles>
@@ -72,29 +71,20 @@
       </styles:ColorZone>
     </Border>
 
-    <styles:ColorZone Grid.Row="1" Mode="PrimaryMid">
-      <Menu Margin="8,0" Foreground="{DynamicResource ThemeForegroundBrush}">
-        <MenuItem Header="表示(_V)">
-          <MenuItem Header="試合形式(_F)" ItemsSource="{Binding AvailableFormats}">
-            <MenuItem.ItemTemplate>
-              <DataTemplate>
-                <MenuItem ToggleType="CheckBox"
-                          Header="{Binding ., Converter={StaticResource FormatNameConverter}}"
-                          Command="{Binding DataContext.SetFormatCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                          CommandParameter="{Binding .}">
-                  <MenuItem.IsChecked>
-                    <MultiBinding Converter="{StaticResource EqualityMultiConverter}">
-                      <Binding Path="DataContext.SelectedFormat" RelativeSource="{RelativeSource AncestorType=Window}"/>
-                      <Binding Path="."/>
-                    </MultiBinding>
-                  </MenuItem.IsChecked>
-                </MenuItem>
-              </DataTemplate>
-            </MenuItem.ItemTemplate>
-          </MenuItem>
-        </MenuItem>
-      </Menu>
-    </styles:ColorZone>
+    <Border Grid.Row="1" Background="{DynamicResource ThemeControlLowBrush}" Padding="8,0" Classes="NoDrag">
+      <ComboBox
+          Width="160"
+          CornerRadius="12"
+          Padding="10,2"
+          ItemsSource="{Binding AvailableFormats}"
+          SelectedItem="{Binding SelectedFormat, Mode=TwoWay}">
+        <ComboBox.ItemTemplate>
+          <DataTemplate>
+            <TextBlock Text="{Binding Converter={StaticResource FormatNameConverter}}"/>
+          </DataTemplate>
+        </ComboBox.ItemTemplate>
+      </ComboBox>
+    </Border>
 
     <ScrollViewer Grid.Row="2">
       <StackPanel Margin="16" Spacing="16">
