@@ -76,7 +76,8 @@
           <MenuItem x:Name="FormatRoot"
                     Header="試合形式(_F)"
                     ItemsSource="{Binding AvailableFormats}"
-                    DataContext="{Binding #Root.DataContext}">
+                    DataContext="{Binding #Root.DataContext}"
+                    Command="{x:Null}">
             <MenuItem.ItemTemplate>
               <DataTemplate>
                 <!-- Avalonia 11 uses ToggleType to enable checkable menu items; IsCheckable is not available -->
@@ -84,7 +85,8 @@
                 <MenuItem Header="{Binding Converter={StaticResource FormatNameConverter}}"
                           Command="{Binding #FormatRoot.DataContext.SetFormatCommand}"
                           CommandParameter="{Binding ., Mode=OneTime}"
-                          ToggleType="Radio">
+                          ToggleType="Radio"
+                          Click="OnFormatClick">
                   <MenuItem.IsChecked>
                     <MultiBinding Converter="{StaticResource EqMulti}">
                       <Binding Path="#FormatRoot.DataContext.SelectedFormat"/>
