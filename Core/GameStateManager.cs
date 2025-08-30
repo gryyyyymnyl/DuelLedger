@@ -69,6 +69,7 @@ public class GameStateManager
                     // ◆要件: InBattleへ遷移するタイミングで、直前に検知した試合形式を出力
                     if (!string.IsNullOrWhiteSpace(_lastFormatLabel))
                     {
+                        Console.WriteLine($"[Format] Current={_lastFormatLabel}");
                         _matchAgg.OnFormatDetected(_lastFormatLabel!);
                     }
                     _currentState = GameState.InBattle;
@@ -81,10 +82,11 @@ public class GameStateManager
                     var label = TryExtractFormat(fmt);
                     if (!string.IsNullOrWhiteSpace(label) && label != "Unknown")
                     {
-                        var normalized = label!.Trim();
+                        var normalized = label!;
                         if (_lastFormatLabel != normalized)
                         {
                             _lastFormatLabel = normalized;
+                            Console.WriteLine($"[Format] Current={_lastFormatLabel}");
                             _matchAgg.OnFormatDetected(normalized);
                         }
                     }
