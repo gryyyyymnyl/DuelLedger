@@ -442,6 +442,63 @@
           }
         }
       },
+      "Material.Avalonia/3.13.0": {
+        "type": "package",
+        "dependencies": {
+          "Avalonia": "11.1.0"
+        },
+        "compile": {
+          "lib/net8.0/Material.Avalonia.dll": {},
+          "lib/net8.0/Material.Colors.dll": {},
+          "lib/net8.0/Material.Ripple.dll": {},
+          "lib/net8.0/Material.Styles.dll": {}
+        },
+        "runtime": {
+          "lib/net8.0/Material.Avalonia.dll": {},
+          "lib/net8.0/Material.Colors.dll": {},
+          "lib/net8.0/Material.Ripple.dll": {},
+          "lib/net8.0/Material.Styles.dll": {}
+        }
+      },
+      "Material.Avalonia.DataGrid/3.13.0": {
+        "type": "package",
+        "dependencies": {
+          "Avalonia": "11.1.0",
+          "Avalonia.Controls.DataGrid": "11.1.0",
+          "Material.Avalonia": "3.13.0"
+        },
+        "compile": {
+          "lib/net8.0/Material.Avalonia.DataGrid.dll": {}
+        },
+        "runtime": {
+          "lib/net8.0/Material.Avalonia.DataGrid.dll": {}
+        },
+        "build": {
+          "buildTransitive/Material.Avalonia.DataGrid.props": {}
+        }
+      },
+      "Material.Icons/2.4.1": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Material.Icons.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Material.Icons.dll": {}
+        }
+      },
+      "Material.Icons.Avalonia/2.4.1": {
+        "type": "package",
+        "dependencies": {
+          "Avalonia": "11.0.0",
+          "Material.Icons": "2.4.1"
+        },
+        "compile": {
+          "lib/netstandard2.0/Material.Icons.Avalonia.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Material.Icons.Avalonia.dll": {}
+        }
+      },
       "MicroCom.Runtime/0.11.0": {
         "type": "package",
         "compile": {
@@ -1231,6 +1288,63 @@
             "assetType": "native",
             "rid": "win-x86"
           }
+        }
+      },
+      "Material.Avalonia/3.13.0": {
+        "type": "package",
+        "dependencies": {
+          "Avalonia": "11.1.0"
+        },
+        "compile": {
+          "lib/net8.0/Material.Avalonia.dll": {},
+          "lib/net8.0/Material.Colors.dll": {},
+          "lib/net8.0/Material.Ripple.dll": {},
+          "lib/net8.0/Material.Styles.dll": {}
+        },
+        "runtime": {
+          "lib/net8.0/Material.Avalonia.dll": {},
+          "lib/net8.0/Material.Colors.dll": {},
+          "lib/net8.0/Material.Ripple.dll": {},
+          "lib/net8.0/Material.Styles.dll": {}
+        }
+      },
+      "Material.Avalonia.DataGrid/3.13.0": {
+        "type": "package",
+        "dependencies": {
+          "Avalonia": "11.1.0",
+          "Avalonia.Controls.DataGrid": "11.1.0",
+          "Material.Avalonia": "3.13.0"
+        },
+        "compile": {
+          "lib/net8.0/Material.Avalonia.DataGrid.dll": {}
+        },
+        "runtime": {
+          "lib/net8.0/Material.Avalonia.DataGrid.dll": {}
+        },
+        "build": {
+          "buildTransitive/Material.Avalonia.DataGrid.props": {}
+        }
+      },
+      "Material.Icons/2.4.1": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Material.Icons.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Material.Icons.dll": {}
+        }
+      },
+      "Material.Icons.Avalonia/2.4.1": {
+        "type": "package",
+        "dependencies": {
+          "Avalonia": "11.0.0",
+          "Material.Icons": "2.4.1"
+        },
+        "compile": {
+          "lib/netstandard2.0/Material.Icons.Avalonia.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Material.Icons.Avalonia.dll": {}
         }
       },
       "MicroCom.Runtime/0.11.0": {
@@ -2313,6 +2427,69 @@
         "runtimes/win-x86/native/libHarfBuzzSharp.dll"
       ]
     },
+    "Material.Avalonia/3.13.0": {
+      "sha512": "3nG0EeXB1TvjCmHTOgZMDXQWS5lKARCoWORnhD41Hj5yB0OWgA1f26EaLZM8ozAF2W6y/A/8pHMNUL+zjzbKPg==",
+      "type": "package",
+      "path": "material.avalonia/3.13.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "FavIcon.png",
+        "README.md",
+        "lib/net8.0/Material.Avalonia.dll",
+        "lib/net8.0/Material.Colors.dll",
+        "lib/net8.0/Material.Ripple.dll",
+        "lib/net8.0/Material.Styles.dll",
+        "lib/netstandard2.0/Material.Avalonia.dll",
+        "lib/netstandard2.0/Material.Colors.dll",
+        "lib/netstandard2.0/Material.Ripple.dll",
+        "lib/netstandard2.0/Material.Styles.dll",
+        "material.avalonia.3.13.0.nupkg.sha512",
+        "material.avalonia.nuspec"
+      ]
+    },
+    "Material.Avalonia.DataGrid/3.13.0": {
+      "sha512": "4fbdLuRPvQfPvR1szUUaY6v3pIKtTOqbsylOvcglUNcTXkyMH8wNoXtDYtmIUJUKC31GzL3UHq6/4sw1MdU5Bg==",
+      "type": "package",
+      "path": "material.avalonia.datagrid/3.13.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "FavIcon.png",
+        "build/Material.Avalonia.DataGrid.props",
+        "buildTransitive/Material.Avalonia.DataGrid.props",
+        "lib/net8.0/Material.Avalonia.DataGrid.dll",
+        "lib/netstandard2.0/Material.Avalonia.DataGrid.dll",
+        "material.avalonia.datagrid.3.13.0.nupkg.sha512",
+        "material.avalonia.datagrid.nuspec"
+      ]
+    },
+    "Material.Icons/2.4.1": {
+      "sha512": "5/8ekF4GXqpluBF+kPfv3TytBpV5Z+h4CUU5iNCDC7+A9hPQvtn08ZUjMUXtcRGxGyfScHYDqzshzTvYiPTCdA==",
+      "type": "package",
+      "path": "material.icons/2.4.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/netstandard2.0/Material.Icons.dll",
+        "material.icons.2.4.1.nupkg.sha512",
+        "material.icons.nuspec"
+      ]
+    },
+    "Material.Icons.Avalonia/2.4.1": {
+      "sha512": "bJZzJCHfZDBg33ZyiSxvexMs2qMGkkv1XEgkAJkqLK9I8WNIUGLCnXcjoBrpSh2Sd2ytoD1IEjV72Zy54St3zA==",
+      "type": "package",
+      "path": "material.icons.avalonia/2.4.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/netstandard2.0/Material.Icons.Avalonia.dll",
+        "material.icons.avalonia.2.4.1.nupkg.sha512",
+        "material.icons.avalonia.nuspec"
+      ]
+    },
     "MicroCom.Runtime/0.11.0": {
       "sha512": "MEnrZ3UIiH40hjzMDsxrTyi8dtqB5ziv3iBeeU4bXsL/7NLSal9F1lZKpK+tfBRnUoDSdtcW3KufE4yhATOMCA==",
       "type": "package",
@@ -2963,7 +3140,10 @@
       "DuelLedger.Contracts >= 1.0.0",
       "DuelLedger.Core >= 1.0.0",
       "DuelLedger.Detectors >= 1.0.0",
-      "DuelLedger.Publishers >= 1.0.0"
+      "DuelLedger.Publishers >= 1.0.0",
+      "Material.Avalonia >= 3.13.0",
+      "Material.Avalonia.DataGrid >= 3.13.0",
+      "Material.Icons.Avalonia >= 2.4.1"
     ],
     "net8.0-windows7.0": [
       "Avalonia >= 11.1.0",
@@ -2978,6 +3158,9 @@
       "DuelLedger.Detectors >= 1.0.0",
       "DuelLedger.Publishers >= 1.0.0",
       "DuelLedger.Vision.Windows >= 1.0.0",
+      "Material.Avalonia >= 3.13.0",
+      "Material.Avalonia.DataGrid >= 3.13.0",
+      "Material.Icons.Avalonia >= 2.4.1",
       "OpenCvSharp4.runtime.win >= 4.11.0.20250507"
     ]
   },
@@ -3087,6 +3270,18 @@
           "Avalonia.Themes.Fluent": {
             "target": "Package",
             "version": "[11.1.0, )"
+          },
+          "Material.Avalonia": {
+            "target": "Package",
+            "version": "[3.13.0, )"
+          },
+          "Material.Avalonia.DataGrid": {
+            "target": "Package",
+            "version": "[3.13.0, )"
+          },
+          "Material.Icons.Avalonia": {
+            "target": "Package",
+            "version": "[2.4.1, )"
           }
         },
         "imports": [
@@ -3137,6 +3332,18 @@
           "Avalonia.Themes.Fluent": {
             "target": "Package",
             "version": "[11.1.0, )"
+          },
+          "Material.Avalonia": {
+            "target": "Package",
+            "version": "[3.13.0, )"
+          },
+          "Material.Avalonia.DataGrid": {
+            "target": "Package",
+            "version": "[3.13.0, )"
+          },
+          "Material.Icons.Avalonia": {
+            "target": "Package",
+            "version": "[2.4.1, )"
           },
           "OpenCvSharp4.runtime.win": {
             "target": "Package",

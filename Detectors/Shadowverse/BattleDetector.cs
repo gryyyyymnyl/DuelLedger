@@ -150,7 +150,7 @@ public class BattleDetector : IStateDetector
                     // ラベルごとに screenRect を上書き（__roi / __elem）なければ fallbackRegion
                     var screenRect = ResolveScreenRectForLabel(label, screen.Width, screen.Height, fallbackRegion);
                     var tplRR = new RelativeRegion(0, 0, 1, 1, tpl.Width, tpl.Height);
-                    if (ImageMatch.TryKazeHomographyMatch(screen, tpl, screenRect, tplRR, out var s, out var loc))
+                    if (ImageMatch.TryOrbHomographyMatch(screen, tpl, screenRect, tplRR, out var s, out var loc))
                     //, canny1: 170, canny2: 400, scales: new[] { 1.0 }, new(@"C:\Users\MW\Documents\Projects\SWBT\bin\Debug\net8.0-windows\out", $"own_icon_{cls}")))
                     {
                         anyInGroup = true;
@@ -226,16 +226,5 @@ public class BattleDetector : IStateDetector
                 return VsUiMap.GetRect(elem, w, h);
         }
         return fallbackRect;
-    }
-
-    private static bool IsOwn(string path)
-    {
-        var f = Path.GetFileNameWithoutExtension(path)?.ToLowerInvariant() ?? "";
-        return f.Contains("Own") || f.Contains("self") || f.Contains("me") || f.Contains("ally");
-    }
-    private static bool IsEnemy(string path)
-    {
-        var f = Path.GetFileNameWithoutExtension(path)?.ToLowerInvariant() ?? "";
-        return f.Contains("Emy") || f.Contains("enemy") || f.Contains("op") || f.Contains("rival");
     }
 }

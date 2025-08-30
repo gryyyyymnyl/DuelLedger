@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DuelLedger.Contracts")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3015439f453877bf3b2c39ffe70a9698b85e0c44")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3305fd7b09291b4c25b9215b7ee295b4f239a03f")]
 [assembly: System.Reflection.AssemblyProductAttribute("DuelLedger.Contracts")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DuelLedger.Contracts")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

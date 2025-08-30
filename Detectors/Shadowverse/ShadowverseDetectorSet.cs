@@ -35,7 +35,8 @@ namespace DuelLedger.Detectors.Shadowverse
                 }),
             new BattleDetector(
                 new[]{
-                Path.Combine(tplRoot, @"battleClassOwn__Forest__elem=MyClass.jpg"),
+                Path.Combine(tplRoot, @"battleClassOwn__Forest_Lovesign__elem=MyClass.png"),
+                Path.Combine(tplRoot, @"battleClassOwn__Forest_Titania__elem=MyClass.png"),
                 Path.Combine(tplRoot, @"battleClassOwn__Sword__elem=MyClass.jpg"),
                 Path.Combine(tplRoot, @"battleClassOwn__Rune__elem=MyClass.jpg"),
                 Path.Combine(tplRoot, @"battleClassOwn__Dragon__elem=MyClass.jpg"),
@@ -45,7 +46,7 @@ namespace DuelLedger.Detectors.Shadowverse
                 //Path.Combine(tplRoot, @"battleClassOwnP__elem=.jpg"),
                 },
                 new[]{
-                Path.Combine(tplRoot, @"battleClassEmy__Forest__elem=OppClass.jpg"),
+                Path.Combine(tplRoot, @"battleClassEmy__Forest_Lovesign__elem=OppClass.png"),
                 Path.Combine(tplRoot, @"battleClassEmy__Sword__elem=OppClass.jpg"),
                 Path.Combine(tplRoot, @"battleClassEmy__Rune__elem=OppClass.jpg"),
                 Path.Combine(tplRoot, @"battleClassEmy__Dragon__elem=OppClass.jpg"),
