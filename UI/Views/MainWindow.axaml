@@ -54,20 +54,22 @@
   </Design.DataContext>
 
   <Grid RowDefinitions="Auto,Auto,*,Auto">
-    <styles:ColorZone Grid.Row="0" Mode="PrimaryMid" PointerPressed="OnPointerPressed">
-      <Grid ColumnDefinitions="Auto,*,Auto" Height="28" Margin="8,0">
-        <TextBlock Grid.Column="0" Classes="Headline6" VerticalAlignment="Center" Text="DuelLedger" Margin="12,0"
-                   Foreground="{DynamicResource ThemeForegroundBrush}"/>
-        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
-          <Button Click="OnMinimize" Width="14" Height="14" Padding="0">
-            <materialIcons:MaterialIcon Kind="WindowMinimize" Width="14" Height="14" Foreground="{DynamicResource ThemeForegroundBrush}"/>
-          </Button>
-          <Button Click="OnClose" Width="14" Height="14" Padding="0">
-            <materialIcons:MaterialIcon Kind="WindowClose" Width="14" Height="14" Foreground="{DynamicResource ThemeForegroundBrush}"/>
-          </Button>
-        </StackPanel>
-      </Grid>
-    </styles:ColorZone>
+    <Border Grid.Row="0" x:Name="DragArea" Background="Transparent" PointerPressed="OnPointerPressed" Height="28">
+      <styles:ColorZone Mode="PrimaryMid">
+        <Grid ColumnDefinitions="Auto,*,Auto" Height="28" Margin="8,0">
+          <TextBlock Grid.Column="0" Classes="Headline6" VerticalAlignment="Center" Text="DuelLedger" Margin="12,0"
+                     Foreground="{DynamicResource ThemeForegroundBrush}"/>
+          <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+            <Button Click="OnMinimize" Width="14" Height="14" Padding="0">
+              <materialIcons:MaterialIcon Kind="WindowMinimize" Width="14" Height="14" Foreground="{DynamicResource ThemeForegroundBrush}"/>
+            </Button>
+            <Button Click="OnClose" Width="14" Height="14" Padding="0">
+              <materialIcons:MaterialIcon Kind="WindowClose" Width="14" Height="14" Foreground="{DynamicResource ThemeForegroundBrush}"/>
+            </Button>
+          </StackPanel>
+        </Grid>
+      </styles:ColorZone>
+    </Border>
 
     <styles:ColorZone Grid.Row="1" Mode="PrimaryMid">
       <ComboBox Margin="8,0"
