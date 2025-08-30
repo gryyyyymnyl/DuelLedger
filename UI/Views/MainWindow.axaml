@@ -25,6 +25,7 @@
     <sys:Double x:Key="MinWindowWidth">100</sys:Double>
     <sys:Double x:Key="MinWindowHeight">100</sys:Double>
     <conv:WinBorderBrushMultiConverter x:Key="WinBorderBrushMultiConverter"/>
+    <conv:EqualityMultiConverter x:Key="EqualityMultiConverter"/>
   </Window.Resources>
 
     <Window.Styles>
@@ -71,29 +72,33 @@
       </styles:ColorZone>
     </Border>
 
-    <Border Grid.Row="1" Background="{DynamicResource ThemeControlLowBrush}" Padding="8,0" Classes="NoDrag">
+    <!-- 擬似メニュー：ドラッグ無効帯 -->
+    <Border Grid.Row="1" Classes="NoDrag" Margin="8,4,8,0">
       <ItemsControl ItemsSource="{Binding AvailableFormats}">
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
-            <StackPanel Orientation="Horizontal" Spacing="4"/>
+            <StackPanel Orientation="Horizontal" Spacing="8"/>
           </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <RadioButton
-                Classes="Segment"
-                Command="{Binding $parent[Window].DataContext.SetFormatCommand}"
-                CommandParameter="{Binding .}">
-              <RadioButton.Content>
+            <!-- MenuItem風。トグルでもドロップダウンでもない -->
+            <Button Classes="PseudoMenuItem"
+                    Command="{Binding $parent[Window].DataContext.SetFormatCommand}"
+                    CommandParameter="{Binding .}">
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <!-- 選択時のチェック記号（Menuのチェック相当） -->
+                <TextBlock Text="✓">
+                  <TextBlock.IsVisible>
+                    <MultiBinding Converter="{StaticResource EqualityMultiConverter}">
+                      <Binding Path="."/>
+                      <Binding Path="$parent[Window].DataContext.SelectedFormat"/>
+                    </MultiBinding>
+                  </TextBlock.IsVisible>
+                </TextBlock>
                 <TextBlock Text="{Binding Converter={StaticResource FormatNameConverter}}"/>
-              </RadioButton.Content>
-              <RadioButton.IsChecked>
-                <MultiBinding Converter="{StaticResource EqMulti}">
-                  <Binding Path="."/>
-                  <Binding Path="$parent[Window].DataContext.SelectedFormat"/>
-                </MultiBinding>
-              </RadioButton.IsChecked>
-            </RadioButton>
+              </StackPanel>
+            </Button>
           </DataTemplate>
         </ItemsControl.ItemTemplate>
       </ItemsControl>

@@ -36,6 +36,21 @@
       <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
       <Setter Property="Foreground" Value="{DynamicResource AccentForegroundColorDefaultBrush}"/>
     </Style>
+
+    <!-- Menu風ボタン -->
+    <Style Selector="Button.PseudoMenuItem">
+      <Setter Property="Padding" Value="12,6"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
+      <Setter Property="HorizontalContentAlignment" Value="Left"/>
+    </Style>
+    <Style Selector="Button.PseudoMenuItem:pointerover">
+      <Setter Property="Background" Value="{DynamicResource ThemeControlLowBrush}"/>
+    </Style>
+    <Style Selector="Button.PseudoMenuItem:pressed">
+      <Setter Property="Background" Value="{DynamicResource ThemeControlMidLowBrush}"/>
+    </Style>
   </Application.Styles>
   <Application.Resources>
     <ResourceDictionary>
@@ -78,7 +93,7 @@
       <conv:FormatNameConverter x:Key="FormatNameConverter"/>
       <conv:FormatAbbrevConverter x:Key="FormatAbbrev"/>
       <conv:TurnOrderBadgeConverter x:Key="OrderBadge"/>
-      <conv:EqualityMultiConverter x:Key="EqMulti"/>
+      <conv:EqualityMultiConverter x:Key="EqualityMultiConverter"/>
       <conv:WinBorderThicknessConverter x:Key="WinBorder"/>
       <conv:NullToBoolConverter x:Key="IsNull"/>
     </ResourceDictionary>
