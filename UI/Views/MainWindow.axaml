@@ -73,18 +73,18 @@
 
     <styles:ColorZone Grid.Row="1" Mode="PrimaryMid">
       <Menu Margin="8,0" Foreground="{DynamicResource ThemeForegroundBrush}">
-        <MenuItem Header="表示(_V)" Height="12">
+        <MenuItem Header="表示(_V)">
           <MenuItem Header="試合形式(_F)" ItemsSource="{Binding AvailableFormats}">
             <MenuItem.ItemTemplate>
               <DataTemplate>
-                <MenuItem Header="{Binding Converter={StaticResource FormatName}}"
-                          ToggleType="CheckBox"
+                <MenuItem ToggleType="CheckBox"
+                          Header="{Binding ., Converter={StaticResource FormatName}}"
                           Command="{Binding DataContext.SetFormatCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                          CommandParameter="{Binding}">
+                          CommandParameter="{Binding .}">
                   <MenuItem.IsChecked>
                     <MultiBinding Converter="{StaticResource EqualityMultiConverter}">
                       <Binding Path="DataContext.SelectedFormat" RelativeSource="{RelativeSource AncestorType=Window}"/>
-                      <Binding />
+                      <Binding Path="."/>
                     </MultiBinding>
                   </MenuItem.IsChecked>
                 </MenuItem>
