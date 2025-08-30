@@ -56,9 +56,9 @@
       <conv:FormatNameConverter x:Key="FormatNameConverter"/>
       <conv:FormatAbbrevConverter x:Key="FormatAbbrev"/>
       <conv:TurnOrderBadgeConverter x:Key="OrderBadge"/>
-      <conv:EqualityMultiConverter x:Key="EqMulti"/>
+      <conv:EqualityMultiConverter x:Key="EqualityMultiConverter"/>
       <conv:WinBorderThicknessConverter x:Key="WinBorder"/>
-      <conv:NullToBoolConverter x:Key="IsNull"/>
+      <conv:NullToBoolConverter x:Key="NullToBoolConverter"/>
     </ResourceDictionary>
   </Application.Resources>
 </Application>

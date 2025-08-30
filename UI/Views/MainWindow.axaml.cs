@@ -41,24 +41,4 @@ public partial class MainWindow : Window
         Close();
     }
 
-    private void OnFormatClick(object? sender, RoutedEventArgs e)
-    {
-        if (DataContext is not DuelLedger.UI.ViewModels.MainWindowViewModel vm) return;
-        if (sender is not MenuItem mi) return;
-
-        var val = mi.DataContext; // 子MenuItemのアイテムそのもの
-        // null → クリア
-        if (val is null) { vm.SelectedFormat = null; return; }
-
-        // 列挙値そのもの
-        if (val is DuelLedger.UI.Models.MatchFormat fmt) { vm.SelectedFormat = fmt; return; }
-
-        // 文字列 → 列挙へ
-        if (val is string s && Enum.TryParse<DuelLedger.UI.Models.MatchFormat>(s, out var parsed)) { vm.SelectedFormat = parsed; return; }
-
-        // 数値 → 列挙へ
-        if (val is IConvertible conv) { try { vm.SelectedFormat = (DuelLedger.UI.Models.MatchFormat)Convert.ToInt32(conv); return; } catch { } }
-
-        // ここまでで決まらない場合は無視
-    }
 }

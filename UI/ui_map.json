@@ -34,5 +34,6 @@
   "Format.GrandPrix": { "name": "グランプリ" },
   "Format.Win": { "name": "勝利 {0}" },
   "Format.Lose": { "name": "敗北 {0}" },
-  "Format.Rate": { "name": "Rate {0}" }
+  "Format.Rate": { "name": "Rate {0}" },
+  "FormatMenuTitle": { "name": "試合形式" }
 }

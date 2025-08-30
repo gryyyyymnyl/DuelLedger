@@ -73,29 +73,55 @@
     <styles:ColorZone Grid.Row="1" Mode="PrimaryMid">
       <Menu Margin="8,0" Foreground="{DynamicResource ThemeForegroundBrush}">
         <MenuItem Header="表示(_V)" Height="12">
-          <MenuItem x:Name="FormatRoot"
-                    Header="試合形式(_F)"
-                    ItemsSource="{Binding AvailableFormats}"
-                    DataContext="{Binding #Root.DataContext}"
-                    Command="{x:Null}">
-            <MenuItem.ItemTemplate>
-              <DataTemplate>
-                <!-- Avalonia 11 uses ToggleType to enable checkable menu items; IsCheckable is not available -->
-                <!-- Avalonia MenuItem lacks a CommandTarget property; binding through the named parent resolves commands inside popups -->
-                <MenuItem Header="{Binding Converter={StaticResource FormatNameConverter}}"
-                          Command="{Binding #FormatRoot.DataContext.SetFormatCommand}"
-                          CommandParameter="{Binding ., Mode=OneTime}"
-                          ToggleType="Radio"
-                          Click="OnFormatClick">
-                  <MenuItem.IsChecked>
-                    <MultiBinding Converter="{StaticResource EqMulti}">
-                      <Binding Path="#FormatRoot.DataContext.SelectedFormat"/>
-                      <Binding />
-                    </MultiBinding>
-                  </MenuItem.IsChecked>
-                </MenuItem>
-              </DataTemplate>
-            </MenuItem.ItemTemplate>
+          <!-- 表示→試合形式 -->
+          <MenuItem Header="{Binding Source={StaticResource UiMap}, Path=FormatMenuTitle}"
+                    x:Name="FormatRoot"
+                    DataContext="{Binding $parent[Window].DataContext}">
+            <!-- すべて -->
+            <MenuItem Header="{Binding Source={StaticResource UiMap}, Path=Format.All}"
+                      ToggleType="Radio"
+                      Command="{Binding SetFormatCommand}"
+                      CommandParameter="{x:Null}"
+                      IsChecked="{Binding Path=SelectedFormat,
+                                          Converter={StaticResource NullToBoolConverter}}" />
+            <!-- Rank -->
+            <MenuItem Header="{Binding Source={StaticResource UiMap}, Path=Format.Rank}"
+                      ToggleType="Radio"
+                      Command="{Binding SetFormatCommand}"
+                      CommandParameter="{x:Static models:MatchFormat.Rank}">
+              <MenuItem.IsChecked>
+                <MultiBinding Converter="{StaticResource EqualityMultiConverter}">
+                  <Binding Path="SelectedFormat"/>
+                  <Binding Source="{x:Static models:MatchFormat.Rank}"/>
+                </MultiBinding>
+              </MenuItem.IsChecked>
+            </MenuItem>
+
+            <!-- TwoPick -->
+            <MenuItem Header="{Binding Source={StaticResource UiMap}, Path=Format.TwoPick}"
+                      ToggleType="Radio"
+                      Command="{Binding SetFormatCommand}"
+                      CommandParameter="{x:Static models:MatchFormat.TwoPick}">
+              <MenuItem.IsChecked>
+                <MultiBinding Converter="{StaticResource EqualityMultiConverter}">
+                  <Binding Path="SelectedFormat"/>
+                  <Binding Source="{x:Static models:MatchFormat.TwoPick}"/>
+                </MultiBinding>
+              </MenuItem.IsChecked>
+            </MenuItem>
+
+            <!-- GrandPrix -->
+            <MenuItem Header="{Binding Source={StaticResource UiMap}, Path=Format.GrandPrix}"
+                      ToggleType="Radio"
+                      Command="{Binding SetFormatCommand}"
+                      CommandParameter="{x:Static models:MatchFormat.GrandPrix}">
+              <MenuItem.IsChecked>
+                <MultiBinding Converter="{StaticResource EqualityMultiConverter}">
+                  <Binding Path="SelectedFormat"/>
+                  <Binding Source="{x:Static models:MatchFormat.GrandPrix}"/>
+                </MultiBinding>
+              </MenuItem.IsChecked>
+            </MenuItem>
           </MenuItem>
         </MenuItem>
       </Menu>
@@ -170,13 +196,13 @@
                       <Grid>
                         <Border Width="20" Height="20" CornerRadius="10"
                                 Background="{Binding Converter={StaticResource ClassBrush}}"
-                                IsVisible="{Binding Converter={StaticResource IsNull}, ConverterParameter=invert}">
+                                IsVisible="{Binding Converter={StaticResource NullToBoolConverter}, ConverterParameter=invert}">
                           <svg:Svg Path="{Binding Converter={StaticResource ClassIcon}}"
                                    Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <TextBlock Text="ALL" HorizontalAlignment="Center" VerticalAlignment="Center"
                                    Foreground="{DynamicResource ThemeForegroundBrush}"
-                                   IsVisible="{Binding Converter={StaticResource IsNull}}"/>
+                                   IsVisible="{Binding Converter={StaticResource NullToBoolConverter}}"/>
                       </Grid>
                     </DataTemplate>
                   </ComboBox.ItemTemplate>

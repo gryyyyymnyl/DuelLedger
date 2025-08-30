@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using Avalonia.Collections;
 using DuelLedger.UI.Models;
 using DuelLedger.UI.Services;
 
@@ -14,14 +15,22 @@ public sealed class MainWindowViewModel : NotifyBase
 
     public ObservableCollection<MatchRecord> History => _reader.Items;
 
-    public IReadOnlyList<MatchFormat?> AvailableFormats { get; }
-        = new MatchFormat?[] { null, MatchFormat.Rank, MatchFormat.TwoPick, MatchFormat.GrandPrix };
+    public DataGridCollectionView HistoryView { get; }
 
     private MatchFormat? _selectedFormat;
     public MatchFormat? SelectedFormat
     {
         get => _selectedFormat;
-        set { Set(ref _selectedFormat, value); Recompute(); }
+        set
+        {
+            if (_selectedFormat != value)
+            {
+                _selectedFormat = value;
+                Raise(nameof(SelectedFormat));
+                HistoryView.Refresh();
+                Recompute();
+            }
+        }
     }
 
     public ICommand SetFormatCommand { get; }
@@ -34,7 +43,7 @@ public sealed class MainWindowViewModel : NotifyBase
     }
 
     private IEnumerable<MatchRecord> FilteredHistory
-        => SelectedFormat.HasValue ? History.Where(x => x.Format == SelectedFormat.Value) : History;
+        => HistoryView.Cast<MatchRecord>();
 
     // 降順（新しい順）の履歴ビュー（時系列降順）
     // 時系列（新しい順）: UTC基準 + 複合キーで安定ソート
@@ -85,10 +94,14 @@ public sealed class MainWindowViewModel : NotifyBase
     public string SelfRateText => FormatRate(SelfTotals);
     public string RateTextForActiveTab => SelectedTabIndex == 0 ? OverallRateText : SelfRateText;
 
-        public MainWindowViewModel(MatchReaderService reader)
+    public MainWindowViewModel(MatchReaderService reader)
     {
         _reader = reader;
-        _reader.Items.CollectionChanged += (_, __) => Recompute();
+        HistoryView = new DataGridCollectionView(_reader.Items)
+        {
+            Filter = o => o is MatchRecord r && (SelectedFormat is null || r.Format == SelectedFormat)
+        };
+        _reader.Items.CollectionChanged += (_, __) => { HistoryView.Refresh(); Recompute(); };
         SelectedSelfClass = null; // All
         SelectedFormat = null; // All
         SetFormatCommand = new RelayCommand<MatchFormat?>(fmt => SelectedFormat = fmt);
