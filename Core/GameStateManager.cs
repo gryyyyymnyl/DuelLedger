@@ -22,6 +22,8 @@ public class GameStateManager
     private string? _lastFormatLabel; // 現在の安定形式（検知が外れても保持）
     private static string? s_lastFormatLabel;
     private readonly int _instanceId = Environment.TickCount;
+    // 試合単位でフォーマットをPublisherに送ったか
+    private bool _formatPublishedForThisMatch = false;
     // ===== クラス検出 多数決 =====
     private const int ClassVoteWindow = 3; //クラス検出試行数
     private readonly Queue<string> _ownClassVotes = new();
@@ -69,14 +71,18 @@ public class GameStateManager
                 if (TryDetect(_matchStartDetectors, screen, out var ms, out var msScore, out var msLoc))
                 {
                     Console.WriteLine($"[{_detectorSet.GameName}] 開始→バトル開始検知 (score: {msScore:F3}, at: {msLoc})");
+                    // 1) 保持済みフォーマットを先に送る（試合ごと一回）
+                    if (!_formatPublishedForThisMatch && !string.IsNullOrWhiteSpace(_lastFormatLabel) && _lastFormatLabel != "Unknown")
+                    {
+                        Console.WriteLine($"[Format] PublishBeforeMatchStart={_lastFormatLabel}");
+                        _matchAgg.OnFormatDetected(_lastFormatLabel!);
+                        _formatPublishedForThisMatch = true;
+                    }
+
+                    // 2) 試合開始を送る
                     _matchAgg.OnMatchStarted(DateTimeOffset.UtcNow);
                     TrySetTurnOrderFromMatchStart(ms);
-                    // ◆要件: InBattleへ遷移するタイミングで、直前に検知した試合形式を出力
-                    if (!string.IsNullOrWhiteSpace(_lastFormatLabel) && _lastFormatLabel != "Unknown")
-                    {
-                        Console.WriteLine($"[Format] UseHold={_lastFormatLabel} (before InBattle)");
-                        _matchAgg.OnFormatDetected(_lastFormatLabel!);
-                    }
+
                     _currentState = GameState.InBattle;
                     return;
                 }
@@ -94,7 +100,10 @@ public class GameStateManager
                             s_lastFormatLabel = _lastFormatLabel;
                             Console.WriteLine($"[Format] Update={_lastFormatLabel} (id={_instanceId})");
                             if (_lastFormatLabel != "Unknown")
+                            {
                                 _matchAgg.OnFormatDetected(normalized);
+                                _formatPublishedForThisMatch = true; // この試合で既に送った扱い
+                            }
                         }
                     }
                     return;
@@ -241,6 +250,8 @@ public class GameStateManager
             msg.Contains("LOSE", StringComparison.OrdinalIgnoreCase) ? MatchResult.Lose :
             MatchResult.Unknown;
         _matchAgg.OnMatchEnded(result, DateTimeOffset.UtcNow);
+        _formatPublishedForThisMatch = false;
+        Console.WriteLine("[Format] Reset flag");
     }
 
     // --- FormatDetector.Message から試合形式ラベルを抽出（キー名称は複数に対応） ---
