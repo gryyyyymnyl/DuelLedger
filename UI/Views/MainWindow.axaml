@@ -77,6 +77,7 @@
             <MenuItem.ItemTemplate>
               <DataTemplate>
                 <!-- Avalonia 11 uses ToggleType to enable checkable menu items; IsCheckable is not available -->
+                <!-- Avalonia MenuItem lacks a CommandTarget property; binding to #Root resolves commands -->
                 <MenuItem Header="{Binding Converter={StaticResource FormatNameConverter}}"
                           Command="{Binding #Root.DataContext.SetFormatCommand}"
                           CommandParameter="{Binding ., Mode=OneTime}"
