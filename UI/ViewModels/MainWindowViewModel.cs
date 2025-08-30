@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Input;
 using DuelLedger.UI.Models;
 using DuelLedger.UI.Services;
 
@@ -23,8 +22,6 @@ public sealed class MainWindowViewModel : NotifyBase
         get => _selectedFormat;
         set { Set(ref _selectedFormat, value); Recompute(); }
     }
-
-    public ICommand SetFormatCommand { get; }
 
     private int _selectedTabIndex;
     public int SelectedTabIndex
@@ -91,13 +88,6 @@ public sealed class MainWindowViewModel : NotifyBase
         _reader.Items.CollectionChanged += (_, __) => Recompute();
         SelectedSelfClass = null; // All
         SelectedFormat = null;    // All
-        // Menu からの CommandParameter を安全に受け取る（null/enum/stringに対応）
-        SetFormatCommand = new RelayCommand<object?>(o =>
-        {
-            if (o is null) { SelectedFormat = null; return; }
-            if (o is MatchFormat mf) { SelectedFormat = mf; return; }
-            if (o is string s && Enum.TryParse<MatchFormat>(s, out var parsed)) { SelectedFormat = parsed; return; }
-        });
         _reader.LoadInitial();
         Recompute();
     }
@@ -146,13 +136,4 @@ public sealed class MainWindowViewModel : NotifyBase
         Raise(nameof(SelfRateText));
         Raise(nameof(RateTextForActiveTab));
     }
-}
-
-public sealed class RelayCommand<T> : ICommand
-{
-    private readonly Action<T?> _execute;
-    public RelayCommand(Action<T?> execute) => _execute = execute;
-    public event EventHandler? CanExecuteChanged;
-    public bool CanExecute(object? parameter) => true;
-    public void Execute(object? parameter) => _execute((T?)parameter);
 }
