@@ -31,10 +31,10 @@
           </Border>
         </ControlTemplate>
       </Setter>
-      <Style Selector="RadioButton.Segment:checked">
-        <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
-        <Setter Property="Foreground" Value="{DynamicResource AccentForegroundColorDefaultBrush}"/>
-      </Style>
+    </Style>
+    <Style Selector="RadioButton.Segment:checked">
+      <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
+      <Setter Property="Foreground" Value="{DynamicResource AccentForegroundColorDefaultBrush}"/>
     </Style>
   </Application.Styles>
   <Application.Resources>
