@@ -24,7 +24,7 @@ public partial class MainWindow : Window
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
         {
             if (e.Source is Control s && s.GetSelfAndVisualAncestors()
-                .OfType<Control>().Any(c => c is Menu || c is MenuItem))
+                .OfType<Control>().Any(c => c is Menu || c is MenuItem || c is Avalonia.Controls.Primitives.Popup || c is Avalonia.Controls.Primitives.PopupRoot))
                 return;
             BeginMoveDrag(e);
         }
