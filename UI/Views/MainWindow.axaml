@@ -11,6 +11,7 @@
         xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
         xmlns:conv="using:DuelLedger.UI.Converters"
         x:Class="DuelLedger.UI.Views.MainWindow"
+        x:Name="Root"
         Width="170" Height="800"
         MinWidth="{DynamicResource MinWindowWidth}"
         MinHeight="{DynamicResource MinWindowHeight}"
@@ -75,13 +76,13 @@
           <MenuItem Header="試合形式(_F)" ItemsSource="{Binding AvailableFormats}">
             <MenuItem.ItemTemplate>
               <DataTemplate>
-                <MenuItem Header="{Binding Converter={StaticResource FormatName}}"
-                          Command="{Binding DataContext.SetFormatCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                <MenuItem Header="{Binding Converter={StaticResource FormatNameConverter}}"
+                          Command="{Binding #Root.DataContext.SetFormatCommand}"
                           CommandParameter="{Binding}">
                   <MenuItem.IsChecked>
                     <MultiBinding Converter="{StaticResource EqMulti}">
+                      <Binding Path="#Root.DataContext.SelectedFormat"/>
                       <Binding />
-                      <Binding Path="DataContext.SelectedFormat" RelativeSource="{RelativeSource AncestorType=Window}"/>
                     </MultiBinding>
                   </MenuItem.IsChecked>
                 </MenuItem>
