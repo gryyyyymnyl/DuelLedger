@@ -1,7 +1,9 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 using DuelLedger.UI.ViewModels;
+using System.Linq;
 
 namespace DuelLedger.UI.Views;
 
@@ -19,7 +21,13 @@ public partial class MainWindow : Window
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        BeginMoveDrag(e);
+        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+        {
+            if (e.Source is Control s && s.GetSelfAndVisualAncestors()
+                .OfType<Control>().Any(c => c is Menu || c is MenuItem))
+                return;
+            BeginMoveDrag(e);
+        }
     }
 
     private void OnMinimize(object? sender, RoutedEventArgs e)

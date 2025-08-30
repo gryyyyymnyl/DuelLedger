@@ -78,7 +78,7 @@
               <DataTemplate>
                 <MenuItem Header="{Binding Converter={StaticResource FormatNameConverter}}"
                           Command="{Binding #Root.DataContext.SetFormatCommand}"
-                          CommandParameter="{Binding}">
+                          CommandParameter="{Binding ., Mode=OneTime}">
                   <MenuItem.IsChecked>
                     <MultiBinding Converter="{StaticResource EqMulti}">
                       <Binding Path="#Root.DataContext.SelectedFormat"/>
