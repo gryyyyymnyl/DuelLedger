@@ -72,18 +72,31 @@
     </Border>
 
     <Border Grid.Row="1" Background="{DynamicResource ThemeControlLowBrush}" Padding="8,0" Classes="NoDrag">
-      <ComboBox
-          Width="160"
-          CornerRadius="12"
-          Padding="10,2"
-          ItemsSource="{Binding AvailableFormats}"
-          SelectedItem="{Binding SelectedFormat, Mode=TwoWay}">
-        <ComboBox.ItemTemplate>
+      <ItemsControl ItemsSource="{Binding AvailableFormats}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" Spacing="4"/>
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <TextBlock Text="{Binding Converter={StaticResource FormatNameConverter}}"/>
+            <RadioButton
+                Classes="Segment"
+                Command="{Binding $parent[Window].DataContext.SetFormatCommand}"
+                CommandParameter="{Binding .}">
+              <RadioButton.Content>
+                <TextBlock Text="{Binding Converter={StaticResource FormatNameConverter}}"/>
+              </RadioButton.Content>
+              <RadioButton.IsChecked>
+                <MultiBinding Converter="{StaticResource EqMulti}">
+                  <Binding Path="."/>
+                  <Binding Path="$parent[Window].DataContext.SelectedFormat"/>
+                </MultiBinding>
+              </RadioButton.IsChecked>
+            </RadioButton>
           </DataTemplate>
-        </ComboBox.ItemTemplate>
-      </ComboBox>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
     </Border>
 
     <ScrollViewer Grid.Row="2">

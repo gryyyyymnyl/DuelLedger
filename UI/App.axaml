@@ -14,6 +14,28 @@
     <materialIcons:MaterialIconStyles />
     <!-- DataGridを使用している場合のみ有効化 -->
     <dataGrid:MaterialDataGridStyles />
+    <Style Selector="RadioButton.Segment">
+      <Setter Property="Padding" Value="10,4"/>
+      <Setter Property="CornerRadius" Value="12"/>
+      <Setter Property="Background" Value="{DynamicResource ThemeControlMidLowBrush}"/>
+      <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderLowBrush}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border CornerRadius="{TemplateBinding CornerRadius}"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}">
+            <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center"/>
+          </Border>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="RadioButton.Segment:checked">
+        <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource AccentForegroundColorDefaultBrush}"/>
+      </Style>
+    </Style>
   </Application.Styles>
   <Application.Resources>
     <ResourceDictionary>

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 using DuelLedger.UI.Models;
 using DuelLedger.UI.Services;
 
@@ -27,6 +28,8 @@ public sealed class MainWindowViewModel : NotifyBase
             Recompute();
         }
     }
+
+    public ICommand SetFormatCommand { get; }
 
     private int _selectedTabIndex;
     public int SelectedTabIndex
@@ -93,6 +96,12 @@ public sealed class MainWindowViewModel : NotifyBase
         _reader.Items.CollectionChanged += (_, __) => Recompute();
         SelectedSelfClass = null; // All
         SelectedFormat = null;    // All
+        SetFormatCommand = new RelayCommand(o =>
+        {
+            if (o is null) { SelectedFormat = null; return; }
+            if (o is MatchFormat mf) { SelectedFormat = mf; return; }
+            if (o is string s && Enum.TryParse<MatchFormat>(s, out var parsed)) { SelectedFormat = parsed; }
+        });
         _reader.LoadInitial();
         Recompute();
     }
@@ -140,5 +149,14 @@ public sealed class MainWindowViewModel : NotifyBase
         Raise(nameof(OverallRateText));
         Raise(nameof(SelfRateText));
         Raise(nameof(RateTextForActiveTab));
+    }
+
+    private sealed class RelayCommand : ICommand
+    {
+        private readonly Action<object?> _execute;
+        public RelayCommand(Action<object?> execute) => _execute = execute;
+        public event EventHandler? CanExecuteChanged { add { } remove { } }
+        public bool CanExecute(object? parameter) => true;
+        public void Execute(object? parameter) => _execute(parameter);
     }
 }
