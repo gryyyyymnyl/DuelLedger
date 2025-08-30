@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Text.Json;
 using OpenCvSharp;
 using DuelLedger.Vision;
 using DuelLedger.Core;
@@ -13,7 +13,7 @@ public class FormatDetector : IStateDetector
 {
     private readonly List<(string Label, Mat Tpl)> _templates = new();
     public GameState State => GameState.MatchStart;
-    public string Message { get; private set; } = "";
+    public string Message { get; private set; } = "{}";
     public IReadOnlyList<string> BestLabelsInGroups { get; private set; } = Array.Empty<string>();
     // テンプレート側：テンプレ画像を部分切り抜き
     private readonly (double x, double y, double w, double h) _tplRel = (0.00, 0.00, 1.00, 1.00);//0.02, 0.20, 0.25, 0.30
@@ -81,10 +81,12 @@ public class FormatDetector : IStateDetector
         BestLabelsInGroups = bestLabels.AsReadOnly();
         score = double.IsPositiveInfinity(minGroupBest) ? 0 : minGroupBest;
         location = bestLocOverall;
-        var bestLabel = bestLabelOverall;
-        Message = (string.Join(", ", BestLabelsInGroups)?.Contains("format__Rank") == true) ? "ランクマッチ"
-                        : (string.Join(", ", BestLabelsInGroups)?.Contains("format__2pick") == true) ? "2Pick"
-                        : (string.Join(", ", BestLabelsInGroups) ?? "matched");
+
+        var labelsJoined = string.Join(", ", BestLabelsInGroups);
+        var formatLabel = labelsJoined.Contains("format__Rank") ? "ランクマッチ"
+                          : labelsJoined.Contains("format__2pick") ? "2Pick"
+                          : labelsJoined;
+        Message = JsonSerializer.Serialize(new { format = formatLabel });
 #if DEBUG
         Console.WriteLine($"[Format] AND matched (groups={groups.Count})=> '{Message}', minScore={score:F3}, loc={location}, labels=[{string.Join(", ", BestLabelsInGroups)}]");
 #endif

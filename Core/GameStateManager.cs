@@ -19,7 +19,7 @@ public class GameStateManager
     private readonly List<IStateDetector> _battleDetectors;
     private readonly List<IStateDetector> _resultDetectors;
     // ===== 試合形式の保持 =====
-    private string? _lastFormatLabel; // 直前に検知した試合形式（次試合の開始時に引き継いで出力）
+    private string? _lastFormatLabel; // 現在の安定形式（検知が外れても保持）
     // ===== クラス検出 多数決 =====
     private const int ClassVoteWindow = 3; //クラス検出試行数
     private readonly Queue<string> _ownClassVotes = new();
@@ -78,10 +78,16 @@ public class GameStateManager
                 {
                     // Formatのみ検知：状態は維持（Unknown＝開始待機のまま）
                     Console.WriteLine($"[{_detectorSet.GameName}] 開始: Format継続 (score: {fScore:F3}, at: {fLoc})");
-                    // 形式を保持（次の開始時に出力するため）
                     var label = TryExtractFormat(fmt);
-                    if (!string.IsNullOrWhiteSpace(label))
-                        _lastFormatLabel = label!.Trim();
+                    if (!string.IsNullOrWhiteSpace(label) && label != "Unknown")
+                    {
+                        var normalized = label!.Trim();
+                        if (_lastFormatLabel != normalized)
+                        {
+                            _lastFormatLabel = normalized;
+                            _matchAgg.OnFormatDetected(normalized);
+                        }
+                    }
                     return;
                 }
                 Console.WriteLine($"[{_detectorSet.GameName}] 開始: 未検出、継続待機");
