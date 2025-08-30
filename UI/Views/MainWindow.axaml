@@ -25,6 +25,7 @@
     <sys:Double x:Key="MinWindowWidth">100</sys:Double>
     <sys:Double x:Key="MinWindowHeight">100</sys:Double>
     <conv:WinBorderBrushMultiConverter x:Key="WinBorderBrushMultiConverter"/>
+    <conv:EqualityMultiConverter x:Key="EqualityMultiConverter"/>
   </Window.Resources>
 
     <Window.Styles>
@@ -72,21 +73,27 @@
     </Border>
 
     <styles:ColorZone Grid.Row="1" Mode="PrimaryMid">
-      <ComboBox Margin="8,0"
-                Width="140"
-                ItemsSource="{Binding AvailableFormats}"
-                SelectedItem="{Binding SelectedFormat, Mode=TwoWay}">
-        <ComboBox.ItemTemplate>
-          <DataTemplate>
-            <TextBlock Text="{Binding Converter={StaticResource FormatNameConverter}}"/>
-          </DataTemplate>
-        </ComboBox.ItemTemplate>
-        <ComboBox.SelectionBoxItemTemplate>
-          <DataTemplate>
-            <TextBlock Text="{Binding Converter={StaticResource FormatNameConverter}}"/>
-          </DataTemplate>
-        </ComboBox.SelectionBoxItemTemplate>
-      </ComboBox>
+      <Menu Margin="8,0" Foreground="{DynamicResource ThemeForegroundBrush}">
+        <MenuItem Header="表示(_V)">
+          <MenuItem Header="試合形式(_F)" ItemsSource="{Binding AvailableFormats}">
+            <MenuItem.ItemTemplate>
+              <DataTemplate>
+                <MenuItem ToggleType="CheckBox"
+                          Header="{Binding ., Converter={StaticResource FormatNameConverter}}"
+                          Command="{Binding DataContext.SetFormatCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                          CommandParameter="{Binding .}">
+                  <MenuItem.IsChecked>
+                    <MultiBinding Converter="{StaticResource EqualityMultiConverter}">
+                      <Binding Path="DataContext.SelectedFormat" RelativeSource="{RelativeSource AncestorType=Window}"/>
+                      <Binding Path="."/>
+                    </MultiBinding>
+                  </MenuItem.IsChecked>
+                </MenuItem>
+              </DataTemplate>
+            </MenuItem.ItemTemplate>
+          </MenuItem>
+        </MenuItem>
+      </Menu>
     </styles:ColorZone>
 
     <ScrollViewer Grid.Row="2">
