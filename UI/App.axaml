@@ -53,12 +53,12 @@
       <conv:OpponentResult    x:Key="OppResult"/>
       <conv:UiTextConverter   x:Key="UiText"/>
       <conv:FormatTextConverter x:Key="FormatText"/>
-      <conv:FormatNameConverter x:Key="FormatName"/>
+      <conv:FormatNameConverter x:Key="FormatNameConverter"/>
       <conv:FormatAbbrevConverter x:Key="FormatAbbrev"/>
       <conv:TurnOrderBadgeConverter x:Key="OrderBadge"/>
-      <conv:EqualityMultiConverter x:Key="EqMulti"/>
+      <conv:EqualityMultiConverter x:Key="EqualityMultiConverter"/>
       <conv:WinBorderThicknessConverter x:Key="WinBorder"/>
-      <conv:NullToBoolConverter x:Key="IsNull"/>
+      <conv:NullToBoolConverter x:Key="NullToBoolConverter"/>
     </ResourceDictionary>
   </Application.Resources>
 </Application>
