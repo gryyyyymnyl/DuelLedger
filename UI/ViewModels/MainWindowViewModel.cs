@@ -13,7 +13,7 @@ public sealed class MainWindowViewModel : NotifyBase
 {
     private readonly MatchReaderService _reader;
 
-    public ObservableCollection<MatchRecord> History => _reader.Items;
+    public ObservableCollection<HistoryRowViewModel> History { get; } = new();
 
     public DataGridCollectionView HistoryView { get; }
 
@@ -42,15 +42,18 @@ public sealed class MainWindowViewModel : NotifyBase
         set { Set(ref _selectedTabIndex, value); Raise(nameof(RateTextForActiveTab)); }
     }
 
+    private IEnumerable<HistoryRowViewModel> FilteredHistoryVms
+        => HistoryView.Cast<HistoryRowViewModel>();
+
     private IEnumerable<MatchRecord> FilteredHistory
-        => HistoryView.Cast<MatchRecord>();
+        => FilteredHistoryVms.Select(x => x.Record);
 
     // 降順（新しい順）の履歴ビュー（時系列降順）
     // 時系列（新しい順）: UTC基準 + 複合キーで安定ソート
-    public IEnumerable<MatchRecord> HistoryDesc => FilteredHistory
+    public IEnumerable<HistoryRowViewModel> HistoryDesc => FilteredHistoryVms
         // 完全に「時刻のみ」で安定ソート（新しい順）
-        .OrderByDescending(x => x.EndedAt.ToUnixTimeMilliseconds())
-        .ThenByDescending(x => x.StartedAt.ToUnixTimeMilliseconds());
+        .OrderByDescending(x => x.Record.EndedAt.ToUnixTimeMilliseconds())
+        .ThenByDescending(x => x.Record.StartedAt.ToUnixTimeMilliseconds());
 
     public IReadOnlyList<PlayerClass?> SelfClassOptions { get; }
         = new PlayerClass?[] { null }
@@ -97,15 +100,16 @@ public sealed class MainWindowViewModel : NotifyBase
     public MainWindowViewModel(MatchReaderService reader)
     {
         _reader = reader;
-        HistoryView = new DataGridCollectionView(_reader.Items)
+        _reader.LoadInitial();
+        RebuildHistory();
+        HistoryView = new DataGridCollectionView(History)
         {
-            Filter = o => o is MatchRecord r && (SelectedFormat is null || r.Format == SelectedFormat)
+            Filter = o => o is HistoryRowViewModel r && (SelectedFormat is null || r.Record.Format == SelectedFormat)
         };
-        _reader.Items.CollectionChanged += (_, __) => { HistoryView.Refresh(); Recompute(); };
+        _reader.Items.CollectionChanged += (_, __) => { RebuildHistory(); HistoryView.Refresh(); Recompute(); };
         SelectedSelfClass = null; // All
         SelectedFormat = null; // All
         SetFormatCommand = new RelayCommand<MatchFormat?>(fmt => SelectedFormat = fmt);
-        _reader.LoadInitial();
         Recompute();
     }
 
@@ -152,6 +156,15 @@ public sealed class MainWindowViewModel : NotifyBase
         Raise(nameof(OverallRateText));
         Raise(nameof(SelfRateText));
         Raise(nameof(RateTextForActiveTab));
+    }
+
+    private void RebuildHistory()
+    {
+        foreach (var vm in History)
+            vm.Dispose();
+        History.Clear();
+        foreach (var r in _reader.Items)
+            History.Add(new HistoryRowViewModel(r));
     }
 }
 

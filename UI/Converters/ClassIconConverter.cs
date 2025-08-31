@@ -9,14 +9,15 @@ namespace DuelLedger.UI.Converters;
 
 public sealed class ClassIconConverter : IValueConverter
 {
-    private readonly SvgIconCache _cache = new();
+    private readonly SvgIconStore _store = SvgIconStore.Instance;
 
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (Application.Current?.Resources["UiMap"] is UiMapProvider map && value is PlayerClass cls)
         {
             var item = map.Get($"Class.{cls}");
-            var path = _cache.GetLocalPath(cls.ToString(), item.iconUrl);
+            SvgIconStore.Instance.Register(cls.ToString(), item.iconUrl);
+            var path = _store.TryGetLocal(cls.ToString());
             if (targetType == typeof(bool))
             {
                 if (!string.IsNullOrEmpty(path)) return false;
