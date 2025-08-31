@@ -9,13 +9,16 @@ using DuelLedger.Publishers;
 using DuelLedger.Vision;
 using DuelLedger.Contracts;
 using DuelLedger.Infra.Templates;
+using DuelLedger.Core.Config;
 using OpenCvSharp;
 
 internal static class Program
 {
     static async Task<int> Main(string[] args)
     {
-        var resolver = new TemplatePathResolver();
+        Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+        var config = ConfigLoader.Load("appsettings.json");
+        var resolver = new TemplatePathResolver(config);
         var templateRoot = resolver.Get("Shadowverse");
         var outDir = Path.Combine(AppContext.BaseDirectory, "out");
         Directory.CreateDirectory(outDir);

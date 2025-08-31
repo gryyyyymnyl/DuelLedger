@@ -10,6 +10,7 @@ using DuelLedger.Publishers;
 using DuelLedger.Detectors.Shadowverse;
 using DuelLedger.Vision;
 using DuelLedger.Infra.Templates;
+using DuelLedger.Core.Config;
 using System.IO;
 using System.Threading;
 using System.Collections.Generic;
@@ -38,7 +39,8 @@ public partial class App : Application
             Environment.SetEnvironmentVariable("PATH", nativePath + ";" + current);
         }
         
-        var resolver = new TemplatePathResolver();
+        var config = ConfigLoader.Load("appsettings.json");
+        var resolver = new TemplatePathResolver(config);
         var templateRoot = resolver.Get("Shadowverse");
         var outDir = Path.Combine(AppContext.BaseDirectory, "out");
         Directory.CreateDirectory(outDir);
