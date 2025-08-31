@@ -142,7 +142,7 @@
                   </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
                 <ListBox.ItemTemplate>
-                  <DataTemplate DataType="models:MatchRecord">
+                  <DataTemplate DataType="vm:HistoryRowViewModel">
                     <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,2" VerticalAlignment="Center">
                         <Border Width="28" Height="28" CornerRadius="999"
                                 Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}"
@@ -154,7 +154,7 @@
                               <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="ActualThemeVariant"/>
                             </MultiBinding>
                           </Border.BorderBrush>
-                          <svg:Svg Path="{Binding SelfClass, Converter={StaticResource ClassIcon}}"
+                          <svg:Svg Path="{Binding SelfIconPath}"
                                    Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
 
@@ -175,7 +175,7 @@
                               <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="ActualThemeVariant"/>
                             </MultiBinding>
                           </Border.BorderBrush>
-                          <svg:Svg Path="{Binding OppClass, Converter={StaticResource ClassIcon}}"
+                          <svg:Svg Path="{Binding OppIconPath}"
                                    Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </Grid>

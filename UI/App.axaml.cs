@@ -16,6 +16,8 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
+using Avalonia.Threading;
 #if WINDOWS
 using DuelLedger.Vision.Windows;
 #endif
@@ -57,6 +59,12 @@ public partial class App : Application
             var vm = new MainWindowViewModel(reader);
             var window = new MainWindow(vm);
             desktop.MainWindow = window;
+
+            Dispatcher.UIThread.Post(async () =>
+            {
+                var keys = vm.History.SelectMany(h => new[] { h.SelfClass.ToString(), h.OppClass.ToString() });
+                await SvgIconStore.Instance.WarmAsync(keys);
+            });
 
             _ = Task.Run(async () =>
             {
