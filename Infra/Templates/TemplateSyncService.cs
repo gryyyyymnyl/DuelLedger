@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using DuelLedger.Core.Config;
@@ -23,26 +25,50 @@ public sealed class TemplateSyncService
         _client = client;
     }
 
-    public async Task SyncAsync(string gameName, CancellationToken ct = default)
+    public async Task SyncAsync(string gameName, IProgress<double>? progress = null, CancellationToken ct = default)
     {
         if (_config.Assets.Remote is null)
             return;
-
-        var manifest = await _client.GetManifestAsync(ct);
-        var extensions = new HashSet<string>(_config.Assets.Remote.Extensions ?? new List<string>(), StringComparer.OrdinalIgnoreCase);
         var root = _resolver.Get(gameName);
         Directory.CreateDirectory(root);
 
-        int total = 0, updated = 0, skipped = 0, failed = 0;
+        // Download manifest.json and compare with local copy
+        var manifestStream = await _client.DownloadAsync(_config.Assets.Remote.Manifest, ct);
+        if (manifestStream == null)
+            return;
+        using var ms = new MemoryStream();
+        await manifestStream.CopyToAsync(ms, ct);
+        var manifestBytes = ms.ToArray();
+
+        var manifestPath = Path.Combine(root, "manifest.json");
+        if (File.Exists(manifestPath))
+        {
+            var localBytes = await File.ReadAllBytesAsync(manifestPath, ct);
+            if (localBytes.SequenceEqual(manifestBytes))
+            {
+                Console.WriteLine("[Sync] manifest up-to-date");
+                return;
+            }
+        }
+
+        await File.WriteAllBytesAsync(manifestPath, manifestBytes, ct);
+
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        var manifest = JsonSerializer.Deserialize<List<RemoteEntry>>(manifestBytes, options) ?? new List<RemoteEntry>();
+        var extensions = new HashSet<string>(_config.Assets.Remote.Extensions ?? new List<string>(), StringComparer.OrdinalIgnoreCase);
+
+        int total = manifest.Count, updated = 0, skipped = 0, failed = 0, processed = 0;
+        progress?.Report(0);
 
         foreach (var entry in manifest)
         {
-            total++;
+            processed++;
             var ext = Path.GetExtension(entry.Path);
             if (extensions.Count > 0 && !extensions.Contains(ext))
             {
                 Console.WriteLine($"[Sync] skip {entry.Path} (unsupported extension)");
                 skipped++;
+                progress?.Report((double)processed / total);
                 continue;
             }
 
@@ -77,7 +103,10 @@ public sealed class TemplateSyncService
                 }
 
                 if (!needDownload)
+                {
+                    progress?.Report((double)processed / total);
                     continue;
+                }
 
                 Console.WriteLine($"[Sync] downloading {entry.Path}");
                 var stream = await _client.DownloadAsync(entry.Path, ct);
@@ -85,6 +114,7 @@ public sealed class TemplateSyncService
                 {
                     Console.WriteLine($"[Sync] download failed {entry.Path}");
                     failed++;
+                    progress?.Report((double)processed / total);
                     continue;
                 }
 
@@ -103,6 +133,10 @@ public sealed class TemplateSyncService
             {
                 Console.WriteLine($"[Sync] failed {entry.Path}: {ex.Message}");
                 failed++;
+            }
+            finally
+            {
+                progress?.Report((double)processed / total);
             }
         }
 

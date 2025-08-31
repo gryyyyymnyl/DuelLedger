@@ -42,6 +42,20 @@ public sealed class MainWindowViewModel : NotifyBase
         set { Set(ref _selectedTabIndex, value); Raise(nameof(RateTextForActiveTab)); }
     }
 
+    private double _downloadProgress;
+    public double DownloadProgress
+    {
+        get => _downloadProgress;
+        set => Set(ref _downloadProgress, value);
+    }
+
+    private bool _isDownloadingTemplates;
+    public bool IsDownloadingTemplates
+    {
+        get => _isDownloadingTemplates;
+        set => Set(ref _isDownloadingTemplates, value);
+    }
+
     private IEnumerable<HistoryRowViewModel> FilteredHistoryVms
         => HistoryView.Cast<HistoryRowViewModel>();
 
