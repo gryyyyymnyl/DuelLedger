@@ -1,71 +1,111 @@
 using System;
+using System.Collections.Concurrent;
 using System.IO;
-using System.Net;
-using System.Net.Http;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
+using Svg.Skia;
+using SkiaSharp;
 
 namespace DuelLedger.UI.Services;
 
 public sealed class SvgIconCache
 {
+    private readonly ConcurrentDictionary<string, Bitmap> _memory = new();
     private readonly string _root;
-    private readonly HttpClient _http;
-    private readonly bool _allowRemote = true;
 
-    public SvgIconCache()
+    private SvgIconCache()
     {
         _root = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "DuelLedger", "icons");
+            "DuelLedger", "IconCache");
         Directory.CreateDirectory(_root);
-        _http = new HttpClient { Timeout = TimeSpan.FromSeconds(8) };
     }
 
-    public string? GetLocalPath(string key, string? iconUrl)
+    private static readonly Lazy<SvgIconCache> _lazy = new(() => new SvgIconCache());
+    public static SvgIconCache Instance => _lazy.Value;
+
+    public event EventHandler<string>? IconReady;
+
+    public Bitmap? TryGet(string key)
+        => _memory.TryGetValue(key, out var bmp) ? bmp : null;
+
+    private static readonly byte[] _emptyPng = Convert.FromBase64String(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=");
+    public Bitmap Placeholder { get; } = new(new MemoryStream(_emptyPng));
+
+    public async Task<Bitmap> GetOrCreateAsync(string key, Uri svgPath, Size size, CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(iconUrl)) return null;
-        var safeKey = string.Join("_", key.Split(Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries));
-        var filePath = Path.Combine(_root, safeKey + ".svg");
-        var etagPath = filePath + ".etag";
-        var modPath = filePath + ".mod";
+        if (_memory.TryGetValue(key, out var ready))
+            return ready;
+
+        var file = Path.Combine(_root, key + ".png");
+        if (File.Exists(file))
+        {
+            try
+            {
+                await using var fs = File.OpenRead(file);
+                var bmp = await Task.Run(() => Bitmap.DecodeToWidth(fs, (int)size.Width), ct).ConfigureAwait(false);
+                _memory[key] = bmp;
+                IconReady?.Invoke(this, key);
+                return bmp;
+            }
+            catch { /* fallthrough */ }
+        }
 
         try
         {
-            if (File.Exists(filePath))
+            var bmp = await Task.Run(() => RenderSvg(svgPath, size, ct), ct).ConfigureAwait(false);
+            await using (var fs = File.Open(file, FileMode.Create, FileAccess.Write))
             {
-                if (!_allowRemote) return filePath;
+                bmp.Save(fs);
             }
-
-            if (!_allowRemote && !File.Exists(filePath)) return null;
-
-            var req = new HttpRequestMessage(HttpMethod.Get, iconUrl);
-            if (File.Exists(etagPath))
-                req.Headers.TryAddWithoutValidation("If-None-Match", File.ReadAllText(etagPath));
-            if (File.Exists(modPath))
-                req.Headers.TryAddWithoutValidation("If-Modified-Since", File.ReadAllText(modPath));
-
-            var resp = _http.Send(req);
-            if (resp.StatusCode == HttpStatusCode.NotModified && File.Exists(filePath))
-                return filePath;
-
-            if (resp.IsSuccessStatusCode)
-            {
-                var data = resp.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult();
-                File.WriteAllBytes(filePath, data);
-                if (resp.Headers.ETag != null)
-                    File.WriteAllText(etagPath, resp.Headers.ETag.ToString());
-                if (resp.Content.Headers.LastModified.HasValue)
-                    File.WriteAllText(modPath, resp.Content.Headers.LastModified.Value.ToString("R"));
-                Console.WriteLine($"SvgIconCache: fetched {iconUrl}");
-                return filePath;
-            }
-
-            if (File.Exists(filePath)) return filePath;
+            _memory[key] = bmp;
+            IconReady?.Invoke(this, key);
+            return bmp;
         }
-        catch (Exception ex)
+        catch
         {
-            Console.WriteLine($"SvgIconCache: {ex.Message}");
-            if (File.Exists(filePath)) return filePath;
+            try { if (File.Exists(file)) File.Delete(file); } catch { }
+            return Placeholder;
         }
+    }
 
-        return null;
+    public void Warmup(IEnumerable<(string key, Uri path, Size size)> items)
+    {
+        foreach (var item in items)
+        {
+            _ = GetOrCreateAsync(item.key, item.path, item.size, CancellationToken.None);
+        }
+    }
+
+    private static Bitmap RenderSvg(Uri path, Size size, CancellationToken ct)
+    {
+        using var stream = AssetLoader.Open(path);
+        var svg = new SKSvg();
+        svg.Load(stream);
+        var pic = svg.Picture;
+        if (pic == null)
+            throw new InvalidOperationException("SVG picture not loaded");
+        var bounds = pic.CullRect;
+        var scaleX = (float)(size.Width / bounds.Width);
+        var scaleY = (float)(size.Height / bounds.Height);
+        var info = new SKImageInfo((int)size.Width, (int)size.Height, SKColorType.Bgra8888, SKAlphaType.Premul);
+        using var surface = SKSurface.Create(info);
+        var canvas = surface.Canvas;
+        canvas.Clear(SKColors.Transparent);
+        canvas.Scale(scaleX, scaleY);
+        canvas.DrawPicture(pic);
+        canvas.Flush();
+        using var img = surface.Snapshot();
+        using var data = img.Encode(SKEncodedImageFormat.Png, 100);
+        using var ms = new MemoryStream();
+        data.SaveTo(ms);
+        ms.Seek(0, SeekOrigin.Begin);
+        ct.ThrowIfCancellationRequested();
+        return new Bitmap(ms);
     }
 }
+

@@ -6,9 +6,10 @@
         xmlns:vm="using:DuelLedger.UI.ViewModels"
         xmlns:models="using:DuelLedger.UI.Models"
         xmlns:sys="clr-namespace:System;assembly=System.Runtime"
-        xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Avalonia.Svg.Skia"
         xmlns:styles="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
         xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:ia="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+        xmlns:behaviors="using:DuelLedger.UI.Behaviors"
         xmlns:conv="using:DuelLedger.UI.Converters"
         x:Class="DuelLedger.UI.Views.MainWindow"
         x:Name="Root"
@@ -144,7 +145,7 @@
                 <ListBox.ItemTemplate>
                   <DataTemplate DataType="models:MatchRecord">
                     <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,2" VerticalAlignment="Center">
-                        <Border Width="28" Height="28" CornerRadius="999"
+                        <Border Width="24" Height="24" CornerRadius="12"
                                 Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}"
                                 BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=self}">
                           <Border.BorderBrush>
@@ -154,8 +155,11 @@
                               <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="ActualThemeVariant"/>
                             </MultiBinding>
                           </Border.BorderBrush>
-                          <svg:Svg Path="{Binding SelfClass, Converter={StaticResource ClassIcon}}"
-                                   Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          <Image Width="20" Height="20" Source="{Binding SelfClass, Converter={StaticResource ClassIcon}}" Tag="{Binding SelfClass, Converter={StaticResource ClassIconKey}}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <ia:Interaction.Behaviors>
+                              <behaviors:RefreshOnIconReadyBehavior/>
+                            </ia:Interaction.Behaviors>
+                          </Image>
                         </Border>
 
                       <Grid Grid.Column="1" RowDefinitions="Auto,Auto" HorizontalAlignment="Center">
@@ -165,7 +169,7 @@
                         <TextBlock Grid.Row="1" Text="{Binding Format, Converter={StaticResource FormatAbbrev}}" HorizontalAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}"/>
                       </Grid>
 
-                        <Border Grid.Column="2" Width="28" Height="28" CornerRadius="999"
+                        <Border Grid.Column="2" Width="24" Height="24" CornerRadius="12"
                                 Background="{Binding OppClass, Converter={StaticResource ClassBrush}}"
                                 BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=opp}">
                           <Border.BorderBrush>
@@ -175,8 +179,11 @@
                               <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="ActualThemeVariant"/>
                             </MultiBinding>
                           </Border.BorderBrush>
-                          <svg:Svg Path="{Binding OppClass, Converter={StaticResource ClassIcon}}"
-                                   Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          <Image Width="20" Height="20" Source="{Binding OppClass, Converter={StaticResource ClassIcon}}" Tag="{Binding OppClass, Converter={StaticResource ClassIconKey}}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <ia:Interaction.Behaviors>
+                              <behaviors:RefreshOnIconReadyBehavior/>
+                            </ia:Interaction.Behaviors>
+                          </Image>
                         </Border>
                     </Grid>
                   </DataTemplate>
@@ -194,8 +201,11 @@
                         <Border Width="20" Height="20" CornerRadius="10"
                                 Background="{Binding Converter={StaticResource ClassBrush}}"
                                 IsVisible="{Binding Converter={StaticResource NullToBoolConverter}, ConverterParameter=invert}">
-                          <svg:Svg Path="{Binding Converter={StaticResource ClassIcon}}"
-                                   Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          <Image Width="16" Height="16" Source="{Binding Converter={StaticResource ClassIcon}}" Tag="{Binding Converter={StaticResource ClassIconKey}}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <ia:Interaction.Behaviors>
+                              <behaviors:RefreshOnIconReadyBehavior/>
+                            </ia:Interaction.Behaviors>
+                          </Image>
                         </Border>
                         <TextBlock Text="ALL" HorizontalAlignment="Center" VerticalAlignment="Center"
                                    Foreground="{DynamicResource ThemeForegroundBrush}"
@@ -218,8 +228,11 @@
                                 Background="{Binding Opponent, Converter={StaticResource ClassBrush}}"
                                 Margin="0,0,4,0"
                                 ZIndex="1">
-                          <svg:Svg Path="{Binding Opponent, Converter={StaticResource ClassIcon}}"
-                                   Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          <Image Width="18" Height="18" Source="{Binding Opponent, Converter={StaticResource ClassIcon}}" Tag="{Binding Opponent, Converter={StaticResource ClassIconKey}}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <ia:Interaction.Behaviors>
+                              <behaviors:RefreshOnIconReadyBehavior/>
+                            </ia:Interaction.Behaviors>
+                          </Image>
                         </Border>
                         <Grid Grid.Column="1" MinWidth="0" ClipToBounds="True">
                           <ProgressBar Minimum="0" Maximum="1" Value="{Binding WinRate}" Height="20" MinWidth="0" Foreground="{DynamicResource AccentBrush}"/>
