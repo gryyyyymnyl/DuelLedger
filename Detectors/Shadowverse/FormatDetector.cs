@@ -37,6 +37,7 @@ public class FormatDetector : IStateDetector
     {
         score = 0; location = new OpenCvSharp.Point(0, 0);
         BestLabelsInGroups = Array.Empty<string>();
+        Console.WriteLine("FormatDetector invoked");
         if (screen.Empty() || _templates.Count == 0) return false;
 
         // 1) ラベル接頭辞「Group__」でグルーピング（未指定は G1）

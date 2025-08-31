@@ -25,6 +25,16 @@ internal static class Program
         var sync = new TemplateSyncService(config, resolver, drive);
         await sync.SyncAsync("Shadowverse");
         var templateRoot = resolver.Get("Shadowverse");
+        if (args.Contains("--dry-run"))
+        {
+            Directory.CreateDirectory(templateRoot);
+            var dummyTplPath = Path.Combine(templateRoot, "format_dummy.png");
+            if (!File.Exists(dummyTplPath))
+            {
+                using var tpl = new Mat(new Size(50, 50), MatType.CV_8UC3, Scalar.White);
+                Cv2.ImWrite(dummyTplPath, tpl);
+            }
+        }
         config.Games.TryGetValue("Shadowverse", out var gameCfg);
         var outDir = Path.Combine(AppContext.BaseDirectory, "out");
         Directory.CreateDirectory(outDir);
@@ -105,8 +115,9 @@ internal static class Program
     {
         public bool TryCapture(out Mat frame)
         {
-            frame = null!;
-            return false;
+            frame = new Mat(new Size(100, 100), MatType.CV_8UC3, Scalar.Black);
+            Console.WriteLine("DummySequenceSource provided frame.");
+            return true;
         }
     }
 
