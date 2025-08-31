@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DuelLedger.Core;
+using DuelLedger.Core.Config;
 using DuelLedger.Core.Templates;
 using DuelLedger.Infra.Templates;
 using DuelLedger.Detectors.Shadowverse;
@@ -16,7 +17,9 @@ internal static class Program
 {
     static async Task<int> Main(string[] args)
     {
-        ITemplatePathResolver resolver = new TemplatePathResolver();
+        Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+        var config = ConfigLoader.Load("appsettings.json");
+        ITemplatePathResolver resolver = new TemplatePathResolver(config);
         var templateRoot = resolver.Get("Shadowverse");
 
         var outDir = Path.Combine(AppContext.BaseDirectory, "out");

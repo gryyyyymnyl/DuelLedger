@@ -1,4 +1,5 @@
 using DuelLedger.Core;
+using DuelLedger.Core.Config;
 using DuelLedger.Infra.Templates;
 using System;
 using Avalonia;
@@ -38,7 +39,8 @@ public partial class App : Application
             Environment.SetEnvironmentVariable("PATH", nativePath + ";" + current);
         }
 
-        var resolver = new TemplatePathResolver();
+        var config = ConfigLoader.Load("appsettings.json");
+        var resolver = new TemplatePathResolver(config);
         var templateRoot = resolver.Get("Shadowverse");
 
         var outDir = Path.Combine(AppContext.BaseDirectory, "out");
