@@ -1,67 +1,48 @@
 using System.Collections.Generic;
+using System.IO;
 using DuelLedger.Vision;
 using DuelLedger.Core;
 using DuelLedger.Contracts;
 
 namespace DuelLedger.Detectors.Shadowverse
 {
-
     public class ShadowverseDetectorSet : IGameStateDetectorSet
     {
         public string GameName => "Shadowverse";
         public string ProcessName => "ShadowverseWB";
         private readonly string _tplRoot;
+        private readonly IDictionary<string, string> _keys;
 
-        public ShadowverseDetectorSet(string templateRoot)
+        public ShadowverseDetectorSet(string templateRoot, IDictionary<string, string> keys)
         {
             _tplRoot = templateRoot;
+            _keys = keys;
             // IDマッパーをCoreに登録
             MatchContracts.SetClassIdMapper(ShadowverseClassIdMapper.Map);
             MatchContracts.SetFormatIdMapper(ShadowverseFormatIdMapper.Map);
         }
 
+        private string[] GetFiles(string key, string fallback)
+        {
+            var pattern = _keys.TryGetValue(key, out var v) && !string.IsNullOrWhiteSpace(v) ? v : fallback;
+            return Directory.GetFiles(_tplRoot, pattern);
+        }
+
         public List<IStateDetector> CreateDetectors()
         {
+            var format = GetFiles("Format", "format__*.png");
+            var matchStart = GetFiles("MatchStart", "matchStart__*.png");
+            var battleOwn = GetFiles("BattleOwn", "battleClassOwn__*.jpg");
+            var battleEnemy = GetFiles("BattleEnemy", "battleClassEmy__*.jpg");
+            var result = GetFiles("Result", "result__*.png");
+
             return new List<IStateDetector>
-        {
-            new FormatDetector(new[]{
-                Path.Combine(_tplRoot, @"format__2pick__elem=MatchFormat.png"),
-                Path.Combine(_tplRoot, @"format__Rank__elem=MatchFormat.png"),
-                Path.Combine(_tplRoot, @"formatP__elem=MenuDock.png")
-                }),
-            new MatchStartDetector(new[]{
-                Path.Combine(_tplRoot, @"matchStart__1st__elem=FirstSecond.png"),
-                Path.Combine(_tplRoot, @"matchStart__2nd__elem=FirstSecond.png"),
-                Path.Combine(_tplRoot, @"matchStartP__elem=VS.png")
-                }),
-            new BattleDetector(
-                new[]{
-                Path.Combine(_tplRoot, @"battleClassOwn__Forest_Lovesign__elem=MyClass.png"),
-                Path.Combine(_tplRoot, @"battleClassOwn__Forest_Titania__elem=MyClass.png"),
-                Path.Combine(_tplRoot, @"battleClassOwn__Sword__elem=MyClass.jpg"),
-                Path.Combine(_tplRoot, @"battleClassOwn__Rune__elem=MyClass.jpg"),
-                Path.Combine(_tplRoot, @"battleClassOwn__Dragon__elem=MyClass.jpg"),
-                Path.Combine(_tplRoot, @"battleClassOwn__Haven__elem=MyClass.jpg"),
-                Path.Combine(_tplRoot, @"battleClassOwn__Abyss__elem=MyClass.jpg"),
-                Path.Combine(_tplRoot, @"battleClassOwn__Portal__elem=MyClass.jpg")
-                //Path.Combine(tplRoot, @"battleClassOwnP__elem=.jpg"),
-                },
-                new[]{
-                Path.Combine(_tplRoot, @"battleClassEmy__Forest_Lovesign__elem=OppClass.png"),
-                Path.Combine(_tplRoot, @"battleClassEmy__Sword__elem=OppClass.jpg"),
-                Path.Combine(_tplRoot, @"battleClassEmy__Rune__elem=OppClass.jpg"),
-                Path.Combine(_tplRoot, @"battleClassEmy__Dragon__elem=OppClass.jpg"),
-                Path.Combine(_tplRoot, @"battleClassEmy__Haven__elem=OppClass.jpg"),
-                Path.Combine(_tplRoot, @"battleClassEmy__Abyss__elem=OppClass.jpg"),
-                Path.Combine(_tplRoot, @"battleClassEmy__Portal__elem=OppClass.jpg")
-                //Path.Combine(tplRoot, @"battleClassEmyP__elem=.jpg"),
-                }),
-            new ResultDetector(new[]{
-                Path.Combine(_tplRoot, @"result__win__elem=ResultBanner.png"),
-                Path.Combine(_tplRoot, @"result__lose__elem=ResultBanner.png"),
-                Path.Combine(_tplRoot, @"resultP__elem=NextMatch.png")
-                })/**/
-        };
+            {
+                new FormatDetector(format),
+                new MatchStartDetector(matchStart),
+                new BattleDetector(battleOwn, battleEnemy),
+                new ResultDetector(result),
+            };
         }
     }
 }

@@ -39,6 +39,7 @@ internal static class Program
 
         ITemplatePathResolver resolver = new TemplatePathResolver(config);
         var templateRoot = resolver.Get("Shadowverse");
+        var gameCfg = config.Games.TryGetValue("Shadowverse", out var g) ? g : new GameConfig();
 
         var outDir = Path.Combine(AppContext.BaseDirectory, "out");
         Directory.CreateDirectory(outDir);
@@ -47,7 +48,7 @@ internal static class Program
         IGameStateDetectorSet setForManager;
         try
         {
-            setForManager = new ShadowverseDetectorSet(templateRoot);
+            setForManager = new ShadowverseDetectorSet(templateRoot, gameCfg.Keys);
         }
         catch (Exception ex)
         {

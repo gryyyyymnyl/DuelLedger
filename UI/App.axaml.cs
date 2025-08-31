@@ -61,6 +61,7 @@ public partial class App : Application
 
         var resolver = new TemplatePathResolver(config);
         var templateRoot = resolver.Get("Shadowverse");
+        var gameCfg = config.Games.TryGetValue("Shadowverse", out var g) ? g : new GameConfig();
 
         var outDir = Path.Combine(AppContext.BaseDirectory, "out");
         Directory.CreateDirectory(outDir);
@@ -68,7 +69,7 @@ public partial class App : Application
         IGameStateDetectorSet detectorSet;
         try
         {
-            detectorSet = new ShadowverseDetectorSet(templateRoot);
+            detectorSet = new ShadowverseDetectorSet(templateRoot, gameCfg.Keys);
         }
         catch (Exception ex)
         {
