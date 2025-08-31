@@ -237,7 +237,10 @@
     </ScrollViewer>
 
       <Border Grid.Row="3" Padding="4" Background="{DynamicResource ThemeBackgroundBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1">
-        <TextBlock Text="{Binding RateTextForActiveTab}" Foreground="{DynamicResource ThemeForegroundBrush}"/>
+        <StackPanel>
+          <TextBlock Text="{Binding RateTextForActiveTab}" Foreground="{DynamicResource ThemeForegroundBrush}"/>
+          <ProgressBar Minimum="0" Maximum="1" Value="{Binding DownloadProgress}" Height="4" IsVisible="{Binding IsDownloadingTemplates}"/>
+        </StackPanel>
       </Border>
     </Grid>
   </Window>

@@ -70,7 +70,10 @@ public partial class App : Application
             {
                 try
                 {
-                    await sync.SyncAsync("Shadowverse");
+                    var progress = new Progress<double>(p => Dispatcher.UIThread.Post(() => vm.DownloadProgress = p));
+                    Dispatcher.UIThread.Post(() => vm.IsDownloadingTemplates = true);
+                    await sync.SyncAsync("Shadowverse", progress);
+                    Dispatcher.UIThread.Post(() => { vm.IsDownloadingTemplates = false; vm.DownloadProgress = 0; });
                     var templateRoot = resolver.Get("Shadowverse");
                     config.Games.TryGetValue("Shadowverse", out var gameCfg);
 
