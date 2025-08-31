@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using DuelLedger.Core.Config;
+using DuelLedger.Infra.Config;
 using DuelLedger.Core.Drives;
 
 namespace DuelLedger.Infra.Drives;
@@ -17,11 +17,16 @@ public sealed class HttpStaticClient : IRemoteDriveClient
 
     public HttpStaticClient(RemoteConfig config)
     {
-        _config = config;
+        _config = config ?? throw new ArgumentNullException(nameof(config));
+        var url = (config.StaticBaseUrl ?? string.Empty).Trim();
+        if (!url.EndsWith("/"))
+            url += "/";
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var baseUri))
+            throw new ArgumentException("Remote.StaticBaseUrl is invalid. Check appsettings.json.", nameof(config));
         _http = new HttpClient
         {
-            BaseAddress = new Uri(config.BaseUrl),
-            Timeout = TimeSpan.FromSeconds(30)
+            BaseAddress = baseUri,
+            Timeout = TimeSpan.FromSeconds(config.TimeoutSeconds)
         };
     }
 

@@ -13,6 +13,7 @@ using DuelLedger.Infra.Templates;
 using DuelLedger.Infra.Drives;
 using DuelLedger.Core.Config;
 using OpenCvSharp;
+using DuelLedger.Infra.Config;
 
 internal static class Program
 {
@@ -28,7 +29,13 @@ internal static class Program
         }
         var config = ConfigLoader.Load("appsettings.json");
         var resolver = new TemplatePathResolver(config);
-        var drive = new HttpStaticClient(config.Assets.Remote!);
+        var remoteCfg = new RemoteConfig
+        {
+            StaticBaseUrl = config.Assets.Remote?.BaseUrl,
+            TimeoutSeconds = 30,
+            Manifest = config.Assets.Remote?.Manifest ?? "manifest.json"
+        };
+        var drive = new HttpStaticClient(remoteCfg);
         var sync = new TemplateSyncService(config, resolver, drive);
         await sync.SyncAsync("Shadowverse");
         var templateRoot = resolver.Get("Shadowverse");
