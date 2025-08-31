@@ -22,6 +22,11 @@ public sealed class SvgIconCache
         _root = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "DuelLedger", "IconCache");
         Directory.CreateDirectory(_root);
+
+        var wb = new WriteableBitmap(new PixelSize(1, 1), new Vector(96, 96),
+            PixelFormat.Bgra8888, AlphaFormat.Premul);
+        using (wb.Lock()) { }
+        Placeholder = wb;
     }
 
     private static readonly Lazy<SvgIconCache> _lazy = new(() => new SvgIconCache());
@@ -32,9 +37,7 @@ public sealed class SvgIconCache
     public Bitmap? TryGet(string key)
         => _memory.TryGetValue(key, out var bmp) ? bmp : null;
 
-    private static readonly byte[] _emptyPng = Convert.FromBase64String(
-        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=");
-    public Bitmap Placeholder { get; } = new(new MemoryStream(_emptyPng));
+    public Bitmap Placeholder { get; }
 
     public async Task<Bitmap> GetOrCreateAsync(string key, Uri svgPath, Size size, CancellationToken ct)
     {
