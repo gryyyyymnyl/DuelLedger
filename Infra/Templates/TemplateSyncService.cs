@@ -41,6 +41,7 @@ public sealed class TemplateSyncService
             var ext = Path.GetExtension(entry.Path);
             if (extensions.Count > 0 && !extensions.Contains(ext))
             {
+                Console.WriteLine($"[Sync] skip {entry.Path} (unsupported extension)");
                 skipped++;
                 continue;
             }
@@ -58,6 +59,7 @@ public sealed class TemplateSyncService
                         var hash = BitConverter.ToString(sha.ComputeHash(fs)).Replace("-", "").ToLowerInvariant();
                         if (string.Equals(hash, entry.Sha256, StringComparison.OrdinalIgnoreCase))
                         {
+                            Console.WriteLine($"[Sync] up-to-date {entry.Path} (sha256)");
                             skipped++;
                             needDownload = false;
                         }
@@ -67,6 +69,7 @@ public sealed class TemplateSyncService
                         var lastWrite = File.GetLastWriteTimeUtc(localPath);
                         if (lastWrite >= entry.LastModifiedUtc.Value)
                         {
+                            Console.WriteLine($"[Sync] up-to-date {entry.Path} (timestamp)");
                             skipped++;
                             needDownload = false;
                         }
@@ -76,9 +79,11 @@ public sealed class TemplateSyncService
                 if (!needDownload)
                     continue;
 
+                Console.WriteLine($"[Sync] downloading {entry.Path}");
                 var stream = await _client.DownloadAsync(entry.Path, ct);
                 if (stream == null)
                 {
+                    Console.WriteLine($"[Sync] download failed {entry.Path}");
                     failed++;
                     continue;
                 }
@@ -91,6 +96,7 @@ public sealed class TemplateSyncService
                 }
                 if (entry.LastModifiedUtc.HasValue)
                     File.SetLastWriteTimeUtc(localPath, entry.LastModifiedUtc.Value);
+                Console.WriteLine($"[Sync] downloaded {entry.Path}");
                 updated++;
             }
             catch (Exception ex)
