@@ -11,7 +11,7 @@ namespace DuelLedger.Infra.Drives;
 
 public sealed class GoogleHttpDriveClient : IRemoteDriveClient
 {
-    private static readonly HttpClient Http = new();
+    private static readonly HttpClient Http = CreateClient();
     private readonly string _baseUrl;
     private readonly string _manifest;
 
@@ -21,20 +21,47 @@ public sealed class GoogleHttpDriveClient : IRemoteDriveClient
         _manifest = manifest;
     }
 
-    public async Task<IReadOnlyList<RemoteFile>> GetManifestAsync(CancellationToken ct)
+    private static HttpClient CreateClient()
     {
-        var url = $"{_baseUrl}/{_manifest}";
-        using var response = await Http.GetAsync(url, ct);
-        response.EnsureSuccessStatusCode();
-        await using var stream = await response.Content.ReadAsStreamAsync(ct);
-        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        var list = await JsonSerializer.DeserializeAsync<List<RemoteFile>>(stream, options, ct);
-        return list ?? new List<RemoteFile>();
+        return new HttpClient
+        {
+            Timeout = TimeSpan.FromSeconds(10)
+        };
     }
 
-    public async Task<Stream> DownloadAsync(string path, CancellationToken ct)
+    private static async Task<T> Retry<T>(Func<CancellationToken, Task<T>> action, CancellationToken ct)
+    {
+        for (var i = 0; i < 2; i++)
+        {
+            try
+            {
+                return await action(ct);
+            }
+            catch when (i < 1)
+            {
+                await Task.Delay(500, ct);
+            }
+        }
+        return await action(ct);
+    }
+
+    public Task<IReadOnlyList<RemoteFile>> GetManifestAsync(CancellationToken ct)
+    {
+        var url = $"{_baseUrl}/{_manifest}";
+        return Retry(async token =>
+        {
+            using var response = await Http.GetAsync(url, token);
+            response.EnsureSuccessStatusCode();
+            await using var stream = await response.Content.ReadAsStreamAsync(token);
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var list = await JsonSerializer.DeserializeAsync<List<RemoteFile>>(stream, options, token);
+            return (IReadOnlyList<RemoteFile>)(list ?? new List<RemoteFile>());
+        }, ct);
+    }
+
+    public Task<Stream> DownloadAsync(string path, CancellationToken ct)
     {
         var url = $"{_baseUrl}/{path}";
-        return await Http.GetStreamAsync(url, ct);
+        return Retry(token => Http.GetStreamAsync(url, token), ct);
     }
 }
