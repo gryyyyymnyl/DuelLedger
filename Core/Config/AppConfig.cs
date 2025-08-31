@@ -11,6 +11,16 @@ public sealed class AppConfig
 public sealed class AssetsConfig
 {
     public string TemplateRoot { get; set; } = "Templates";
+    public RemoteConfig? Remote { get; set; }
+        = new();
+}
+
+public sealed class RemoteConfig
+{
+    public string Provider { get; set; } = string.Empty;
+    public string BaseUrl { get; set; } = string.Empty;
+    public string Manifest { get; set; } = string.Empty;
+    public List<string> Extensions { get; set; } = new();
 }
 
 public sealed class GameConfig

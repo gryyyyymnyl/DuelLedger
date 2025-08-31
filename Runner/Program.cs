@@ -3,12 +3,14 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using DuelLedger.Core;
 using DuelLedger.Detectors.Shadowverse;
 using DuelLedger.Publishers;
 using DuelLedger.Vision;
 using DuelLedger.Contracts;
 using DuelLedger.Infra.Templates;
+using DuelLedger.Infra.Drives;
 using DuelLedger.Core.Config;
 using OpenCvSharp;
 
@@ -19,7 +21,11 @@ internal static class Program
         Directory.SetCurrentDirectory(AppContext.BaseDirectory);
         var config = ConfigLoader.Load("appsettings.json");
         var resolver = new TemplatePathResolver(config);
+        var drive = new HttpStaticClient(config.Assets.Remote!);
+        var sync = new TemplateSyncService(config, resolver, drive);
+        await sync.SyncAsync("Shadowverse");
         var templateRoot = resolver.Get("Shadowverse");
+        config.Games.TryGetValue("Shadowverse", out var gameCfg);
         var outDir = Path.Combine(AppContext.BaseDirectory, "out");
         Directory.CreateDirectory(outDir);
         var publisher = new JsonStreamPublisher(outDir);
@@ -28,7 +34,7 @@ internal static class Program
         IGameStateDetectorSet setForManager;
         try
         {
-            setForManager = new ShadowverseDetectorSet(templateRoot);
+            setForManager = new ShadowverseDetectorSet(templateRoot, gameCfg?.Keys ?? new Dictionary<string, string>());
         }
         catch (Exception ex)
         {
@@ -74,10 +80,8 @@ internal static class Program
     {
         if (OperatingSystem.IsWindows())
         {
-            Console.Write("on if");
             try
             {
-            Console.Write("on try");
                 var type = Type.GetType("DuelLedger.Vision.Windows.WinScreenSource, DuelLedger.Vision.Windows");
                 if (type != null)
                     return (IScreenSource)Activator.CreateInstance(type, processName)!;

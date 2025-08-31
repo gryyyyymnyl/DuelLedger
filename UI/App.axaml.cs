@@ -10,6 +10,7 @@ using DuelLedger.Publishers;
 using DuelLedger.Detectors.Shadowverse;
 using DuelLedger.Vision;
 using DuelLedger.Infra.Templates;
+using DuelLedger.Infra.Drives;
 using DuelLedger.Core.Config;
 using System.IO;
 using System.Threading;
@@ -41,14 +42,18 @@ public partial class App : Application
         
         var config = ConfigLoader.Load("appsettings.json");
         var resolver = new TemplatePathResolver(config);
+        var drive = new HttpStaticClient(config.Assets.Remote!);
+        var sync = new TemplateSyncService(config, resolver, drive);
+        sync.SyncAsync("Shadowverse").GetAwaiter().GetResult();
         var templateRoot = resolver.Get("Shadowverse");
+        config.Games.TryGetValue("Shadowverse", out var gameCfg);
         var outDir = Path.Combine(AppContext.BaseDirectory, "out");
         Directory.CreateDirectory(outDir);
 
         IGameStateDetectorSet detectorSet;
         try
         {
-            detectorSet = new ShadowverseDetectorSet(templateRoot);
+            detectorSet = new ShadowverseDetectorSet(templateRoot, gameCfg?.Keys ?? new Dictionary<string, string>());
         }
         catch (Exception ex)
         {
