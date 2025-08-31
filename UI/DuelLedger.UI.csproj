@@ -38,6 +38,7 @@
     <ProjectReference Include="..\Contracts\DuelLedger.Contracts.csproj" />
     <ProjectReference Include="..\Publishers\DuelLedger.Publishers.csproj" />
     <ProjectReference Include="..\Detectors\DuelLedger.Detectors.csproj" />
+    <ProjectReference Include="..\Infra\DuelLedger.Infra.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net8.0-windows'">

@@ -8,20 +8,24 @@ using DuelLedger.Detectors.Shadowverse;
 using DuelLedger.Publishers;
 using DuelLedger.Vision;
 using DuelLedger.Contracts;
+using DuelLedger.Infra.Templates;
 using OpenCvSharp;
 
 internal static class Program
 {
     static async Task<int> Main(string[] args)
     {
+        var resolver = new TemplatePathResolver();
+        var templateRoot = resolver.Get("Shadowverse");
         var outDir = Path.Combine(AppContext.BaseDirectory, "out");
         Directory.CreateDirectory(outDir);
         var publisher = new JsonStreamPublisher(outDir);
+        Console.WriteLine($"TemplateRoot: {templateRoot}");
 
         IGameStateDetectorSet setForManager;
         try
         {
-            setForManager = new ShadowverseDetectorSet();
+            setForManager = new ShadowverseDetectorSet(templateRoot);
         }
         catch (Exception ex)
         {

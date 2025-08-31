@@ -9,6 +9,7 @@ using DuelLedger.Core;
 using DuelLedger.Publishers;
 using DuelLedger.Detectors.Shadowverse;
 using DuelLedger.Vision;
+using DuelLedger.Infra.Templates;
 using System.IO;
 using System.Threading;
 using System.Collections.Generic;
@@ -37,14 +38,15 @@ public partial class App : Application
             Environment.SetEnvironmentVariable("PATH", nativePath + ";" + current);
         }
         
-        var templateRoot = Path.Combine(AppContext.BaseDirectory, "Templates");
+        var resolver = new TemplatePathResolver();
+        var templateRoot = resolver.Get("Shadowverse");
         var outDir = Path.Combine(AppContext.BaseDirectory, "out");
         Directory.CreateDirectory(outDir);
 
         IGameStateDetectorSet detectorSet;
         try
         {
-            detectorSet = new ShadowverseDetectorSet();
+            detectorSet = new ShadowverseDetectorSet(templateRoot);
         }
         catch (Exception ex)
         {

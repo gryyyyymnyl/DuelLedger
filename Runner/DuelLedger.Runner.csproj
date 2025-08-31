@@ -11,6 +11,7 @@
     <ProjectReference Include="..\Detectors\DuelLedger.Detectors.csproj" />
     <ProjectReference Include="..\Publishers\DuelLedger.Publishers.csproj" />
     <ProjectReference Include="..\Vision.Windows\DuelLedger.Vision.Windows.csproj" />
+    <ProjectReference Include="..\Infra\DuelLedger.Infra.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.11.0.20250507" />

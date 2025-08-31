@@ -1,5 +1,7 @@
 .vscode/
 Templates/
+!Core/Templates/
+!Infra/Templates/
 bin/
 obj/
 *.png
