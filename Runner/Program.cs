@@ -7,6 +7,7 @@ using DuelLedger.Core;
 using DuelLedger.Core.Config;
 using DuelLedger.Core.Templates;
 using DuelLedger.Infra.Templates;
+using DuelLedger.Infra.Drives;
 using DuelLedger.Detectors.Shadowverse;
 using DuelLedger.Publishers;
 using DuelLedger.Vision;
@@ -19,6 +20,23 @@ internal static class Program
     {
         Directory.SetCurrentDirectory(AppContext.BaseDirectory);
         var config = ConfigLoader.Load("appsettings.json");
+
+        if (config.Assets.Remote is { Provider: "GoogleHttp" } remoteCfg &&
+            !string.IsNullOrWhiteSpace(remoteCfg.BaseUrl))
+        {
+            try
+            {
+                var client = new GoogleHttpDriveClient(remoteCfg.BaseUrl, remoteCfg.Manifest);
+                var sync = new TemplateSyncService(config, client);
+                var report = await sync.SyncAsync("Shadowverse", CancellationToken.None);
+                Console.WriteLine($"[Templates] Synced: {report.Total}, Updated: {report.Updated}, Skipped: {report.Skipped}, Failed: {report.Failed}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Template sync failed: {ex.Message}");
+            }
+        }
+
         ITemplatePathResolver resolver = new TemplatePathResolver(config);
         var templateRoot = resolver.Get("Shadowverse");
 

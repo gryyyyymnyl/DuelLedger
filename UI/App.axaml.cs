@@ -1,6 +1,8 @@
 using DuelLedger.Core;
 using DuelLedger.Core.Config;
+using DuelLedger.Core.Templates;
 using DuelLedger.Infra.Templates;
+using DuelLedger.Infra.Drives;
 using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -40,6 +42,23 @@ public partial class App : Application
         }
 
         var config = ConfigLoader.Load("appsettings.json");
+
+        if (config.Assets.Remote is { Provider: "GoogleHttp" } remoteCfg &&
+            !string.IsNullOrWhiteSpace(remoteCfg.BaseUrl))
+        {
+            try
+            {
+                var client = new GoogleHttpDriveClient(remoteCfg.BaseUrl, remoteCfg.Manifest);
+                var sync = new TemplateSyncService(config, client);
+                var report = await sync.SyncAsync("Shadowverse", CancellationToken.None);
+                Console.WriteLine($"[Templates] Synced: {report.Total}, Updated: {report.Updated}, Skipped: {report.Skipped}, Failed: {report.Failed}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Template sync failed: {ex.Message}");
+            }
+        }
+
         var resolver = new TemplatePathResolver(config);
         var templateRoot = resolver.Get("Shadowverse");
 
