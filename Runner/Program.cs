@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DuelLedger.Core;
+using DuelLedger.Core.Templates;
+using DuelLedger.Infra.Templates;
 using DuelLedger.Detectors.Shadowverse;
 using DuelLedger.Publishers;
 using DuelLedger.Vision;
@@ -14,6 +16,9 @@ internal static class Program
 {
     static async Task<int> Main(string[] args)
     {
+        ITemplatePathResolver resolver = new TemplatePathResolver();
+        var templateRoot = resolver.Get("Shadowverse");
+
         var outDir = Path.Combine(AppContext.BaseDirectory, "out");
         Directory.CreateDirectory(outDir);
         var publisher = new JsonStreamPublisher(outDir);
@@ -21,7 +26,7 @@ internal static class Program
         IGameStateDetectorSet setForManager;
         try
         {
-            setForManager = new ShadowverseDetectorSet();
+            setForManager = new ShadowverseDetectorSet(templateRoot);
         }
         catch (Exception ex)
         {
@@ -67,10 +72,8 @@ internal static class Program
     {
         if (OperatingSystem.IsWindows())
         {
-            Console.Write("on if");
             try
             {
-            Console.Write("on try");
                 var type = Type.GetType("DuelLedger.Vision.Windows.WinScreenSource, DuelLedger.Vision.Windows");
                 if (type != null)
                     return (IScreenSource)Activator.CreateInstance(type, processName)!;
