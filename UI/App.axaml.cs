@@ -38,7 +38,8 @@ public partial class App : Application
 
         if (OperatingSystem.IsWindows())
         {
-            var nativePath = Path.Combine(AppContext.BaseDirectory, "runtimes", "win-x64", "native");
+            var nativePath = AppDomain.CurrentDomain.GetData("NATIVE_DLL_SEARCH_DIRECTORIES") as string
+                             ?? Path.Combine(AppContext.BaseDirectory, "runtimes", "win-x64", "native");
             var current = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
             Environment.SetEnvironmentVariable("PATH", nativePath + ";" + current);
         }

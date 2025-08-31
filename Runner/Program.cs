@@ -19,6 +19,13 @@ internal static class Program
     static async Task<int> Main(string[] args)
     {
         Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+        if (OperatingSystem.IsWindows())
+        {
+            var nativePath = AppDomain.CurrentDomain.GetData("NATIVE_DLL_SEARCH_DIRECTORIES") as string
+                             ?? Path.Combine(AppContext.BaseDirectory, "runtimes", "win-x64", "native");
+            var current = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+            Environment.SetEnvironmentVariable("PATH", nativePath + ";" + current);
+        }
         var config = ConfigLoader.Load("appsettings.json");
         var resolver = new TemplatePathResolver(config);
         var drive = new HttpStaticClient(config.Assets.Remote!);
