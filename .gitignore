@@ -1,5 +1,5 @@
 .vscode/
-Templates/
+/Templates/
 bin/
 obj/
 *.png
