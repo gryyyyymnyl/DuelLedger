@@ -10,12 +10,12 @@
     <PackageReference Include="OpenCvSharp4" Version="4.11.0.20250507" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!--ItemGroup>
     <Content Include="Shadowverse/Templates/**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>Templates\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Content>
-  </ItemGroup>
+  </ItemGroup-->
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>

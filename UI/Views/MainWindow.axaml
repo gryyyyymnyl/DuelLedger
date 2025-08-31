@@ -15,7 +15,7 @@
         Width="170" Height="800"
         MinWidth="{DynamicResource MinWindowWidth}"
         MinHeight="{DynamicResource MinWindowHeight}"
-        Title="DuelLedger"
+        Title="しゃどレコ！"
         Background="{DynamicResource ThemeBackgroundBrush}"
         Foreground="{DynamicResource ThemeForegroundBrush}"
         SystemDecorations="None"
@@ -57,7 +57,7 @@
   <Grid RowDefinitions="Auto,Auto,*,Auto">
     <styles:ColorZone Grid.Row="0" Mode="PrimaryMid" PointerPressed="OnPointerPressed">
       <Grid ColumnDefinitions="Auto,*,Auto" Height="28" Margin="8,0">
-        <TextBlock Grid.Column="0" Classes="Headline6" VerticalAlignment="Center" Text="DuelLedger" Margin="12,0"
+        <TextBlock Grid.Column="0" Classes="Headline6" VerticalAlignment="Center" Text="しゃどレコ！" Margin="12,0"
                    Foreground="{DynamicResource ThemeForegroundBrush}"/>
         <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
           <Button Click="OnMinimize" Width="14" Height="14" Padding="0">

@@ -821,6 +821,19 @@
           "bin/placeholder/DuelLedger.Detectors.dll": {}
         }
       },
+      "DuelLedger.Infra/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "DuelLedger.Core": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/DuelLedger.Infra.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DuelLedger.Infra.dll": {}
+        }
+      },
       "DuelLedger.Publishers/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
@@ -1755,6 +1768,19 @@
         },
         "runtime": {
           "bin/placeholder/DuelLedger.Detectors.dll": {}
+        }
+      },
+      "DuelLedger.Infra/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "DuelLedger.Core": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/DuelLedger.Infra.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DuelLedger.Infra.dll": {}
         }
       },
       "DuelLedger.Publishers/1.0.0": {
@@ -3112,6 +3138,11 @@
       "path": "../Detectors/DuelLedger.Detectors.csproj",
       "msbuildProject": "../Detectors/DuelLedger.Detectors.csproj"
     },
+    "DuelLedger.Infra/1.0.0": {
+      "type": "project",
+      "path": "../Infra/DuelLedger.Infra.csproj",
+      "msbuildProject": "../Infra/DuelLedger.Infra.csproj"
+    },
     "DuelLedger.Publishers/1.0.0": {
       "type": "project",
       "path": "../Publishers/DuelLedger.Publishers.csproj",
@@ -3140,6 +3171,7 @@
       "DuelLedger.Contracts >= 1.0.0",
       "DuelLedger.Core >= 1.0.0",
       "DuelLedger.Detectors >= 1.0.0",
+      "DuelLedger.Infra >= 1.0.0",
       "DuelLedger.Publishers >= 1.0.0",
       "Material.Avalonia >= 3.13.0",
       "Material.Avalonia.DataGrid >= 3.13.0",
@@ -3156,6 +3188,7 @@
       "DuelLedger.Contracts >= 1.0.0",
       "DuelLedger.Core >= 1.0.0",
       "DuelLedger.Detectors >= 1.0.0",
+      "DuelLedger.Infra >= 1.0.0",
       "DuelLedger.Publishers >= 1.0.0",
       "DuelLedger.Vision.Windows >= 1.0.0",
       "Material.Avalonia >= 3.13.0",
@@ -3202,6 +3235,9 @@
             "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Detectors\\DuelLedger.Detectors.csproj": {
               "projectPath": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Detectors\\DuelLedger.Detectors.csproj"
             },
+            "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Infra\\DuelLedger.Infra.csproj": {
+              "projectPath": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Infra\\DuelLedger.Infra.csproj"
+            },
             "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Publishers\\DuelLedger.Publishers.csproj": {
               "projectPath": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Publishers\\DuelLedger.Publishers.csproj"
             }
@@ -3218,6 +3254,9 @@
             },
             "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Detectors\\DuelLedger.Detectors.csproj": {
               "projectPath": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Detectors\\DuelLedger.Detectors.csproj"
+            },
+            "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Infra\\DuelLedger.Infra.csproj": {
+              "projectPath": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Infra\\DuelLedger.Infra.csproj"
             },
             "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Publishers\\DuelLedger.Publishers.csproj": {
               "projectPath": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Publishers\\DuelLedger.Publishers.csproj"

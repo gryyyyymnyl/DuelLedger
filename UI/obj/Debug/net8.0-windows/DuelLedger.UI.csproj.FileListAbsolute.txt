@@ -194,3 +194,6 @@ C:\Users\MW\Documents\Projects\DuelLedger\UI\bin\Debug\net8.0-windows\Material.S
 C:\Users\MW\Documents\Projects\DuelLedger\UI\bin\Debug\net8.0-windows\Material.Avalonia.DataGrid.dll
 C:\Users\MW\Documents\Projects\DuelLedger\UI\bin\Debug\net8.0-windows\Material.Icons.dll
 C:\Users\MW\Documents\Projects\DuelLedger\UI\bin\Debug\net8.0-windows\Material.Icons.Avalonia.dll
+C:\Users\MW\Documents\Projects\DuelLedger\UI\bin\Debug\net8.0-windows\appsettings.json
+C:\Users\MW\Documents\Projects\DuelLedger\UI\bin\Debug\net8.0-windows\DuelLedger.Infra.dll
+C:\Users\MW\Documents\Projects\DuelLedger\UI\bin\Debug\net8.0-windows\DuelLedger.Infra.pdb

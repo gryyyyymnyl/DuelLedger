@@ -1,17 +1,105 @@
-# DuelLedger
+# README
 
-This repository provides components for detecting game states.
+## 概要
 
-## Runner の起動方法
+**しゃどレコ！** は、「Shadowverse: Worlds Beyond」の試合戦績を自動記録する非公式ソフトウェアです。
+試合開始・進行中・結果の画面を検出し、使用クラスや勝敗を収集・集計します。
+記録結果は UI 上で履歴・クラス別統計として閲覧でき、可能です。
 
-Shadowverse detection can be started from the command line:
+> ⚠️ 本ソフトウェアは **Cygames, Inc. 非公式のファンメイドツール** です。Cygames とは一切関係がありません。
+> ⚠️ 本リポジトリには Shadowverse の画像等の著作物は含まれていません。利用時にテンプレート画像バケットから利用者の環境に自動取得されます。
+> ⚠️ 取得される画像の著作権は Cygames, Inc. に帰属します。商用利用・再配布は禁止です。
+
+---
+
+## 主な機能
+
+* ゲーム画面をキャプチャしてリアルタイムに試合状況を検出
+* 自分/相手のクラス、試合形式、勝敗、先行後攻を自動記録
+* 履歴タブによる時系列一覧表示
+* 勝敗タブによる対面ごとの勝率分析
+
+---
+
+## インストールと利用方法
+
+### 動作環境
+
+* Windows 10/11 推奨
+* .NET 8 ランタイム
+
+### 利用手順
+
+1. リリースからバイナリをダウンロードし、任意のフォルダに展開
+2. `DuelLedger.UI.exe` を起動
+3. ゲームをプレイすると、試合結果が自動で記録されます
+4. 記録は `out/` ディレクトリ以下に JSON 形式で保存されます
+5. UI から履歴や統計を確認可能です
+
+---
+
+## 開発者向け情報
+
+### ビルド手順
+
+1. リポジトリをクローン
+
+   ```bash
+   git clone https://github.com/gryyyyymnyl/DuelLedger.git
+   cd DuelLedger
+   ```
+2. .NET 8 SDK をインストール
+3. 必要パッケージを復元
+
+   ```bash
+   dotnet restore
+   ```
+4. UI プロジェクトをビルド
+
+   ```bash
+   dotnet build ./UI/DuelLedger.UI.csproj -c Release
+   ```
+5. 実行
+
+   ```bash
+   dotnet run -c Debug -f net8.0-windows --project ./UI/DuelLedger.UI.csproj
+   ```
+
+### コンソール実行 (Runner)
+
+UI なしで動作させたい場合は Runner を使用します。
 
 ```bash
-dotnet run -c Release --project ./Runner/DuelLedger.Runner.csproj
+dotnet run --project ./Runner/DuelLedger.Runner.csproj
 ```
 
-Use `--dry-run` to output a dummy match summary without requiring the game client.
+## 注意事項
 
-## UI
+* 本ソフトウェアは非公式ツールであり、Cygames公式のサポート対象外です。
+* 本ソフトは画像認識による「観察」のみを行い、ゲーム内部データを改ざん・ハッキングしません。
+* 記録はローカル保存のみで、外部サーバーへの送信は行いません。
+* Shadowverse の画像・アイコン等はリポジトリには含まれず、利用者環境でテンプレート画像バケットから取得されます。
+* 自動取得される画像の権利は Cygames, Inc. に帰属します。利用は私的・個人の範囲にとどめてください。
 
-The Avalonia-based UI starts the Shadowverse detection engine in the background on launch and writes match summaries under `out/matches` beneath the application's directory. On Windows, native OpenCV binaries are loaded from `runtimes/win-x64/native`; ensure the Microsoft Visual C++ Redistributable is installed for these binaries to load correctly.
+---
+
+## ライセンス
+
+* **本リポジトリのソースコード** は [MIT License](./LICENSE) の下で公開されています。
+* **Shadowverse の画像・アイコン等** は本ライセンスの対象外です。著作権は Cygames, Inc. に帰属します。
+* 利用者は画像の商用利用・再配布を行わないでください。
+
+---
+
+## 貢献
+
+* バグ報告や改善要望は [Issues](https://github.com/gryyyyymnyl/DuelLedger/issues) へ
+* 新機能の提案やプルリクエストは歓迎します
+
+---
+
+## 今後の計画
+* 戦績データの CSV / JSON エクスポート
+* 透過モード UI 対応
+* 対戦相手別・期間別統計の拡充
+* 他カードゲームへの拡張可能性
