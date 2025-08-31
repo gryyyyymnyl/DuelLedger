@@ -5,6 +5,7 @@ using System.Text.Json;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Platform;
+using DuelLedger.UI.Models;
 
 namespace DuelLedger.UI.Services;
 
@@ -24,7 +25,7 @@ public sealed class UiMapProvider
         var uri = new Uri($"avares://DuelLedger.UI/{name}");
         if (!AssetLoader.Exists(uri)) return null;
         using var s = AssetLoader.Open(uri);
-        return JsonSerializer.Deserialize<Dictionary<string, UiMapItem>>(s);
+        return JsonSerializer.Deserialize(s, UiJsonContext.Default.DictionaryStringUiMapItem);
     }
 
     public UiMapItem Get(string key)

@@ -11,13 +11,7 @@ public static class ConfigLoader
             return new AppConfig();
 
         var json = File.ReadAllText(path);
-        var options = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            ReadCommentHandling = JsonCommentHandling.Skip,
-            AllowTrailingCommas = true
-        };
-        return JsonSerializer.Deserialize<AppConfig>(json, options) ?? new AppConfig();
+        return JsonSerializer.Deserialize(json, AppConfigJsonContext.Default.AppConfig) ?? new AppConfig();
     }
 }
 

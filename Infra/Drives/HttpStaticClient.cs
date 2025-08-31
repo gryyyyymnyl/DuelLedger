@@ -35,11 +35,7 @@ public sealed class HttpStaticClient : IRemoteDriveClient
                 if (!resp.IsSuccessStatusCode)
                     break;
                 await using var stream = await resp.Content.ReadAsStreamAsync(ct);
-                var opts = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                var list = await JsonSerializer.DeserializeAsync<List<RemoteEntry>>(stream, opts, ct);
+                var list = await JsonSerializer.DeserializeAsync(stream, RemoteEntryJsonContext.Default.ListRemoteEntry, ct);
                 return list ?? new List<RemoteEntry>();
             }
             catch (Exception ex) when (attempt < 2)

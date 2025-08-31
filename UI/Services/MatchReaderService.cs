@@ -15,7 +15,6 @@ public sealed class MatchReaderService : IDisposable
     private readonly string _baseDir;
     private readonly string _matchesDir;
     private readonly FileSystemWatcher _watcher;
-    private readonly JsonSerializerOptions _json = new(){ PropertyNameCaseInsensitive = true };
 
     private readonly Dictionary<string, MatchRecord> _byFile = new();
 
@@ -53,7 +52,7 @@ public sealed class MatchReaderService : IDisposable
             try
             {
                 await using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                var dto = await JsonSerializer.DeserializeAsync<MatchSummaryDto>(fs, _json);
+                var dto = await JsonSerializer.DeserializeAsync(fs, UiJsonContext.Default.MatchSummaryDto);
                 if (dto is null) return;
                 var rec = dto.ToDomain();
                 await Dispatcher.UIThread.InvokeAsync(() => Upsert(path, rec));

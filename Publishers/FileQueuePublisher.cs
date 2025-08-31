@@ -19,7 +19,7 @@ public sealed class JsonStreamPublisher : IMatchPublisher
 
     public void PublishSnapshot(MatchSnapshot snapshot)
     {
-        var json = JsonSerializer.Serialize(snapshot, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(snapshot, MatchJsonContext.Default.MatchSnapshot);
         var tmp = _currentPath + ".tmp";
         File.WriteAllText(tmp, json);
         File.Move(tmp, _currentPath, overwrite: true); // アトミック更新
@@ -27,7 +27,7 @@ public sealed class JsonStreamPublisher : IMatchPublisher
 
     public void PublishFinal(MatchSummary summary)
     {
-        var json = JsonSerializer.Serialize(summary, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(summary, MatchJsonContext.Default.MatchSummary);
         var name = $"{summary.StartedAt:yyyyMMdd_HHmmssfff}_{Guid.NewGuid():N}.json";
         var path = Path.Combine(_root, "matches", name);
         File.WriteAllText(path, json);

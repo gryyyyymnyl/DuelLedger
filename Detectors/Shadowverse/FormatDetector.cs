@@ -86,7 +86,7 @@ public class FormatDetector : IStateDetector
         var formatLabel = labelsJoined.Contains("format__Rank") ? "ランクマッチ"
                           : labelsJoined.Contains("format__2pick") ? "2Pick"
                           : labelsJoined;
-        Message = JsonSerializer.Serialize(new { format = formatLabel });
+        Message = JsonSerializer.Serialize(new Dictionary<string, string> { ["format"] = formatLabel });
 #if DEBUG
         Console.WriteLine($"[Format] AND matched (groups={groups.Count})=> '{Message}', minScore={score:F3}, loc={location}, labels=[{string.Join(", ", BestLabelsInGroups)}]");
 #endif
