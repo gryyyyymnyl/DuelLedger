@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using DuelLedger.Core;
 using DuelLedger.Vision;
 using OpenCvSharp;
+using System.Runtime.InteropServices;
 
 namespace DuelLedger.UI.Services;
 
@@ -35,6 +36,17 @@ public sealed class DetectionHost : IAsyncDisposable
 
         try
         {
+            // Preflight: OpenCV とアーキ情報
+            try
+            {
+                var ver = Cv2.GetVersionString();
+                Console.WriteLine($"OpenCV: {ver}, ProcArch: {RuntimeInformation.ProcessArchitecture}, Is64Bit:{Environment.Is64BitProcess}");
+            }
+            catch (Exception pre)
+            {
+                Console.WriteLine($"OpenCV preflight failed: {pre}");
+            }
+
             _manager = new GameStateManager(_detectorSet, _screenSource, _publisher);
             _cts = CancellationTokenSource.CreateLinkedTokenSource(token);
             _worker = Task.Run(async () =>
@@ -53,7 +65,7 @@ public sealed class DetectionHost : IAsyncDisposable
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Detection loop error: {ex.Message}");
+                    Console.WriteLine($"Detection loop error: {ex}");
                 }
             }, CancellationToken.None);
 
@@ -61,7 +73,10 @@ public sealed class DetectionHost : IAsyncDisposable
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Detection start failed: {ex.Message}");
+            // 内部例外とスタックまで出力
+            Console.WriteLine($"Detection start failed: {ex}");
+            if (ex.InnerException != null)
+                Console.WriteLine($"Inner: {ex.InnerException}");
         }
         await Task.CompletedTask;
     }
