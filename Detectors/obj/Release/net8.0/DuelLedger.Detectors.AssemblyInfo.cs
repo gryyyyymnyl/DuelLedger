@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DuelLedger.Detectors")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a86b89e5bb6ce3fc85143461f9902564b60cb2d5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7362e3758ec6d5ccbda164d5b3b458fbdce63b8f")]
 [assembly: System.Reflection.AssemblyProductAttribute("DuelLedger.Detectors")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DuelLedger.Detectors")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

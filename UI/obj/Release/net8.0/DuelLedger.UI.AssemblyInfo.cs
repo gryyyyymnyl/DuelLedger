@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DuelLedger.UI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a681ec9b2f81fc3c9a3bd5f30cd2f81a1c6dbec7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0e47be62f99da9b00b0a338457debc1ad6c0827a")]
 [assembly: System.Reflection.AssemblyProductAttribute("DuelLedger.UI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DuelLedger.UI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
