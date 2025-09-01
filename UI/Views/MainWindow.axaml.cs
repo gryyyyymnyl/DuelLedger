@@ -2,6 +2,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media;
+using Avalonia.Platform;
 using Avalonia.VisualTree;
 using DuelLedger.UI.ViewModels;
 using System;
@@ -59,9 +61,29 @@ public partial class MainWindow : Window
     private void OnDisableTransparency(object? sender, RoutedEventArgs e)
         => IsTransparencyEnabled = false;
 
+    private IBrush? _originalBackground;
+
     private void ApplyTransparency(bool enabled)
     {
-        Opacity = enabled ? 0.5 : 1.0;
-        // TransparencyLevelHint = enabled ? new[] { WindowTransparencyLevel.Transparent } : Array.Empty<WindowTransparencyLevel>();
+        _originalBackground ??= Background;
+
+        if (enabled)
+        {
+            if (_originalBackground is SolidColorBrush solid)
+            {
+                Background = new SolidColorBrush(solid.Color) { Opacity = 0.5 };
+            }
+            else
+            {
+                Background = new SolidColorBrush(Colors.White) { Opacity = 0.5 };
+            }
+
+            TransparencyLevelHint = new[] { WindowTransparencyLevel.Transparent };
+        }
+        else
+        {
+            Background = _originalBackground;
+            TransparencyLevelHint = Array.Empty<WindowTransparencyLevel>();
+        }
     }
 }
