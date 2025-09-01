@@ -106,6 +106,7 @@ namespace DuelLedger.Vision
                         var pathVis = Path.Combine(outDir, $"debug_{baseName}.jpg");
                         var pathCrop = Path.Combine(outDir, $"debug_{baseName}_crop.jpg");   // 画面側切り抜き
                         var pathTpl = Path.Combine(outDir, $"debug_{baseName}_tpl.jpg");    // テンプレ側切り抜き
+                        var pathMatch = Path.Combine(outDir, $"debug_{baseName}_matches.jpg"); // 特徴点マッチの可視化
                         using var vis = (screen.Channels() == 1) ? new Mat() : screen.Clone();
                         if (screen.Channels() == 1) Cv2.CvtColor(screen, vis, ColorConversionCodes.GRAY2BGR);
                         var pts = new[]
@@ -126,6 +127,16 @@ namespace DuelLedger.Vision
                         try { Cv2.ImWrite(pathCrop, imgCrop, new[] { (int)ImwriteFlags.JpegQuality, 80 }); } catch { }
                         // テンプレート側ROI
                         try { Cv2.ImWrite(pathTpl, tplCrop, new[] { (int)ImwriteFlags.JpegQuality, 80 }); } catch { }
+
+                        // 特徴点マッチの可視化（テンプレとROIを並べて対応線を描画）
+                        try
+                        {
+                            using var matchVis = new Mat();
+                            Cv2.DrawMatches(tplCrop, kpsTpl, imgCrop, kpsImg, good, matchVis,
+                                            flags: DrawMatchesFlags.NotDrawSinglePoints);
+                            Cv2.ImWrite(pathMatch, matchVis, new[] { (int)ImwriteFlags.JpegQuality, 70 });
+                        }
+                        catch { }
                     }
                     catch { }
                 }

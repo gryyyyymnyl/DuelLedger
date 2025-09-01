@@ -80,9 +80,11 @@ public class BattleDetector : IStateDetector
 #endif
         // 側ごとにクラスを推定（クラス内で Group AND、グループ内 OR）
         var ownOk = TryMatchClass(screen, _ownClassRegion, _ownClassTpls,
-                                  out var ownCls, out var ownScore, out var ownLoc, out var ownLabels);
+                                  out var ownCls, out var ownScore, out var ownLoc, out var ownLabels,
+                                  debugPrefix: "own");
         var enemyOk = TryMatchClass(screen, _enemyClassRegion, _enemyClassTpls,
-                                    out var enemyCls, out var enemyScore, out var enemyLoc, out var enemyLabels);        if (!(ownOk || enemyOk))
+                                    out var enemyCls, out var enemyScore, out var enemyLoc, out var enemyLabels,
+                                    debugPrefix: "enemy");        if (!(ownOk || enemyOk))
         {
 #if DEBUG
             Console.WriteLine("[Battle] IsMatch: return (no match on both sides)");
@@ -113,7 +115,8 @@ public class BattleDetector : IStateDetector
     private static bool TryMatchClass(Mat screen, Rect fallbackRegion,
                                       Dictionary<string, List<(string Label, Mat Tpl)>> bank,
                                       out string? bestClass, out double bestScore,
-                                      out OpenCvSharp.Point bestLoc, out List<string> bestLabelsInGroups)
+                                      out OpenCvSharp.Point bestLoc, out List<string> bestLabelsInGroups,
+                                      string? debugPrefix = null)
     {
         bestClass = null; bestScore = double.NegativeInfinity; bestLoc = default;
         bestLabelsInGroups = new List<string>();
@@ -150,7 +153,10 @@ public class BattleDetector : IStateDetector
                     // ラベルごとに screenRect を上書き（__roi / __elem）なければ fallbackRegion
                     var screenRect = ResolveScreenRectForLabel(label, screen.Width, screen.Height, fallbackRegion);
                     var tplRR = new RelativeRegion(0, 0, 1, 1, tpl.Width, tpl.Height);
-                    if (ImageMatch.TryOrbHomographyMatch(screen, tpl, screenRect, tplRR, out var s, out var loc))
+                    var dbgName = string.IsNullOrEmpty(debugPrefix) ? null : $"{debugPrefix}_{label}";
+                    if (ImageMatch.TryOrbHomographyMatch(screen, tpl, screenRect, tplRR,
+                                                         out var s, out var loc, cfg: null,
+                                                         callerName: dbgName))
                     //, canny1: 170, canny2: 400, scales: new[] { 1.0 }, new(@"C:\Users\MW\Documents\Projects\SWBT\bin\Debug\net8.0-windows\out", $"own_icon_{cls}")))
                     {
                         anyInGroup = true;
