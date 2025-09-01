@@ -116,14 +116,16 @@ public sealed class MainWindowViewModel : NotifyBase
     public MainWindowViewModel(MatchReaderService reader)
     {
         _reader = reader;
-        _reader.LoadInitial();
-        RebuildHistory();
         HistoryView = new DataGridCollectionView(History)
         {
             Filter = o => o is HistoryRowViewModel r && (SelectedFormat is null || r.Record.Format == SelectedFormat)
         };
         _reader.Items.CollectionChanged += (_, __) => { RebuildHistory(); HistoryView.Refresh(); Recompute(); };
-        _reader.SnapshotUpdated += OnSnapshot;
+        // 互換: どちらが発火しても拾う
+        _reader.SnapshotUpdated += dto => OnSnapshot(dto);
+        _reader.Snapshot += OnSnapshot;
+        RebuildHistory();
+        _reader.LoadInitial();
         SelectedSelfClass = null; // All
         SelectedFormat = null; // All
         SetFormatCommand = new RelayCommand<MatchFormat?>(fmt => SelectedFormat = fmt);
@@ -184,7 +186,8 @@ public sealed class MainWindowViewModel : NotifyBase
             History.Add(_currentItem);
         foreach (var r in _reader.Items)
             History.Add(new HistoryRowViewModel(r));
-        Raise(nameof(HistoryDesc));
+        Raise(nameof(History));       // 念のため（History バインド向け）
+        Raise(nameof(HistoryDesc));   // 並び替え済みコレクション
     }
 
     private void EnsureCurrentItem(MatchRecord rec)
