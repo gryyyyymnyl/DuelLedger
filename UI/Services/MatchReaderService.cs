@@ -41,12 +41,13 @@ public sealed class MatchReaderService : IDisposable
 
         _currentWatcher = new FileSystemWatcher(_baseDir, "current.json")
         {
-            NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size,
+            NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Size,
             EnableRaisingEvents = true,
             IncludeSubdirectories = false,
         };
         _currentWatcher.Created += (_, e) => _ = TryLoadCurrentAsync(e.FullPath);
-        _currentWatcher.Changed += (_, e) => _ = TryLoadCurrentAsync(e.FullPath);
+        _currentWatcher.Changed +=  (_, e) => _ = TryLoadCurrentAsync(e.FullPath);
+        _currentWatcher.Renamed += (_, e) => _ = TryLoadCurrentAsync(e.FullPath);
     }
 
     public void LoadInitial()
