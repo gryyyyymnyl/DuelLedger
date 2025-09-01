@@ -23,6 +23,8 @@ public sealed class MatchReaderService : IDisposable
 
     public ObservableCollection<MatchRecord> Items { get; } = new();
 
+    public event Action<MatchSnapshotDto>? SnapshotUpdated;
+    // 互換用（古いVMが購読しても動く）
     public event Action<MatchSnapshotDto>? Snapshot;
 
     public MatchReaderService(string baseDir)
@@ -102,7 +104,10 @@ public sealed class MatchReaderService : IDisposable
                 await using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 var dto = await JsonSerializer.DeserializeAsync<MatchSnapshotDto>(fs, _json);
                 if (dto is null) return;
-                await Dispatcher.UIThread.InvokeAsync(() => Snapshot?.Invoke(dto));
+                await Dispatcher.UIThread.InvokeAsync(() => {
+                    SnapshotUpdated?.Invoke(dto);
+                    Snapshot?.Invoke(dto);
+                });
                 return;
             }
             catch (IOException)
