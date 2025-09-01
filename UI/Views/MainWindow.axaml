@@ -26,6 +26,7 @@
     <sys:Double x:Key="MinWindowWidth">100</sys:Double>
     <sys:Double x:Key="MinWindowHeight">100</sys:Double>
     <conv:WinBorderBrushMultiConverter x:Key="WinBorderBrushMultiConverter"/>
+    <conv:BoolNotConverter x:Key="BoolNot"/>
   </Window.Resources>
 
     <Window.Styles>
@@ -73,6 +74,24 @@
     <styles:ColorZone Grid.Row="1" Mode="PrimaryMid">
       <Menu Margin="8,0" Foreground="{DynamicResource ThemeForegroundBrush}">
         <MenuItem Header="表示">
+          <MenuItem Header="透過モード">
+            <MenuItem.HeaderTemplate>
+              <DataTemplate>
+                <TextBlock Text="透過モード"/>
+              </DataTemplate>
+            </MenuItem.HeaderTemplate>
+            <MenuItem Header="有効"
+                      ToggleType="Radio"
+                      IsChecked="{Binding #Root.IsTransparencyEnabled}"
+                      Click="OnEnableTransparency"/>
+            <MenuItem Header="無効"
+                      ToggleType="Radio"
+                      IsChecked="{Binding #Root.IsTransparencyEnabled, Converter={StaticResource BoolNot}}"
+                      Click="OnDisableTransparency"/>
+          </MenuItem>
+        </MenuItem>
+
+        <MenuItem Header="フィルター">
           <MenuItem x:Name="FormatRoot"
                     Header="試合形式"
                     DataContext="{Binding #Root.DataContext}">
