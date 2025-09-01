@@ -10,6 +10,14 @@ using DuelLedger.UI.Services;
 
 namespace DuelLedger.UI.Converters;
 
+public sealed class BoolNotConverter : IValueConverter
+{
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => value is bool b ? !b : value;
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => value is bool b ? !b : value;
+}
+
 public sealed class TurnOrderToText : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
