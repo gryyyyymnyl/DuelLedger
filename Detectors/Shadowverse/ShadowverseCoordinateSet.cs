@@ -41,15 +41,15 @@ public static class VsUiMap
             RelativeRegion.ScaleMode.Stretch
         ),
 
-        // 自分クラス：左下寄せ／縦基準の等倍
+        // 自分クラス：左寄せ／画面幅に合わせて伸縮
         [VsElem.MyClass] = (
             RelativeRegion.FromPixels(left: 0, top: 0, width: 2564/2, height: 1494, refW: RefW, refH: RefH),
             //RelativeRegion.FromPixels(left: 14, top: 919, width: 730, height: 460, refW: RefW, refH: RefH,
             //new Padding(-40, 0, 0, -60)),
-            //RelativeRegion.FromPixels( left: 0, top: 930, width: 560, height: 560, refW: RefW, refH: RefH , 
+            //RelativeRegion.FromPixels( left: 0, top: 930, width: 560, height: 560, refW: RefW, refH: RefH ,
             // new Padding(-40, 0, -60, 0)),
-            RelativeRegion.Anchor2D.Right | RelativeRegion.Anchor2D.CenterY,
-            RelativeRegion.ScaleMode.UniformByHeight
+            RelativeRegion.Anchor2D.Left | RelativeRegion.Anchor2D.CenterY,
+            RelativeRegion.ScaleMode.Stretch
         ),
 
         // 相手クラス：右下寄せ／縦基準の等倍
