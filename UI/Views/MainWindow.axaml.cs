@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -10,9 +11,20 @@ namespace DuelLedger.UI.Views;
 
 public partial class MainWindow : Window
 {
+    public static readonly StyledProperty<bool> IsTransparencyEnabledProperty =
+        AvaloniaProperty.Register<MainWindow, bool>(nameof(IsTransparencyEnabled));
+
+    public bool IsTransparencyEnabled
+    {
+        get => GetValue(IsTransparencyEnabledProperty);
+        set => SetValue(IsTransparencyEnabledProperty, value);
+    }
+
     public MainWindow()
     {
         InitializeComponent();
+        this.GetObservable(IsTransparencyEnabledProperty)
+            .Subscribe(enabled => ApplyTransparency(enabled));
     }
 
     public MainWindow(MainWindowViewModel vm) : this()
@@ -40,5 +52,15 @@ public partial class MainWindow : Window
     {
         Close();
     }
+    private void OnEnableTransparency(object? sender, RoutedEventArgs e)
+        => IsTransparencyEnabled = true;
 
+    private void OnDisableTransparency(object? sender, RoutedEventArgs e)
+        => IsTransparencyEnabled = false;
+
+    private void ApplyTransparency(bool enabled)
+    {
+        Opacity = enabled ? 0.5 : 1.0;
+        // TransparencyLevelHint = enabled ? new[] { WindowTransparencyLevel.Transparent } : Array.Empty<WindowTransparencyLevel>();
+    }
 }
