@@ -289,3 +289,32 @@ public sealed class NullToBoolConverter : IValueConverter
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
 }
+
+public sealed class BoolToThicknessConverter : IValueConverter
+{
+    public static readonly BoolToThicknessConverter Instance = new();
+
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => value is bool b && b ? new Thickness(2) : new Thickness(0);
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
+public sealed class BoolToBrushConverter : IValueConverter
+{
+    public static readonly BoolToBrushConverter Instance = new();
+
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is bool b && b && parameter is string key && Application.Current is { } app)
+        {
+            if (app.Resources.TryGetResource(key, app.ActualThemeVariant, out var brush) && brush is IBrush br)
+                return br;
+        }
+        return Brushes.Transparent;
+    }
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}

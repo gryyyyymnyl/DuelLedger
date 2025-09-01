@@ -59,6 +59,9 @@
       <conv:EqualityMultiConverter x:Key="EqualityMultiConverter"/>
       <conv:WinBorderThicknessConverter x:Key="WinBorder"/>
       <conv:NullToBoolConverter x:Key="NullToBoolConverter"/>
+      <!-- 進行中行の外周/背景 -->
+      <SolidColorBrush x:Key="CurrentMatchBorderBrush" Color="#FF6EA8"/>
+      <SolidColorBrush x:Key="CurrentMatchBackground" Color="#1A6EA8FF"/>
     </ResourceDictionary>
   </Application.Resources>
 </Application>

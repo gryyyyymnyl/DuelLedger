@@ -14,18 +14,23 @@ public sealed class MatchReaderService : IDisposable
 {
     private readonly string _baseDir;
     private readonly string _matchesDir;
+    private readonly string _currentPath;
     private readonly FileSystemWatcher _watcher;
+    private readonly FileSystemWatcher _currentWatcher;
     private readonly JsonSerializerOptions _json = new(){ PropertyNameCaseInsensitive = true };
 
     private readonly Dictionary<string, MatchRecord> _byFile = new();
 
     public ObservableCollection<MatchRecord> Items { get; } = new();
 
+    public event Action<MatchSnapshotDto>? Snapshot;
+
     public MatchReaderService(string baseDir)
     {
         _baseDir = baseDir;
         _matchesDir = Path.Combine(_baseDir, "matches");
         Directory.CreateDirectory(_matchesDir);
+        _currentPath = Path.Combine(_baseDir, "current.json");
 
         _watcher = new FileSystemWatcher(_matchesDir, "*.json")
         {
@@ -33,8 +38,19 @@ public sealed class MatchReaderService : IDisposable
             EnableRaisingEvents = true,
             IncludeSubdirectories = false,
         };
-        _watcher.Created += (_, e) => _ = TryLoadAsync(e.FullPath);
-        _watcher.Changed += (_, e) => _ = TryLoadAsync(e.FullPath);
+        _watcher.Created +=  (_, e) => _ = TryLoadAsync(e.FullPath);
+        _watcher.Changed +=  (_, e) => _ = TryLoadAsync(e.FullPath);
+        _watcher.Renamed +=  (_, e) => _ = TryLoadAsync(e.FullPath);
+
+        _currentWatcher = new FileSystemWatcher(_baseDir, "current.json")
+        {
+            NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Size,
+            EnableRaisingEvents = true,
+            IncludeSubdirectories = false,
+        };
+        _currentWatcher.Created += (_, __) => _ = TryLoadCurrentAsync();
+        _currentWatcher.Changed += (_, __) => _ = TryLoadCurrentAsync();
+        _currentWatcher.Renamed += (_, __) => _ = TryLoadCurrentAsync();
     }
 
     public void LoadInitial()
@@ -43,6 +59,8 @@ public sealed class MatchReaderService : IDisposable
         {
             _ = TryLoadAsync(path);
         }
+        // 起動時に current.json が既に存在していれば即読み
+        _ = TryLoadCurrentAsync();
     }
 
     private async Task TryLoadAsync(string path)
@@ -70,6 +88,34 @@ public sealed class MatchReaderService : IDisposable
             catch
             {
                 return; // 形式不正などは捨てる
+            }
+        }
+    }
+
+    private async Task TryLoadCurrentAsync()
+    {
+        var path = _currentPath;
+        for (int i = 0; i < 5; i++)
+        {
+            try
+            {
+                await using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                var dto = await JsonSerializer.DeserializeAsync<MatchSnapshotDto>(fs, _json);
+                if (dto is null) return;
+                await Dispatcher.UIThread.InvokeAsync(() => Snapshot?.Invoke(dto));
+                return;
+            }
+            catch (IOException)
+            {
+                await Task.Delay(60);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                await Task.Delay(60);
+            }
+            catch
+            {
+                return;
             }
         }
     }
@@ -110,5 +156,6 @@ public sealed class MatchReaderService : IDisposable
     public void Dispose()
     {
         _watcher.Dispose();
+        _currentWatcher.Dispose();
     }
 }

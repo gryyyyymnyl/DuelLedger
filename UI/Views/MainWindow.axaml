@@ -10,6 +10,7 @@
         xmlns:styles="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
         xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
         xmlns:conv="using:DuelLedger.UI.Converters"
+        xmlns:c="clr-namespace:DuelLedger.UI.Converters"
         x:Class="DuelLedger.UI.Views.MainWindow"
         x:Name="Root"
         Width="170" Height="800"
@@ -153,6 +154,14 @@
                 <ListBox.Styles>
                   <Style Selector="ListBoxItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="BorderThickness"
+                            Value="{Binding IsCurrent, Converter={x:Static c:BoolToThicknessConverter.Instance}}"/>
+                    <Setter Property="BorderBrush"
+                            Value="{Binding IsCurrent, Converter={x:Static c:BoolToBrushConverter.Instance}, ConverterParameter=CurrentMatchBorderBrush}"/>
+                    <Setter Property="Background"
+                            Value="{Binding IsCurrent, Converter={x:Static c:BoolToBrushConverter.Instance}, ConverterParameter=CurrentMatchBackground}"/>
+                    <Setter Property="CornerRadius" Value="8"/>
+                    <Setter Property="Padding" Value="8"/>
                   </Style>
                 </ListBox.Styles>
                 <ListBox.ItemsPanel>

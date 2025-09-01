@@ -17,6 +17,8 @@ public sealed class MainWindowViewModel : NotifyBase
 
     public DataGridCollectionView HistoryView { get; }
 
+    private HistoryRowViewModel? _currentItem;
+
     private MatchFormat? _selectedFormat;
     public MatchFormat? SelectedFormat
     {
@@ -121,6 +123,7 @@ public sealed class MainWindowViewModel : NotifyBase
             Filter = o => o is HistoryRowViewModel r && (SelectedFormat is null || r.Record.Format == SelectedFormat)
         };
         _reader.Items.CollectionChanged += (_, __) => { RebuildHistory(); HistoryView.Refresh(); Recompute(); };
+        _reader.Snapshot += OnSnapshot;
         SelectedSelfClass = null; // All
         SelectedFormat = null; // All
         SetFormatCommand = new RelayCommand<MatchFormat?>(fmt => SelectedFormat = fmt);
@@ -174,11 +177,62 @@ public sealed class MainWindowViewModel : NotifyBase
 
     private void RebuildHistory()
     {
-        foreach (var vm in History)
+        foreach (var vm in History.Where(x => x != _currentItem))
             vm.Dispose();
         History.Clear();
+        if (_currentItem is not null)
+            History.Add(_currentItem);
         foreach (var r in _reader.Items)
             History.Add(new HistoryRowViewModel(r));
+        Raise(nameof(HistoryDesc));
+    }
+
+    private void EnsureCurrentItem(MatchRecord rec)
+    {
+        if (_currentItem is null)
+        {
+            _currentItem = new HistoryRowViewModel(rec) { IsCurrent = true };
+            History.Insert(0, _currentItem);
+        }
+        else
+        {
+            var idx = History.IndexOf(_currentItem);
+            _currentItem.Dispose();
+            var vm = new HistoryRowViewModel(rec) { IsCurrent = true };
+            if (idx >= 0)
+                History[idx] = vm;
+            else
+                History.Insert(0, vm);
+            _currentItem = vm;
+        }
+    }
+
+    private void OnSnapshot(MatchSnapshotDto dto)
+    {
+        if (dto.StartedAt is null)
+            return;
+        var rec = dto.ToDomain();
+        if (_currentItem is null || _currentItem.Record.StartedAt != rec.StartedAt)
+        {
+            EnsureCurrentItem(rec);
+        }
+        else
+        {
+            EnsureCurrentItem(rec); // replace existing with updated values
+        }
+
+        if (dto.EndedAt is not null && rec.Result != MatchResult.Unknown)
+        {
+            if (_currentItem is not null)
+            {
+                _currentItem.IsCurrent = false;
+                _currentItem = null;
+            }
+        }
+
+        Raise(nameof(HistoryDesc));
+        HistoryView.Refresh();
+        Recompute();
     }
 }
 

@@ -19,6 +19,13 @@ public sealed class HistoryRowViewModel : NotifyBase, IDisposable
     public string? SelfIconPath { get; private set; }
     public string? OppIconPath { get; private set; }
 
+    private bool _isCurrent;
+    public bool IsCurrent
+    {
+        get => _isCurrent;
+        set => Set(ref _isCurrent, value);
+    }
+
     private readonly SvgIconStore _store = SvgIconStore.Instance;
 
     public HistoryRowViewModel(MatchRecord record)
