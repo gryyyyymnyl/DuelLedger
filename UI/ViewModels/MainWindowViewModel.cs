@@ -62,11 +62,9 @@ public sealed class MainWindowViewModel : NotifyBase
     private IEnumerable<MatchRecord> FilteredHistory
         => FilteredHistoryVms.Select(x => x.Record);
 
-    // 降順（新しい順）の履歴ビュー（時系列降順）
-    // 時系列（新しい順）: UTC基準 + 複合キーで安定ソート
+    // 進行中を先頭 → 開始時刻降順
     public IEnumerable<HistoryRowViewModel> HistoryDesc => FilteredHistoryVms
-        // 完全に「時刻のみ」で安定ソート（新しい順）
-        .OrderByDescending(x => x.Record.EndedAt.ToUnixTimeMilliseconds())
+        .OrderByDescending(x => x.Record.IsInProgress)
         .ThenByDescending(x => x.Record.StartedAt.ToUnixTimeMilliseconds());
 
     public IReadOnlyList<PlayerClass?> SelfClassOptions { get; }

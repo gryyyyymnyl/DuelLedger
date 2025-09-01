@@ -59,6 +59,8 @@
       <conv:EqualityMultiConverter x:Key="EqualityMultiConverter"/>
       <conv:WinBorderThicknessConverter x:Key="WinBorder"/>
       <conv:NullToBoolConverter x:Key="NullToBoolConverter"/>
+      <conv:InProgressBorderBrushConverter x:Key="InProgressBorderBrushConverter"/>
+      <conv:InProgressBackgroundBrushConverter x:Key="InProgressBackgroundBrushConverter"/>
     </ResourceDictionary>
   </Application.Resources>
 </Application>

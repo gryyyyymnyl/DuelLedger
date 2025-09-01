@@ -94,10 +94,11 @@ public sealed class MatchReaderService : IDisposable
 
     private void Resort()
     {
-        // UTC基準 + 複合キーで安定ソート（新しい順）：同一終了時刻でも順番が揺れないように
+        // 進行中を最優先 → 開始時刻降順 → 以降は安定キー
         var ordered = Items
-            .OrderByDescending(x => x.EndedAt)
+            .OrderByDescending(x => x.IsInProgress)
             .ThenByDescending(x => x.StartedAt)
+            .ThenByDescending(x => x.EndedAt)
             .ThenByDescending(x => x.Result)
             .ThenBy(x => x.SelfClass)
             .ThenBy(x => x.OppClass)

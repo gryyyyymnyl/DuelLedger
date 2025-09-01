@@ -183,6 +183,24 @@ public sealed class FormatAbbrevConverter : IValueConverter
         => throw new NotSupportedException();
 }
 
+public sealed class InProgressBorderBrushConverter : IValueConverter
+{
+    private static readonly IBrush Highlight = new SolidColorBrush(Color.Parse("#FF5AC8FA"));
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => value is bool b && b ? Highlight : Brushes.Transparent;
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
+public sealed class InProgressBackgroundBrushConverter : IValueConverter
+{
+    private static readonly IBrush Highlight = new SolidColorBrush(Color.Parse("#1A5AC8FA"));
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => value is bool b && b ? Highlight : Brushes.Transparent;
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
 public sealed class TurnOrderBadgeConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)

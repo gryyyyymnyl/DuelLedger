@@ -148,8 +148,10 @@
         <styles:Card Classes="Outlined" Padding="12" Background="{DynamicResource CardBackgroundBrush}">
           <TabControl SelectedIndex="{Binding SelectedTabIndex}">
             <TabItem Header="{Binding Source='Header.History', Converter={StaticResource UiText}}" Classes="ModeAwareHeader">
-              <ListBox Margin="4"
-                       ItemsSource="{Binding HistoryDesc}">
+              <ListBox x:Name="HistoryList" Margin="4"
+                       ItemsSource="{Binding HistoryDesc}"
+                       BorderThickness="0"
+                       Background="Transparent">
                 <ListBox.Styles>
                   <Style Selector="ListBoxItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -162,7 +164,10 @@
                 </ListBox.ItemsPanel>
                 <ListBox.ItemTemplate>
                   <DataTemplate DataType="vm:HistoryRowViewModel">
-                    <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,2" VerticalAlignment="Center">
+                    <Border x:Name="RowBorder" Padding="6" CornerRadius="6" BorderThickness="2" Margin="2"
+                            BorderBrush="{Binding Record.IsInProgress, Converter={StaticResource InProgressBorderBrushConverter}}"
+                            Background="{Binding Record.IsInProgress, Converter={StaticResource InProgressBackgroundBrushConverter}}">
+                      <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
                         <Border Width="28" Height="28" CornerRadius="999"
                                 Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}"
                                 BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=self}">
@@ -177,12 +182,12 @@
                                    Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
 
-                      <Grid Grid.Column="1" RowDefinitions="Auto,Auto" HorizontalAlignment="Center">
-                        <Border Grid.Row="0" Background="{DynamicResource ThemeBorderBrush}" CornerRadius="4" Padding="2" HorizontalAlignment="Center">
-                          <TextBlock Text="{Binding Order, Converter={StaticResource OrderBadge}}" FontSize="10" Foreground="{DynamicResource ThemeForegroundBrush}"/>
-                        </Border>
-                        <TextBlock Grid.Row="1" Text="{Binding Format, Converter={StaticResource FormatAbbrev}}" HorizontalAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}"/>
-                      </Grid>
+                        <Grid Grid.Column="1" RowDefinitions="Auto,Auto" HorizontalAlignment="Center">
+                          <Border Grid.Row="0" Background="{DynamicResource ThemeBorderBrush}" CornerRadius="4" Padding="2" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding Order, Converter={StaticResource OrderBadge}}" FontSize="10" Foreground="{DynamicResource ThemeForegroundBrush}"/>
+                          </Border>
+                          <TextBlock Grid.Row="1" Text="{Binding Format, Converter={StaticResource FormatAbbrev}}" HorizontalAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}"/>
+                        </Grid>
 
                         <Border Grid.Column="2" Width="28" Height="28" CornerRadius="999"
                                 Background="{Binding OppClass, Converter={StaticResource ClassBrush}}"
@@ -197,7 +202,8 @@
                           <svg:Svg Path="{Binding OppIconPath}"
                                    Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
-                    </Grid>
+                      </Grid>
+                    </Border>
                   </DataTemplate>
                 </ListBox.ItemTemplate>
                 <ListBox.Transitions/>
