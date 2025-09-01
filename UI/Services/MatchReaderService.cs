@@ -69,7 +69,7 @@ public sealed class MatchReaderService : IDisposable
         {
             try
             {
-                await using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                await using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
                 var dto = await JsonSerializer.DeserializeAsync<MatchSummaryDto>(fs, _json);
                 if (dto is null) return;
                 var rec = dto.ToDomain();
@@ -97,7 +97,7 @@ public sealed class MatchReaderService : IDisposable
         {
             try
             {
-                await using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                await using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
                 var dto = await JsonSerializer.DeserializeAsync<MatchSnapshotDto>(fs, _json);
                 if (dto is null) return;
                 var rec = dto.ToDomain();
