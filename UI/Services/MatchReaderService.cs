@@ -35,6 +35,7 @@ public sealed class MatchReaderService : IDisposable
             NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Size,
             EnableRaisingEvents = true,
             IncludeSubdirectories = false,
+            InternalBufferSize = 64 * 1024,
         };
         _watcher.Created += (_, e) => _ = TryLoadAsync(e.FullPath);
         _watcher.Changed += (_, e) => _ = TryLoadAsync(e.FullPath);
@@ -44,6 +45,7 @@ public sealed class MatchReaderService : IDisposable
             NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Size,
             EnableRaisingEvents = true,
             IncludeSubdirectories = false,
+            InternalBufferSize = 16 * 1024,
         };
         _currentWatcher.Created += (_, e) => _ = TryLoadCurrentAsync(e.FullPath);
         _currentWatcher.Changed +=  (_, e) => _ = TryLoadCurrentAsync(e.FullPath);
@@ -64,8 +66,8 @@ public sealed class MatchReaderService : IDisposable
 
     private async Task TryLoadAsync(string path)
     {
-        // 書き込み中を考慮してリトライ
-        for (int i = 0; i < 5; i++)
+        // 書き込み/置換中を考慮してリトライ
+        for (int i = 0; i < 10; i++)
         {
             try
             {
@@ -78,11 +80,11 @@ public sealed class MatchReaderService : IDisposable
             }
             catch (IOException)
             {
-                await Task.Delay(60);
+                await Task.Delay(100);
             }
             catch (UnauthorizedAccessException)
             {
-                await Task.Delay(60);
+                await Task.Delay(100);
             }
             catch
             {
@@ -93,7 +95,7 @@ public sealed class MatchReaderService : IDisposable
 
     private async Task TryLoadCurrentAsync(string path)
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 10; i++)
         {
             try
             {
@@ -106,11 +108,11 @@ public sealed class MatchReaderService : IDisposable
             }
             catch (IOException)
             {
-                await Task.Delay(60);
+                await Task.Delay(100);
             }
             catch (UnauthorizedAccessException)
             {
-                await Task.Delay(60);
+                await Task.Delay(100);
             }
             catch
             {

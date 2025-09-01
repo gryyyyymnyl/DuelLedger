@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.IO;
 using DuelLedger.Core;
 using DuelLedger.Vision;
 using OpenCvSharp;
@@ -39,21 +40,33 @@ public sealed class DetectionHost : IAsyncDisposable
             _cts = CancellationTokenSource.CreateLinkedTokenSource(token);
             _worker = Task.Run(async () =>
             {
-                try
+                while (!_cts!.IsCancellationRequested)
                 {
-                    while (!_cts!.IsCancellationRequested)
+                    try
                     {
                         _manager.Update();
+                    }
+                    catch (UnauthorizedAccessException ex)
+                    {
+                        Console.WriteLine($"Detection transient error: {ex.Message}");
+                    }
+                    catch (IOException ex)
+                    {
+                        Console.WriteLine($"Detection transient error: {ex.Message}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Detection loop error: {ex.Message}");
+                    }
+
+                    try
+                    {
                         await Task.Delay(200, _cts.Token);
                     }
-                }
-                catch (OperationCanceledException)
-                {
-                    // graceful exit
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Detection loop error: {ex.Message}");
+                    catch (OperationCanceledException)
+                    {
+                        // graceful exit
+                    }
                 }
             }, CancellationToken.None);
 

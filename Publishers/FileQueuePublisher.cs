@@ -1,9 +1,13 @@
 namespace DuelLedger.Publishers;
 
+using System;
+using System.IO;
 using System.Text.Json;
+using System.Threading;
 
 using DuelLedger.Contracts;
 using DuelLedger.Core;
+
 public sealed class JsonStreamPublisher : IMatchPublisher
 {
     private readonly string _root;
@@ -19,18 +23,16 @@ public sealed class JsonStreamPublisher : IMatchPublisher
 
     public void PublishSnapshot(MatchSnapshot snapshot)
     {
-        var json = JsonSerializer.Serialize(snapshot, new JsonSerializerOptions { WriteIndented = true });
-        var tmp = _currentPath + ".tmp";
-        File.WriteAllText(tmp, json);
-        File.Move(tmp, _currentPath, overwrite: true); // アトミック更新
+        var json = JsonSerializer.SerializeToUtf8Bytes(snapshot, new JsonSerializerOptions { WriteIndented = true });
+        WriteAtomically(_currentPath, json);
     }
 
     public void PublishFinal(MatchSummary summary)
     {
-        var json = JsonSerializer.Serialize(summary, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.SerializeToUtf8Bytes(summary, new JsonSerializerOptions { WriteIndented = true });
         var name = $"{summary.StartedAt:yyyyMMdd_HHmmssfff}_{Guid.NewGuid():N}.json";
         var path = Path.Combine(_root, "matches", name);
-        File.WriteAllText(path, json);
+        WriteAtomically(path, json);
 
         // 最終状態で current.json も合わせて更新しておく
         PublishSnapshot(new MatchSnapshot(
@@ -38,5 +40,38 @@ public sealed class JsonStreamPublisher : IMatchPublisher
             summary.SelfClass, summary.OppClass, summary.Order,
             summary.StartedAt, summary.EndedAt, summary.Result
         ));
+    }
+
+    private static void WriteAtomically(string path, byte[] data)
+    {
+        for (var i = 0; i < 10; i++)
+        {
+            try
+            {
+                var tmp = path + ".tmp";
+                using (var fs = new FileStream(tmp, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.WriteThrough))
+                {
+                    fs.Write(data, 0, data.Length);
+                    fs.Flush(true);
+                }
+                if (File.Exists(path))
+                {
+                    File.Replace(tmp, path, null);
+                }
+                else
+                {
+                    File.Move(tmp, path);
+                }
+                return;
+            }
+            catch (IOException) when (i < 9)
+            {
+                Thread.Sleep(50 * (1 << i));
+            }
+            catch (UnauthorizedAccessException) when (i < 9)
+            {
+                Thread.Sleep(50 * (1 << i));
+            }
+        }
     }
 }
