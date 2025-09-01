@@ -123,7 +123,7 @@ public sealed class MainWindowViewModel : NotifyBase
             Filter = o => o is HistoryRowViewModel r && (SelectedFormat is null || r.Record.Format == SelectedFormat)
         };
         _reader.Items.CollectionChanged += (_, __) => { RebuildHistory(); HistoryView.Refresh(); Recompute(); };
-        _reader.Snapshot += OnSnapshot;
+        _reader.SnapshotUpdated += OnSnapshot;
         SelectedSelfClass = null; // All
         SelectedFormat = null; // All
         SetFormatCommand = new RelayCommand<MatchFormat?>(fmt => SelectedFormat = fmt);

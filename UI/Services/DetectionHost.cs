@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.IO;
 using DuelLedger.Core;
 using DuelLedger.Vision;
 using OpenCvSharp;
@@ -43,7 +44,22 @@ public sealed class DetectionHost : IAsyncDisposable
                 {
                     while (!_cts!.IsCancellationRequested)
                     {
-                        _manager.Update();
+                        try
+                        {
+                            _manager.Update();
+                        }
+                        catch (UnauthorizedAccessException ex)
+                        {
+                            Console.WriteLine($"Detection loop warning: {ex.Message}");
+                        }
+                        catch (IOException ex)
+                        {
+                            Console.WriteLine($"Detection loop warning: {ex.Message}");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Detection loop error: {ex.Message}");
+                        }
                         await Task.Delay(200, _cts.Token);
                     }
                 }
