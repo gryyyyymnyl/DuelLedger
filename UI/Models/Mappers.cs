@@ -23,4 +23,18 @@ public static class Mappers
             EndedAt = dto.EndedAt,
         };
     }
+
+    public static MatchRecord ToDomain(this MatchSnapshotDto dto)
+    {
+        return new MatchRecord
+        {
+            Format = SafeEnum(dto.Format, MatchFormat.Unknown),
+            SelfClass = SafeEnum(dto.SelfClass, PlayerClass.Unknown),
+            OppClass = SafeEnum(dto.OppClass, PlayerClass.Unknown),
+            Order = SafeEnum(dto.Order, TurnOrder.Unknown),
+            Result = SafeEnum(dto.Result, MatchResult.Unknown),
+            StartedAt = dto.StartedAt ?? DateTimeOffset.MinValue,
+            EndedAt = dto.EndedAt ?? dto.StartedAt ?? DateTimeOffset.MinValue,
+        };
+    }
 }

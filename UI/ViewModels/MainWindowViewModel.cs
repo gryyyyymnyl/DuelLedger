@@ -12,6 +12,7 @@ namespace DuelLedger.UI.ViewModels;
 public sealed class MainWindowViewModel : NotifyBase
 {
     private readonly MatchReaderService _reader;
+    private HistoryRowViewModel? _currentItem;
 
     public ObservableCollection<HistoryRowViewModel> History { get; } = new();
 
@@ -65,8 +66,8 @@ public sealed class MainWindowViewModel : NotifyBase
     // 降順（新しい順）の履歴ビュー（時系列降順）
     // 時系列（新しい順）: UTC基準 + 複合キーで安定ソート
     public IEnumerable<HistoryRowViewModel> HistoryDesc => FilteredHistoryVms
-        // 完全に「時刻のみ」で安定ソート（新しい順）
-        .OrderByDescending(x => x.Record.EndedAt.ToUnixTimeMilliseconds())
+        .OrderByDescending(x => x.IsCurrent)
+        .ThenByDescending(x => x.Record.EndedAt.ToUnixTimeMilliseconds())
         .ThenByDescending(x => x.Record.StartedAt.ToUnixTimeMilliseconds());
 
     public IReadOnlyList<PlayerClass?> SelfClassOptions { get; }
@@ -121,6 +122,7 @@ public sealed class MainWindowViewModel : NotifyBase
             Filter = o => o is HistoryRowViewModel r && (SelectedFormat is null || r.Record.Format == SelectedFormat)
         };
         _reader.Items.CollectionChanged += (_, __) => { RebuildHistory(); HistoryView.Refresh(); Recompute(); };
+        _reader.SnapshotUpdated += dto => OnSnapshot(dto);
         SelectedSelfClass = null; // All
         SelectedFormat = null; // All
         SetFormatCommand = new RelayCommand<MatchFormat?>(fmt => SelectedFormat = fmt);
@@ -179,6 +181,56 @@ public sealed class MainWindowViewModel : NotifyBase
         History.Clear();
         foreach (var r in _reader.Items)
             History.Add(new HistoryRowViewModel(r));
+    }
+
+    private HistoryRowViewModel EnsureCurrentItem(MatchRecord rec)
+    {
+        var vm = new HistoryRowViewModel(rec) { IsCurrent = true };
+        if (_currentItem is null)
+        {
+            History.Insert(0, vm);
+        }
+        else
+        {
+            var idx = History.IndexOf(_currentItem);
+            if (idx >= 0)
+            {
+                _currentItem.Dispose();
+                History[idx] = vm;
+            }
+            else
+            {
+                History.Insert(0, vm);
+            }
+        }
+        _currentItem = vm;
+        return vm;
+    }
+
+    private void OnSnapshot(MatchSnapshotDto dto)
+    {
+        if (dto.StartedAt is null)
+            return;
+        var rec = dto.ToDomain();
+        if (_currentItem is null || _currentItem.Record.StartedAt != rec.StartedAt)
+        {   // new match
+            EnsureCurrentItem(rec);
+        }
+        else
+        {
+            EnsureCurrentItem(rec); // replace existing with updated values
+        }
+
+        if (dto.EndedAt is not null && rec.Result != MatchResult.Unknown)
+        {
+            if (_currentItem is not null)
+            {
+                _currentItem.IsCurrent = false;
+                _currentItem = null;
+            }
+        }
+
+        Raise(nameof(HistoryDesc));
     }
 }
 

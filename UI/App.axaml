@@ -42,6 +42,13 @@
         </ResourceDictionary>
       </ResourceDictionary.ThemeDictionaries>
 
+      <!-- 進行中行の強調用リソース -->
+      <SolidColorBrush x:Key="CurrentMatchBorderBrush" Color="#FF6EA8" />
+      <SolidColorBrush x:Key="CurrentMatchBackground" Color="#1A6EA8FF" />
+
+      <conv:BoolToThicknessConverter x:Key="BoolToThicknessConverter"/>
+      <conv:BoolToBrushConverter x:Key="BoolToBrushConverter"/>
+
       <conv:AspectWideByRatio   x:Key="AspectWideByRatio"/>
       <conv:AspectNarrowByRatio x:Key="AspectNarrowByRatio"/>
       <conv:ClassColorConverter x:Key="ClassBrush"/>

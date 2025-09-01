@@ -8,6 +8,8 @@ namespace DuelLedger.UI.ViewModels;
 public sealed class HistoryRowViewModel : NotifyBase, IDisposable
 {
     public MatchRecord Record { get; }
+    private bool _isCurrent;
+    public bool IsCurrent { get => _isCurrent; set => Set(ref _isCurrent, value); }
     public PlayerClass SelfClass => Record.SelfClass;
     public PlayerClass OppClass => Record.OppClass;
     public TurnOrder Order => Record.Order;

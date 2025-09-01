@@ -15,11 +15,15 @@ public sealed class MatchReaderService : IDisposable
     private readonly string _baseDir;
     private readonly string _matchesDir;
     private readonly FileSystemWatcher _watcher;
+    private readonly string _currentPath;
+    private readonly FileSystemWatcher _currentWatcher;
     private readonly JsonSerializerOptions _json = new(){ PropertyNameCaseInsensitive = true };
 
     private readonly Dictionary<string, MatchRecord> _byFile = new();
 
     public ObservableCollection<MatchRecord> Items { get; } = new();
+
+    public event Action<MatchSnapshotDto>? SnapshotUpdated;
 
     public MatchReaderService(string baseDir)
     {
@@ -35,6 +39,16 @@ public sealed class MatchReaderService : IDisposable
         };
         _watcher.Created += (_, e) => _ = TryLoadAsync(e.FullPath);
         _watcher.Changed += (_, e) => _ = TryLoadAsync(e.FullPath);
+
+        _currentPath = Path.Combine(_baseDir, "current.json");
+        _currentWatcher = new FileSystemWatcher(_baseDir, "current.json")
+        {
+            NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Size,
+            EnableRaisingEvents = true,
+            IncludeSubdirectories = false,
+        };
+        _currentWatcher.Created += (_, __) => _ = TryLoadCurrentAsync();
+        _currentWatcher.Changed += (_, __) => _ = TryLoadCurrentAsync();
     }
 
     public void LoadInitial()
@@ -43,6 +57,7 @@ public sealed class MatchReaderService : IDisposable
         {
             _ = TryLoadAsync(path);
         }
+        _ = TryLoadCurrentAsync();
     }
 
     private async Task TryLoadAsync(string path)
@@ -70,6 +85,33 @@ public sealed class MatchReaderService : IDisposable
             catch
             {
                 return; // 形式不正などは捨てる
+            }
+        }
+    }
+
+    private async Task TryLoadCurrentAsync()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            try
+            {
+                await using var fs = new FileStream(_currentPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                var dto = await JsonSerializer.DeserializeAsync<MatchSnapshotDto>(fs, _json);
+                if (dto is null) return;
+                await Dispatcher.UIThread.InvokeAsync(() => SnapshotUpdated?.Invoke(dto));
+                return;
+            }
+            catch (IOException)
+            {
+                await Task.Delay(60);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                await Task.Delay(60);
+            }
+            catch
+            {
+                return;
             }
         }
     }
@@ -110,5 +152,6 @@ public sealed class MatchReaderService : IDisposable
     public void Dispose()
     {
         _watcher.Dispose();
+        _currentWatcher.Dispose();
     }
 }

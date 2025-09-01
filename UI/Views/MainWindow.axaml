@@ -150,11 +150,6 @@
             <TabItem Header="{Binding Source='Header.History', Converter={StaticResource UiText}}" Classes="ModeAwareHeader">
               <ListBox Margin="4"
                        ItemsSource="{Binding HistoryDesc}">
-                <ListBox.Styles>
-                  <Style Selector="ListBoxItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                  </Style>
-                </ListBox.Styles>
                 <ListBox.ItemsPanel>
                   <ItemsPanelTemplate>
                     <VirtualizingStackPanel/>
@@ -162,7 +157,8 @@
                 </ListBox.ItemsPanel>
                 <ListBox.ItemTemplate>
                   <DataTemplate DataType="vm:HistoryRowViewModel">
-                    <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,2" VerticalAlignment="Center">
+                    <Border Padding="8" CornerRadius="8">
+                      <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,2" VerticalAlignment="Center">
                         <Border Width="28" Height="28" CornerRadius="999"
                                 Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}"
                                 BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=self}">
@@ -177,12 +173,12 @@
                                    Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
 
-                      <Grid Grid.Column="1" RowDefinitions="Auto,Auto" HorizontalAlignment="Center">
-                        <Border Grid.Row="0" Background="{DynamicResource ThemeBorderBrush}" CornerRadius="4" Padding="2" HorizontalAlignment="Center">
-                          <TextBlock Text="{Binding Order, Converter={StaticResource OrderBadge}}" FontSize="10" Foreground="{DynamicResource ThemeForegroundBrush}"/>
-                        </Border>
-                        <TextBlock Grid.Row="1" Text="{Binding Format, Converter={StaticResource FormatAbbrev}}" HorizontalAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}"/>
-                      </Grid>
+                        <Grid Grid.Column="1" RowDefinitions="Auto,Auto" HorizontalAlignment="Center">
+                          <Border Grid.Row="0" Background="{DynamicResource ThemeBorderBrush}" CornerRadius="4" Padding="2" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding Order, Converter={StaticResource OrderBadge}}" FontSize="10" Foreground="{DynamicResource ThemeForegroundBrush}"/>
+                          </Border>
+                          <TextBlock Grid.Row="1" Text="{Binding Format, Converter={StaticResource FormatAbbrev}}" HorizontalAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}"/>
+                        </Grid>
 
                         <Border Grid.Column="2" Width="28" Height="28" CornerRadius="999"
                                 Background="{Binding OppClass, Converter={StaticResource ClassBrush}}"
@@ -197,9 +193,19 @@
                           <svg:Svg Path="{Binding OppIconPath}"
                                    Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
-                    </Grid>
+                      </Grid>
+                    </Border>
                   </DataTemplate>
                 </ListBox.ItemTemplate>
+                <ListBox.Styles>
+                  <Style Selector="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="BorderThickness" Value="{Binding IsCurrent, Converter={StaticResource BoolToThicknessConverter}}"/>
+                    <Setter Property="BorderBrush" Value="{Binding IsCurrent, Converter={StaticResource BoolToBrushConverter}, ConverterParameter=CurrentMatchBorderBrush}"/>
+                    <Setter Property="Background" Value="{Binding IsCurrent, Converter={StaticResource BoolToBrushConverter}, ConverterParameter=CurrentMatchBackground}"/>
+                    <Setter Property="CornerRadius" Value="8"/>
+                  </Style>
+                </ListBox.Styles>
                 <ListBox.Transitions/>
               </ListBox>
             </TabItem>
