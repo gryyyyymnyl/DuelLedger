@@ -36,6 +36,7 @@ public sealed class MatchRecord
     public MatchResult Result { get; init; }
     public DateTimeOffset StartedAt { get; init; }
     public DateTimeOffset EndedAt { get; init; }
+    public bool IsInProgress { get; init; }
 
     public DateTimeOffset StartedAtLocal => StartedAt.ToLocalTime();
     public DateTimeOffset EndedAtLocal => EndedAt.ToLocalTime();

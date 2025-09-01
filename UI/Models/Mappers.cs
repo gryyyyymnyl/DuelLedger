@@ -21,6 +21,24 @@ public static class Mappers
             Result = SafeEnum(dto.Result, MatchResult.Unknown),
             StartedAt = dto.StartedAt,
             EndedAt = dto.EndedAt,
+            IsInProgress = false,
+        };
+    }
+
+    public static MatchRecord ToDomain(this MatchSnapshotDto dto)
+    {
+        var started = dto.StartedAt ?? DateTimeOffset.UtcNow;
+        var ended = dto.EndedAt ?? started;
+        return new MatchRecord
+        {
+            Format = SafeEnum(dto.Format, MatchFormat.Unknown),
+            SelfClass = SafeEnum(dto.SelfClass, PlayerClass.Unknown),
+            OppClass = SafeEnum(dto.OppClass, PlayerClass.Unknown),
+            Order = SafeEnum(dto.Order, TurnOrder.Unknown),
+            Result = SafeEnum(dto.Result, MatchResult.Unknown),
+            StartedAt = started,
+            EndedAt = ended,
+            IsInProgress = SafeEnum(dto.Result, MatchResult.Unknown) == MatchResult.Unknown,
         };
     }
 }

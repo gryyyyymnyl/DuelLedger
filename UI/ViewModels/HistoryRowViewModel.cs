@@ -15,6 +15,7 @@ public sealed class HistoryRowViewModel : NotifyBase, IDisposable
     public MatchFormat Format => Record.Format;
     public DateTimeOffset StartedAt => Record.StartedAt;
     public DateTimeOffset EndedAt => Record.EndedAt;
+    public bool IsInProgress => Record.IsInProgress;
 
     public string? SelfIconPath { get; private set; }
     public string? OppIconPath { get; private set; }

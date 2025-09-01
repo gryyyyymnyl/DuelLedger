@@ -18,6 +18,15 @@ public sealed class BoolNotConverter : IValueConverter
         => value is bool b ? !b : value;
 }
 
+public sealed class BoolThicknessConverter : IValueConverter
+{
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => value is bool b && b ? new Thickness(2) : new Thickness(0);
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
 public sealed class TurnOrderToText : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)

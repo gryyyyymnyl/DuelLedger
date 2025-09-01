@@ -27,6 +27,7 @@
     <sys:Double x:Key="MinWindowHeight">100</sys:Double>
     <conv:WinBorderBrushMultiConverter x:Key="WinBorderBrushMultiConverter"/>
     <conv:BoolNotConverter x:Key="BoolNot"/>
+    <conv:BoolThicknessConverter x:Key="BoolThickness"/>
   </Window.Resources>
 
     <Window.Styles>
@@ -162,42 +163,46 @@
                 </ListBox.ItemsPanel>
                 <ListBox.ItemTemplate>
                   <DataTemplate DataType="vm:HistoryRowViewModel">
-                    <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,2" VerticalAlignment="Center">
-                        <Border Width="28" Height="28" CornerRadius="999"
-                                Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}"
-                                BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=self}">
-                          <Border.BorderBrush>
-                            <MultiBinding Converter="{StaticResource WinBorderBrushMultiConverter}">
-                              <Binding Path="Result"/>
-                              <Binding Source="self"/>
-                              <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="ActualThemeVariant"/>
-                            </MultiBinding>
-                          </Border.BorderBrush>
-                          <svg:Svg Path="{Binding SelfIconPath}"
-                                   Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
+                    <Border BorderBrush="{DynamicResource ThemeAccentBrush}"
+                            BorderThickness="{Binding IsInProgress, Converter={StaticResource BoolThickness}}"
+                            CornerRadius="4" Margin="0,2">
+                      <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
+                          <Border Width="28" Height="28" CornerRadius="999"
+                                  Background="{Binding SelfClass, Converter={StaticResource ClassBrush}}"
+                                  BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=self}">
+                            <Border.BorderBrush>
+                              <MultiBinding Converter="{StaticResource WinBorderBrushMultiConverter}">
+                                <Binding Path="Result"/>
+                                <Binding Source="self"/>
+                                <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="ActualThemeVariant"/>
+                              </MultiBinding>
+                            </Border.BorderBrush>
+                            <svg:Svg Path="{Binding SelfIconPath}"
+                                     Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          </Border>
 
-                      <Grid Grid.Column="1" RowDefinitions="Auto,Auto" HorizontalAlignment="Center">
-                        <Border Grid.Row="0" Background="{DynamicResource ThemeBorderBrush}" CornerRadius="4" Padding="2" HorizontalAlignment="Center">
-                          <TextBlock Text="{Binding Order, Converter={StaticResource OrderBadge}}" FontSize="10" Foreground="{DynamicResource ThemeForegroundBrush}"/>
-                        </Border>
-                        <TextBlock Grid.Row="1" Text="{Binding Format, Converter={StaticResource FormatAbbrev}}" HorizontalAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}"/>
+                        <Grid Grid.Column="1" RowDefinitions="Auto,Auto" HorizontalAlignment="Center">
+                          <Border Grid.Row="0" Background="{DynamicResource ThemeBorderBrush}" CornerRadius="4" Padding="2" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding Order, Converter={StaticResource OrderBadge}}" FontSize="10" Foreground="{DynamicResource ThemeForegroundBrush}"/>
+                          </Border>
+                          <TextBlock Grid.Row="1" Text="{Binding Format, Converter={StaticResource FormatAbbrev}}" HorizontalAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}"/>
+                        </Grid>
+
+                          <Border Grid.Column="2" Width="28" Height="28" CornerRadius="999"
+                                  Background="{Binding OppClass, Converter={StaticResource ClassBrush}}"
+                                  BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=opp}">
+                            <Border.BorderBrush>
+                              <MultiBinding Converter="{StaticResource WinBorderBrushMultiConverter}">
+                                <Binding Path="Result"/>
+                                <Binding Source="opp"/>
+                                <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="ActualThemeVariant"/>
+                              </MultiBinding>
+                            </Border.BorderBrush>
+                            <svg:Svg Path="{Binding OppIconPath}"
+                                     Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          </Border>
                       </Grid>
-
-                        <Border Grid.Column="2" Width="28" Height="28" CornerRadius="999"
-                                Background="{Binding OppClass, Converter={StaticResource ClassBrush}}"
-                                BorderThickness="{Binding Result, Converter={StaticResource WinBorder}, ConverterParameter=opp}">
-                          <Border.BorderBrush>
-                            <MultiBinding Converter="{StaticResource WinBorderBrushMultiConverter}">
-                              <Binding Path="Result"/>
-                              <Binding Source="opp"/>
-                              <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="ActualThemeVariant"/>
-                            </MultiBinding>
-                          </Border.BorderBrush>
-                          <svg:Svg Path="{Binding OppIconPath}"
-                                   Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </Grid>
+                    </Border>
                   </DataTemplate>
                 </ListBox.ItemTemplate>
                 <ListBox.Transitions/>

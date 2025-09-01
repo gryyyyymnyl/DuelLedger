@@ -14,7 +14,9 @@ public sealed class MatchReaderService : IDisposable
 {
     private readonly string _baseDir;
     private readonly string _matchesDir;
+    private readonly string _currentPath;
     private readonly FileSystemWatcher _watcher;
+    private readonly FileSystemWatcher _currentWatcher;
     private readonly JsonSerializerOptions _json = new(){ PropertyNameCaseInsensitive = true };
 
     private readonly Dictionary<string, MatchRecord> _byFile = new();
@@ -26,6 +28,7 @@ public sealed class MatchReaderService : IDisposable
         _baseDir = baseDir;
         _matchesDir = Path.Combine(_baseDir, "matches");
         Directory.CreateDirectory(_matchesDir);
+        _currentPath = Path.Combine(_baseDir, "current.json");
 
         _watcher = new FileSystemWatcher(_matchesDir, "*.json")
         {
@@ -35,6 +38,15 @@ public sealed class MatchReaderService : IDisposable
         };
         _watcher.Created += (_, e) => _ = TryLoadAsync(e.FullPath);
         _watcher.Changed += (_, e) => _ = TryLoadAsync(e.FullPath);
+
+        _currentWatcher = new FileSystemWatcher(_baseDir, "current.json")
+        {
+            NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size,
+            EnableRaisingEvents = true,
+            IncludeSubdirectories = false,
+        };
+        _currentWatcher.Created += (_, e) => _ = TryLoadCurrentAsync(e.FullPath);
+        _currentWatcher.Changed += (_, e) => _ = TryLoadCurrentAsync(e.FullPath);
     }
 
     public void LoadInitial()
@@ -42,6 +54,10 @@ public sealed class MatchReaderService : IDisposable
         foreach (var path in Directory.EnumerateFiles(_matchesDir, "*.json").OrderBy(p => p))
         {
             _ = TryLoadAsync(path);
+        }
+        if (File.Exists(_currentPath))
+        {
+            _ = TryLoadCurrentAsync(_currentPath);
         }
     }
 
@@ -74,6 +90,34 @@ public sealed class MatchReaderService : IDisposable
         }
     }
 
+    private async Task TryLoadCurrentAsync(string path)
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            try
+            {
+                await using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                var dto = await JsonSerializer.DeserializeAsync<MatchSnapshotDto>(fs, _json);
+                if (dto is null) return;
+                var rec = dto.ToDomain();
+                await Dispatcher.UIThread.InvokeAsync(() => UpsertCurrent(path, rec));
+                return;
+            }
+            catch (IOException)
+            {
+                await Task.Delay(60);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                await Task.Delay(60);
+            }
+            catch
+            {
+                return;
+            }
+        }
+    }
+
     private void Upsert(string path, MatchRecord rec)
     {
         if (_byFile.TryGetValue(path, out var old))
@@ -89,6 +133,27 @@ public sealed class MatchReaderService : IDisposable
             _byFile[path] = rec;
             Items.Add(rec);
             Resort();
+        }
+    }
+
+    private void UpsertCurrent(string path, MatchRecord rec)
+    {
+        if (rec.IsInProgress
+            && rec.Format != MatchFormat.Unknown
+            && rec.SelfClass != PlayerClass.Unknown
+            && rec.OppClass != PlayerClass.Unknown
+            && rec.Order != TurnOrder.Unknown)
+        {
+            Upsert(path, rec);
+        }
+        else
+        {
+            if (_byFile.TryGetValue(path, out var old))
+            {
+                Items.Remove(old);
+                _byFile.Remove(path);
+                Resort();
+            }
         }
     }
 
@@ -110,5 +175,6 @@ public sealed class MatchReaderService : IDisposable
     public void Dispose()
     {
         _watcher.Dispose();
+        _currentWatcher.Dispose();
     }
 }
