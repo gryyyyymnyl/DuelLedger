@@ -19,7 +19,7 @@ public sealed class HistoryRowViewModel : NotifyBase, IDisposable
     public string? SelfIconPath { get; private set; }
     public string? OppIconPath { get; private set; }
 
-    private readonly SvgIconStore _store = SvgIconStore.Instance;
+    private readonly SvgIconCache _cache = SvgIconCache.Instance;
 
     public HistoryRowViewModel(MatchRecord record)
     {
@@ -31,12 +31,10 @@ public sealed class HistoryRowViewModel : NotifyBase, IDisposable
             var oppKey = record.OppClass.ToString();
             var selfItem = map.Get($"Class.{record.SelfClass}");
             var oppItem = map.Get($"Class.{record.OppClass}");
-            _store.Register(selfKey, selfItem.iconUrl);
-            _store.Register(oppKey, oppItem.iconUrl);
+            SelfIconPath = _cache.Get(selfKey, selfItem.iconUrl);
+            OppIconPath = _cache.Get(oppKey, oppItem.iconUrl);
         }
-        SelfIconPath = _store.TryGetLocal(record.SelfClass.ToString());
-        OppIconPath = _store.TryGetLocal(record.OppClass.ToString());
-        _store.IconReady += OnIconReady;
+        _cache.IconReady += OnIconReady;
     }
 
     private void OnIconReady(string key, string path)
@@ -57,6 +55,6 @@ public sealed class HistoryRowViewModel : NotifyBase, IDisposable
 
     public void Dispose()
     {
-        _store.IconReady -= OnIconReady;
+        _cache.IconReady -= OnIconReady;
     }
 }
