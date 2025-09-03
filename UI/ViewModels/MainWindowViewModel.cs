@@ -51,6 +51,8 @@ public sealed class MainWindowViewModel : NotifyBase
     }
 
     public bool IsInMatch => _state.IsInMatch;
+    // 互換用：XAMLが IsInBattle を参照している場合に対応
+    public bool IsInBattle => IsInMatch;
 
     private bool _isDownloadingTemplates;
     public bool IsDownloadingTemplates
@@ -118,7 +120,11 @@ public sealed class MainWindowViewModel : NotifyBase
     {
         _reader = reader;
         _state = state;
-        _state.PropertyChanged += (_, __) => Raise(nameof(IsInMatch));
+        _state.PropertyChanged += (_, __) =>
+        {
+            Raise(nameof(IsInMatch));
+            Raise(nameof(IsInBattle));
+        };
         _reader.LoadInitial();
         RebuildHistory();
         HistoryView = new DataGridCollectionView(History)
