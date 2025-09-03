@@ -30,7 +30,7 @@ public sealed class JsonStreamPublisher : IMatchPublisher
     public void PublishFinal(MatchSummary summary)
     {
         var json = JsonSerializer.Serialize(summary, new JsonSerializerOptions { WriteIndented = true });
-        var name = $"{summary.StartedAt:yyyyMMdd_HHmmssfff}_{Guid.NewGuid():N}.json";
+        var name = $"{summary.StartAt:yyyyMMdd_HHmmssfff}_{Guid.NewGuid():N}.json";
         var path = Path.Combine(_root, "matches", name);
         Retry.Run(() => _fs.WriteAllText(path, json));
 
@@ -38,7 +38,7 @@ public sealed class JsonStreamPublisher : IMatchPublisher
         PublishSnapshot(new MatchSnapshot(
             summary.Format,
             summary.SelfClass, summary.OppClass, summary.Order,
-            summary.StartedAt, summary.EndedAt, summary.Result
+            summary.StartAt, summary.EndAt, summary.Result
         ));
     }
 }

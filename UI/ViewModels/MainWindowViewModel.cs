@@ -71,8 +71,8 @@ public sealed class MainWindowViewModel : NotifyBase
     // 時系列（新しい順）: UTC基準 + 複合キーで安定ソート
     public IEnumerable<HistoryRowViewModel> HistoryDesc => FilteredHistoryVms
         // 完全に「時刻のみ」で安定ソート（新しい順）
-        .OrderByDescending(x => x.Record.EndedAt.ToUnixTimeMilliseconds())
-        .ThenByDescending(x => x.Record.StartedAt.ToUnixTimeMilliseconds());
+        .OrderByDescending(x => x.Record.EndAt.ToUnixTimeMilliseconds())
+        .ThenByDescending(x => x.Record.StartAt.ToUnixTimeMilliseconds());
 
     public IReadOnlyList<PlayerClass?> SelfClassOptions { get; }
         = new PlayerClass?[] { null }

@@ -19,8 +19,8 @@ public static class Mappers
             OppClass = SafeEnum(dto.OppClass, PlayerClass.Unknown),
             Order = SafeEnum(dto.Order, TurnOrder.Unknown),
             Result = SafeEnum(dto.Result, MatchResult.Unknown),
-            StartedAt = dto.StartedAt,
-            EndedAt = dto.EndedAt,
+            StartAt = dto.StartAt,
+            EndAt = dto.EndAt,
         };
     }
 }

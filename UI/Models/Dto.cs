@@ -2,7 +2,7 @@ namespace DuelLedger.UI.Models;
 
 using System.Text.Json.Serialization;
 
-// Publisher(JSON)のキーに合わせる（StartedAt/EndedAt）
+// Publisher(JSON)のキーに合わせる（StartAt/EndAt）
 public sealed class MatchSummaryDto
 {
     public int Format { get; set; }
@@ -11,8 +11,8 @@ public sealed class MatchSummaryDto
     public int Order { get; set; }
     public int Result { get; set; }
 
-    [JsonPropertyName("StartedAt")] public DateTimeOffset StartedAt { get; set; }
-    [JsonPropertyName("EndedAt")]   public DateTimeOffset EndedAt   { get; set; }
+    [JsonPropertyName("StartAt")] public DateTimeOffset StartAt { get; set; }
+    [JsonPropertyName("EndAt")]   public DateTimeOffset EndAt   { get; set; }
 }
 
 public sealed class MatchSnapshotDto
@@ -23,6 +23,6 @@ public sealed class MatchSnapshotDto
     public int Order { get; set; }
     public int Result { get; set; }
 
-    [JsonPropertyName("StartedAt")] public DateTimeOffset? StartedAt { get; set; }
-    [JsonPropertyName("EndedAt")]   public DateTimeOffset? EndedAt   { get; set; }
+    [JsonPropertyName("StartAt")] public DateTimeOffset? StartAt { get; set; }
+    [JsonPropertyName("EndAt")]   public DateTimeOffset? EndAt   { get; set; }
 }

@@ -12,8 +12,8 @@ public sealed record MatchSummary(
     [property: JsonPropertyName("OppClass")] int OppClass,
     [property: JsonPropertyName("Order")] TurnOrder Order,
     [property: JsonPropertyName("Result")] MatchResult Result,
-    [property: JsonPropertyName("StartedAt")] DateTimeOffset StartedAt,
-    [property: JsonPropertyName("EndedAt")] DateTimeOffset EndedAt
+    [property: JsonPropertyName("StartAt")] DateTimeOffset StartAt,
+    [property: JsonPropertyName("EndAt")] DateTimeOffset EndAt
 );
 
 public sealed record MatchSnapshot(
@@ -21,8 +21,8 @@ public sealed record MatchSnapshot(
     [property: JsonPropertyName("SelfClass")] int SelfClass,
     [property: JsonPropertyName("OppClass")] int OppClass,
     [property: JsonPropertyName("Order")] TurnOrder Order,
-    [property: JsonPropertyName("StartedAt")] DateTimeOffset? StartedAt,
-    [property: JsonPropertyName("EndedAt")] DateTimeOffset? EndedAt,
+    [property: JsonPropertyName("StartAt")] DateTimeOffset? StartAt,
+    [property: JsonPropertyName("EndAt")] DateTimeOffset? EndAt,
     [property: JsonPropertyName("Result")] MatchResult Result // 進行中は Unknown
 );
 

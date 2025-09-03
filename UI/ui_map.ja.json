@@ -22,7 +22,7 @@
   "Label.SelfClass": { "name": "自分のクラス:" },
   "Header.History": { "name": "履歴" },
   "Header.Class": { "name": "クラス" },
-  "Header.EndedAt": { "name": "終了時刻" },
+  "Header.EndAt": { "name": "終了時刻" },
   "Header.Self": { "name": "自分" },
   "Header.Opponent": { "name": "相手" },
   "Header.Order": { "name": "先/後" },

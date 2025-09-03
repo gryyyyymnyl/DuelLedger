@@ -61,7 +61,7 @@ public sealed class MatchStateService : INotifyPropertyChanged, IDisposable
             {
                 await using var fs = _fs.OpenReadShared(_currentPath);
                 var dto = await JsonSerializer.DeserializeAsync<MatchSnapshotDto>(fs, _json);
-                IsInMatch = dto is not null && dto.StartedAt.HasValue && !dto.EndedAt.HasValue;
+                IsInMatch = dto is not null && dto.StartAt.HasValue && !dto.EndAt.HasValue;
                 return;
             }
             catch (IOException)

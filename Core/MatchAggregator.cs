@@ -11,8 +11,8 @@ public sealed class MatchAggregator
     private int _selfId = 0; // Unknown
     private int _oppId = 0; // Unknown
     private TurnOrder _order = TurnOrder.Unknown;
-    private DateTimeOffset? _startedAtUtc = null;
-    private DateTimeOffset? _endedAtUtc = null;
+    private DateTimeOffset? _startAtUtc = null;
+    private DateTimeOffset? _endAtUtc = null;
     private MatchResult _result = MatchResult.Unknown;
 
     public MatchAggregator(IMatchPublisher publisher) => _publisher = publisher;
@@ -25,8 +25,8 @@ public sealed class MatchAggregator
             _oppId = 0;
             _order = TurnOrder.Unknown;
             _result = MatchResult.Unknown;
-            _startedAtUtc = nowUtc;
-            _endedAtUtc = null;
+            _startAtUtc = nowUtc;
+            _endAtUtc = null;
             _publisher.PublishSnapshot(Snapshot());
         }
     }
@@ -69,10 +69,7 @@ public sealed class MatchAggregator
         lock (_lock)
         {
             _result = result;
-            _endedAtUtc = nowUtc;
-
-            var started = _startedAtUtc ?? nowUtc;
-            var ended = _endedAtUtc ?? nowUtc;
+            _endAtUtc = nowUtc;
 
             summary = new MatchSummary(
                             _formatId,
@@ -80,7 +77,7 @@ public sealed class MatchAggregator
                             _oppId,
                             _order,
                             _result,
-                            _startedAtUtc ?? nowUtc,
+                            _startAtUtc ?? nowUtc,
                             nowUtc
                         );
         }
@@ -92,8 +89,8 @@ public sealed class MatchAggregator
         _selfId,
         _oppId,
         _order,
-        _startedAtUtc,
-        _endedAtUtc,
+        _startAtUtc,
+        _endAtUtc,
         _result
     );
 }

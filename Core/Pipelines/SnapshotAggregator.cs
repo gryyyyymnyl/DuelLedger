@@ -15,8 +15,8 @@ public class SnapshotAggregator
         SelfClass: 0,
         OppClass: 0,
         Order: TurnOrder.Unknown,
-        StartedAt: null,
-        EndedAt: null,
+        StartAt: null,
+        EndAt: null,
         Result: MatchResult.Unknown);
 
     public MatchSnapshot Apply(DetectionResult detection)

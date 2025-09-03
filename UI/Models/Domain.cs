@@ -34,9 +34,9 @@ public sealed class MatchRecord
     public PlayerClass OppClass { get; init; }
     public TurnOrder Order { get; init; }
     public MatchResult Result { get; init; }
-    public DateTimeOffset StartedAt { get; init; }
-    public DateTimeOffset EndedAt { get; init; }
+    public DateTimeOffset StartAt { get; init; }
+    public DateTimeOffset EndAt { get; init; }
 
-    public DateTimeOffset StartedAtLocal => StartedAt.ToLocalTime();
-    public DateTimeOffset EndedAtLocal => EndedAt.ToLocalTime();
+    public DateTimeOffset StartAtLocal => StartAt.ToLocalTime();
+    public DateTimeOffset EndAtLocal => EndAt.ToLocalTime();
 }

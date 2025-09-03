@@ -97,8 +97,8 @@ public sealed class MatchReaderService : IDisposable
     {
         // UTC基準 + 複合キーで安定ソート（新しい順）：同一終了時刻でも順番が揺れないように
         var ordered = Items
-            .OrderByDescending(x => x.EndedAt)
-            .ThenByDescending(x => x.StartedAt)
+            .OrderByDescending(x => x.EndAt)
+            .ThenByDescending(x => x.StartAt)
             .ThenByDescending(x => x.Result)
             .ThenBy(x => x.SelfClass)
             .ThenBy(x => x.OppClass)

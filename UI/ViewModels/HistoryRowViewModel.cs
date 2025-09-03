@@ -13,8 +13,8 @@ public sealed class HistoryRowViewModel : NotifyBase, IDisposable
     public TurnOrder Order => Record.Order;
     public MatchResult Result => Record.Result;
     public MatchFormat Format => Record.Format;
-    public DateTimeOffset StartedAt => Record.StartedAt;
-    public DateTimeOffset EndedAt => Record.EndedAt;
+    public DateTimeOffset StartAt => Record.StartAt;
+    public DateTimeOffset EndAt => Record.EndAt;
 
     public string? SelfIconPath { get; private set; }
     public string? OppIconPath { get; private set; }
