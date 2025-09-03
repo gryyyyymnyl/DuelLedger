@@ -1,27 +1,29 @@
+using System.Text.Json.Serialization;
+
 namespace DuelLedger.Core.Abstractions;
 
-public enum TurnOrder { Unknown, 先行, 後攻  }
-public enum MatchResult { Unknown, Win, Lose, Draw  }
+public enum TurnOrder { Unknown, 先行, 後攻 }
+public enum MatchResult { Unknown, Win, Lose, Draw }
 
 // Format / Class は全て ID で保持（0 = Unknown）
 public sealed record MatchSummary(
-    int Format,
-    int SelfClass,
-    int OppClass,
-    TurnOrder Order,
-    MatchResult Result,
-    DateTimeOffset StartedAt,
-    DateTimeOffset EndedAt
+    [property: JsonPropertyName("Format")] int Format,
+    [property: JsonPropertyName("SelfClass")] int SelfClass,
+    [property: JsonPropertyName("OppClass")] int OppClass,
+    [property: JsonPropertyName("Order")] TurnOrder Order,
+    [property: JsonPropertyName("Result")] MatchResult Result,
+    [property: JsonPropertyName("StartedAt")] DateTimeOffset StartedAt,
+    [property: JsonPropertyName("EndedAt")] DateTimeOffset EndedAt
 );
 
 public sealed record MatchSnapshot(
-    int Format,
-    int SelfClass,
-    int OppClass,
-    TurnOrder Order,
-    DateTimeOffset? StartedAtUtc,
-    DateTimeOffset? EndedAtUtc,
-    MatchResult Result // 進行中は Unknown
+    [property: JsonPropertyName("Format")] int Format,
+    [property: JsonPropertyName("SelfClass")] int SelfClass,
+    [property: JsonPropertyName("OppClass")] int OppClass,
+    [property: JsonPropertyName("Order")] TurnOrder Order,
+    [property: JsonPropertyName("StartedAt")] DateTimeOffset? StartedAt,
+    [property: JsonPropertyName("EndedAt")] DateTimeOffset? EndedAt,
+    [property: JsonPropertyName("Result")] MatchResult Result // 進行中は Unknown
 );
 
 public static class MatchContracts

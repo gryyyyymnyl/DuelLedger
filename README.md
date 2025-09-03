@@ -74,6 +74,8 @@ Shadowverse 固有の検知やテンプレート定義は `Games/Shadowverse` �
 
 検知処理は `Core/Pipelines` の `MatchPipeline` が `IFrameSource` → `IDetector` → `SnapshotAggregator` → `ISnapshotPublisher` の流れで実行し、Format 検知が失敗しても直前の値を保持します。
 
+スナップショットと試合結果は PascalCase の JSON (`Format`, `SelfClass` など) として `out/current.json` へ原子的に書き出され、UI は `FileShare.ReadWrite | FileShare.Delete` で監視します。リネーム/作成/変更イベントで即座に状態が反映されます。
+
 ### コンソール実行 (Runner)
 
 UI なしで動作させたい場合は Runner を使用します。

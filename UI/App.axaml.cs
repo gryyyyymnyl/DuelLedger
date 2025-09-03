@@ -101,9 +101,7 @@ public partial class App : Application
 #else
                         screenSource = new DummyScreenSource();
 #endif
-                        var publisher = new CompositeMatchPublisher(
-                            new JsonStreamPublisher(outDir),
-                            state);
+                        var publisher = new JsonStreamPublisher(outDir);
                         _host = new DetectionHost(detectorSet, screenSource, publisher);
                         await _host.StartAsync(CancellationToken.None);
 

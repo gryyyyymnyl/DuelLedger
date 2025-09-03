@@ -2,20 +2,18 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
-using DuelLedger.Core.Abstractions;
-using DuelLedger.Core;
+using System.Threading.Tasks;
 using DuelLedger.UI.Models;
 
 namespace DuelLedger.UI.Services;
 
 /// <summary>
-/// Tracks whether a match is currently in progress.
-/// Implements <see cref="IMatchPublisher"/> so detectors can update state
-/// directly without relying on file system notifications.
+/// Watches <c>current.json</c> and exposes whether a match is ongoing.
 /// </summary>
-public sealed class MatchStateService : IMatchPublisher, INotifyPropertyChanged, IDisposable
+public sealed class MatchStateService : INotifyPropertyChanged, IDisposable
 {
     private readonly string _currentPath;
+    private readonly FileSystemWatcher _watcher;
     private readonly JsonSerializerOptions _json = new() { PropertyNameCaseInsensitive = true };
     private bool _isInMatch;
 
@@ -37,35 +35,52 @@ public sealed class MatchStateService : IMatchPublisher, INotifyPropertyChanged,
     public MatchStateService(string baseDir)
     {
         _currentPath = Path.Combine(baseDir, "current.json");
-        try
+        _watcher = new FileSystemWatcher(baseDir, "current.json")
         {
-            if (File.Exists(_currentPath))
+            NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Size,
+            EnableRaisingEvents = true,
+            IncludeSubdirectories = false,
+        };
+        _watcher.Created += OnChanged;
+        _watcher.Changed += OnChanged;
+        _watcher.Renamed += OnChanged;
+        _ = TryUpdateAsync();
+    }
+
+    private void OnChanged(object? sender, FileSystemEventArgs e) => _ = TryUpdateAsync();
+
+    private async Task TryUpdateAsync()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            try
             {
-                using var fs = new FileStream(
+                await using var fs = new FileStream(
                     _currentPath,
                     FileMode.Open,
                     FileAccess.Read,
                     FileShare.ReadWrite | FileShare.Delete);
-                var dto = JsonSerializer.Deserialize<MatchSnapshotDto>(fs, _json);
+                var dto = await JsonSerializer.DeserializeAsync<MatchSnapshotDto>(fs, _json);
                 IsInMatch = dto is not null && dto.StartedAt.HasValue && !dto.EndedAt.HasValue;
+                return;
+            }
+            catch (IOException)
+            {
+                await Task.Delay(60);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                await Task.Delay(60);
+            }
+            catch
+            {
+                return; // ignore malformed
             }
         }
-        catch
-        {
-            // ignore and start with default state
-        }
     }
 
-    public void PublishSnapshot(MatchSnapshot snapshot)
+    public void Dispose()
     {
-        IsInMatch = snapshot.StartedAtUtc.HasValue && !snapshot.EndedAtUtc.HasValue;
+        _watcher.Dispose();
     }
-
-    public void PublishFinal(MatchSummary summary)
-    {
-        IsInMatch = false;
-    }
-
-    public void Dispose() { }
 }
-

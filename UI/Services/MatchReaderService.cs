@@ -35,6 +35,7 @@ public sealed class MatchReaderService : IDisposable
         };
         _watcher.Created += (_, e) => _ = TryLoadAsync(e.FullPath);
         _watcher.Changed += (_, e) => _ = TryLoadAsync(e.FullPath);
+        _watcher.Renamed += (_, e) => _ = TryLoadAsync(e.FullPath);
     }
 
     public void LoadInitial()
