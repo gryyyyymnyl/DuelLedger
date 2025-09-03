@@ -53,7 +53,8 @@ public sealed class DetectionHost : IAsyncDisposable
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Detection loop error: {ex.Message}");
+                    Console.WriteLine($"Detection loop error: {ex.GetType().Name} {ex.HResult} {ex.Message}");
+                    Console.WriteLine(ex.StackTrace);
                 }
             }, CancellationToken.None);
 
@@ -61,7 +62,8 @@ public sealed class DetectionHost : IAsyncDisposable
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Detection start failed: {ex.Message}");
+            Console.WriteLine($"Detection start failed: {ex.GetType().Name} {ex.HResult} {ex.Message}");
+            Console.WriteLine(ex.StackTrace);
         }
         await Task.CompletedTask;
     }
@@ -86,7 +88,8 @@ public sealed class DetectionHost : IAsyncDisposable
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Detection stop failed: {ex.Message}");
+            Console.WriteLine($"Detection stop failed: {ex.GetType().Name} {ex.HResult} {ex.Message}");
+            Console.WriteLine(ex.StackTrace);
         }
         finally
         {
