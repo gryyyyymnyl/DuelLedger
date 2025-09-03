@@ -48,7 +48,7 @@ public static class VsUiMap
             //new Padding(-40, 0, 0, -60)),
             //RelativeRegion.FromPixels( left: 0, top: 930, width: 560, height: 560, refW: RefW, refH: RefH ,
             // new Padding(-40, 0, -60, 0)),
-            RelativeRegion.Anchor2D.Left | RelativeRegion.Anchor2D.CenterY,
+            RelativeRegion.Anchor2D.Right | RelativeRegion.Anchor2D.CenterY,
             RelativeRegion.ScaleMode.Stretch
         ),
 

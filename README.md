@@ -25,12 +25,12 @@
 
 ### 動作環境
 
-* Windows 10/11 推奨
+* Windows 10/11
 * .NET 8 ランタイム
 
 ### 利用手順
 
-1. [リリース](https://github.com/gryyyyymnyl/DuelLedger/releases/tag/v1.0.0)からバイナリをダウンロードし、任意のフォルダに展開
+1. [リリース](https://github.com/gryyyyymnyl/DuelLedger/releases/)からバイナリをダウンロードし、任意のフォルダに展開
 2. `DuelLedger.UI.exe` を起動
 3. ゲームをプレイすると、試合結果が自動で記録されます
 4. 記録は `out/` ディレクトリ以下に JSON 形式で保存されます
