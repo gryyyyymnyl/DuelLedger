@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Avalonia.Collections;
+using DuelLedger.Core;
 using DuelLedger.UI.Models;
 using DuelLedger.UI.Services;
 
@@ -110,6 +111,23 @@ public sealed class MainWindowViewModel : NotifyBase
     public string OverallRateText => FormatRate(OverallTotals);
     public string SelfRateText => FormatRate(SelfTotals);
     public string RateTextForActiveTab => SelectedTabIndex == 0 ? OverallRateText : SelfRateText;
+
+    private GameState _currentState;
+    public GameState CurrentState
+    {
+        get => _currentState;
+        set
+        {
+            if (_currentState != value)
+            {
+                _currentState = value;
+                Raise();
+                Raise(nameof(IsInBattle));
+            }
+        }
+    }
+
+    public bool IsInBattle => CurrentState == GameState.InBattle;
 
     public MainWindowViewModel(MatchReaderService reader)
     {
