@@ -1,5 +1,4 @@
-using System.Text.Json;
-using DuelLedger.UI.Models;
+using DuelLedger.Contracts;
 using DuelLedger.UI.Services;
 
 namespace DuelLedger.Tests;
@@ -7,39 +6,16 @@ namespace DuelLedger.Tests;
 public class MatchStateServiceTests
 {
     [Fact]
-    public async Task DetectsMatchStartWhenSnapshotWritten()
+    public void TracksMatchLifecycle()
     {
-        var dir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-        Directory.CreateDirectory(dir);
-        try
-        {
-            using var svc = new MatchStateService(dir);
-            var tcs = new TaskCompletionSource<bool>();
-            svc.PropertyChanged += (_, e) =>
-            {
-                if (e.PropertyName == nameof(MatchStateService.IsInMatch) && svc.IsInMatch)
-                    tcs.TrySetResult(true);
-            };
+        using var svc = new MatchStateService(Path.GetTempPath());
+        Assert.False(svc.IsInMatch);
 
-            var dto = new MatchSnapshotDto
-            {
-                SelfClass = 1,
-                StartedAt = DateTimeOffset.UtcNow,
-                EndedAt = null
-            };
-            var tmp = Path.Combine(dir, "current.json.tmp");
-            var path = Path.Combine(dir, "current.json");
-            await File.WriteAllTextAsync(tmp, JsonSerializer.Serialize(dto));
-            File.Move(tmp, path, true);
+        var start = DateTimeOffset.UtcNow;
+        svc.PublishSnapshot(new MatchSnapshot(0, 0, 0, TurnOrder.Unknown, start, null, MatchResult.Unknown));
+        Assert.True(svc.IsInMatch);
 
-            var completed = await Task.WhenAny(tcs.Task, Task.Delay(1000));
-            Assert.True(completed == tcs.Task && await tcs.Task);
-        }
-        finally
-        {
-            Directory.Delete(dir, true);
-        }
+        svc.PublishFinal(new MatchSummary(0, 0, 0, TurnOrder.Unknown, MatchResult.Win, start, start.AddMinutes(1)));
+        Assert.False(svc.IsInMatch);
     }
 }
-
-
