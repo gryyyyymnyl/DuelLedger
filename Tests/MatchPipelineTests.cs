@@ -22,6 +22,11 @@ public class MatchPipelineTests
         public FakeDetector(IEnumerable<DetectionResult?> results) => _results = new(results);
         public bool TryDetect(int frame, out DetectionResult result)
         {
+            if (_results.Count == 0)
+            {
+                result = default;
+                return false;
+            }
             var item = _results.Dequeue();
             if (item.HasValue)
             {
@@ -47,13 +52,15 @@ public class MatchPipelineTests
     public void DetectionFailureRetainsFormat()
     {
         var source = new FakeFrameSource();
-        var detector = new FakeDetector(new DetectionResult?[]{ new(1), null });
+        var detector = new FakeDetector(new DetectionResult?[]{ new(1), new(1), new(1), null });
         var agg = new SnapshotAggregator();
         var pub = new FakePublisher();
         var pipe = new MatchPipeline<int>(source, new[]{detector}, agg, pub);
 
-        pipe.Tick();
-        pipe.Tick();
+        pipe.Tick(); // 1
+        pipe.Tick(); // 1
+        pipe.Tick(); // 1 -> Format becomes 1
+        pipe.Tick(); // null
 
         Assert.Equal(1, agg.Current.Format);
     }
@@ -62,15 +69,37 @@ public class MatchPipelineTests
     public void UnknownDoesNotClearState()
     {
         var source = new FakeFrameSource();
-        var detector = new FakeDetector(new DetectionResult?[]{ new(1), new(0), new(0) });
+        var detector = new FakeDetector(new DetectionResult?[]{ new(1), new(1), new(1), new(0), new(0) });
         var agg = new SnapshotAggregator();
         var pub = new FakePublisher();
         var pipe = new MatchPipeline<int>(source, new[]{detector}, agg, pub);
 
-        pipe.Tick();
-        pipe.Tick();
-        pipe.Tick();
+        pipe.Tick(); // 1
+        pipe.Tick(); // 1
+        pipe.Tick(); // 1 -> stabilizes at 1
+        pipe.Tick(); // 0
+        pipe.Tick(); // 0
 
-        Assert.All(pub.Published, s => Assert.Equal(1, s.Format));
+        Assert.Equal(1, agg.Current.Format);
+    }
+
+    [Fact]
+    public void RequiresThreeConsistentDetections()
+    {
+        var source = new FakeFrameSource();
+        var detector = new FakeDetector(new DetectionResult?[]{ new(1), new(1), null, new(1) });
+        var agg = new SnapshotAggregator();
+        var pub = new FakePublisher();
+        var pipe = new MatchPipeline<int>(source, new[]{detector}, agg, pub);
+
+        pipe.Tick(); // 1
+        Assert.Equal(0, agg.Current.Format);
+        pipe.Tick(); // 1
+        Assert.Equal(0, agg.Current.Format);
+        pipe.Tick(); // null
+        Assert.Equal(0, agg.Current.Format);
+        pipe.Tick(); // 1
+
+        Assert.Equal(1, agg.Current.Format);
     }
 }

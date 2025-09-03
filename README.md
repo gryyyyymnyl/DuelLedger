@@ -72,7 +72,7 @@ Shadowverse 固有の検知やテンプレート定義は `Games/Shadowverse` �
 
 アプリ設定は `Infra/Config` の `AppConfigProvider` が `appsettings.json` と `remote.json` をマージして提供します。リモート取得に失敗してもローカル設定で起動します。
 
-検知処理は `Core/Pipelines` の `MatchPipeline` が `IFrameSource` → `IDetector` → `SnapshotAggregator` → `ISnapshotPublisher` の流れで実行し、Format 検知が失敗しても直前の値を保持します。
+検知処理は `Core/Pipelines` の `MatchPipeline` が `IFrameSource` → `IDetector` → `SnapshotAggregator` → `ISnapshotPublisher` の流れで実行します。`SnapshotAggregator` は直近10件の検知結果から多数決を取り、同じ値が3回以上現れた場合にのみ Format を更新し、失敗や Unknown が続いても直前の値を保持します。
 
 時間取得は `Core/Util/SystemClock` を介した `IClock` 抽象で行われ、テストでは差し替え可能です。
 
