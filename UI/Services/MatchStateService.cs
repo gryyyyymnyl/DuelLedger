@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using DuelLedger.Core.Abstractions;
+using DuelLedger.Core.Util;
 using DuelLedger.UI.Models;
 
 namespace DuelLedger.UI.Services;
@@ -15,6 +17,7 @@ public sealed class MatchStateService : INotifyPropertyChanged, IDisposable
     private readonly string _currentPath;
     private readonly FileSystemWatcher _watcher;
     private readonly JsonSerializerOptions _json = new() { PropertyNameCaseInsensitive = true };
+    private readonly IFileSystem _fs;
     private bool _isInMatch;
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -32,8 +35,9 @@ public sealed class MatchStateService : INotifyPropertyChanged, IDisposable
         }
     }
 
-    public MatchStateService(string baseDir)
+    public MatchStateService(string baseDir, IFileSystem? fileSystem = null)
     {
+        _fs = fileSystem ?? SystemFileSystem.Instance;
         _currentPath = Path.Combine(baseDir, "current.json");
         _watcher = new FileSystemWatcher(baseDir, "current.json")
         {
@@ -55,11 +59,7 @@ public sealed class MatchStateService : INotifyPropertyChanged, IDisposable
         {
             try
             {
-                await using var fs = new FileStream(
-                    _currentPath,
-                    FileMode.Open,
-                    FileAccess.Read,
-                    FileShare.ReadWrite | FileShare.Delete);
+                await using var fs = _fs.OpenReadShared(_currentPath);
                 var dto = await JsonSerializer.DeserializeAsync<MatchSnapshotDto>(fs, _json);
                 IsInMatch = dto is not null && dto.StartedAt.HasValue && !dto.EndedAt.HasValue;
                 return;
