@@ -21,7 +21,7 @@ dotnet restore
 dotnet build
 
 ## Structure (current)
-Contracts/, Core/, Vision/, Detectors/Shadowverse/, Publishers/, UI/
+Contracts/, Core/, Vision/, Games/Shadowverse/, Publishers/, UI/
 
 ## Acceptance style
 - 受入条件は各Issueに記載。PRは「仕様照合→差分要約→テスト証跡→残課題」を記載。

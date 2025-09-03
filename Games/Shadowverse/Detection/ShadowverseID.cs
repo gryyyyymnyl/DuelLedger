@@ -1,4 +1,4 @@
-namespace DuelLedger.Detectors.Shadowverse
+namespace DuelLedger.Games.Shadowverse
 {
     public static class ShadowverseClassIdMapper
     {

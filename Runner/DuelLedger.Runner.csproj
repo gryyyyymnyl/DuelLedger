@@ -8,7 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Core\DuelLedger.Core.csproj" />
     <ProjectReference Include="..\Vision\DuelLedger.Vision.csproj" />
-    <ProjectReference Include="..\Detectors\DuelLedger.Detectors.csproj" />
+    <ProjectReference Include="..\Games\Shadowverse\DuelLedger.Games.Shadowverse.csproj" />
     <ProjectReference Include="..\Publishers\DuelLedger.Publishers.csproj" />
     <ProjectReference Include="..\Vision.Windows\DuelLedger.Vision.Windows.csproj" />
     <ProjectReference Include="..\Infra\DuelLedger.Infra.csproj" />

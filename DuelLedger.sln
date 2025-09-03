@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DuelLedger.Core", "Core\Due
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DuelLedger.Vision", "Vision\DuelLedger.Vision.csproj", "{10A89D2F-640E-40E1-A2C8-895E4CEF2285}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DuelLedger.Detectors", "Detectors\DuelLedger.Detectors.csproj", "{E66A9C57-5704-4889-BD80-5DDACD02B966}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DuelLedger.Games.Shadowverse", "Games\Shadowverse\DuelLedger.Games.Shadowverse.csproj", "{E66A9C57-5704-4889-BD80-5DDACD02B966}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DuelLedger.Publishers", "Publishers\DuelLedger.Publishers.csproj", "{698B26A2-8564-4CDA-BB87-060A6534CF30}"
 EndProject

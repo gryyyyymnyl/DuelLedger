@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using DuelLedger.Core;
-using DuelLedger.Detectors.Shadowverse;
+using DuelLedger.Games.Shadowverse;
 using DuelLedger.Publishers;
 using DuelLedger.Vision;
 using DuelLedger.Contracts;

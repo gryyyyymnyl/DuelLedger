@@ -38,7 +38,7 @@
     <ProjectReference Include="..\Core\DuelLedger.Core.csproj" />
     <ProjectReference Include="..\Contracts\DuelLedger.Contracts.csproj" />
     <ProjectReference Include="..\Publishers\DuelLedger.Publishers.csproj" />
-    <ProjectReference Include="..\Detectors\DuelLedger.Detectors.csproj" />
+    <ProjectReference Include="..\Games\Shadowverse\DuelLedger.Games.Shadowverse.csproj" />
     <ProjectReference Include="..\Infra\DuelLedger.Infra.csproj" />
   </ItemGroup>
 
@@ -48,10 +48,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\Detectors\Shadowverse\Templates\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>Templates\%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </Content>
       <Content Include="..\appsettings.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
