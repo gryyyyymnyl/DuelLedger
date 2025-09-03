@@ -40,6 +40,7 @@ public sealed class MatchStateService : INotifyPropertyChanged, IDisposable
         };
         _watcher.Created += (_, e) => _ = TryLoadAsync(e.FullPath);
         _watcher.Changed += (_, e) => _ = TryLoadAsync(e.FullPath);
+        _watcher.Renamed += (_, e) => _ = TryLoadAsync(e.FullPath);
 
         if (File.Exists(_currentPath))
             _ = TryLoadAsync(_currentPath);
@@ -53,7 +54,7 @@ public sealed class MatchStateService : INotifyPropertyChanged, IDisposable
             {
                 await using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 var dto = await JsonSerializer.DeserializeAsync<MatchSnapshotDto>(fs, _json);
-                IsInMatch = dto is not null && dto.StartedAt.HasValue && !dto.EndedAt.HasValue && dto.SelfClass != 0 && dto.OppClass != 0;
+                IsInMatch = dto is not null && dto.StartedAt.HasValue && !dto.EndedAt.HasValue;
                 return;
             }
             catch (IOException)
