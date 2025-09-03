@@ -52,7 +52,11 @@ public sealed class MatchStateService : INotifyPropertyChanged, IDisposable
         {
             try
             {
-                await using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                await using var fs = new FileStream(
+                    path,
+                    FileMode.Open,
+                    FileAccess.Read,
+                    FileShare.ReadWrite | FileShare.Delete);
                 var dto = await JsonSerializer.DeserializeAsync<MatchSnapshotDto>(fs, _json);
                 IsInMatch = dto is not null && dto.StartedAt.HasValue && !dto.EndedAt.HasValue;
                 return;
