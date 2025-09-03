@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
-using DuelLedger.Contracts;
+using DuelLedger.Core.Abstractions;
 using DuelLedger.Core;
 using DuelLedger.UI.Models;
 

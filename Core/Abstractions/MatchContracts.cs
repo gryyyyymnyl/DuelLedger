@@ -1,5 +1,4 @@
-using DuelLedger.Contracts;
-namespace DuelLedger.Contracts;
+namespace DuelLedger.Core.Abstractions;
 
 public enum TurnOrder { Unknown, 先行, 後攻  }
 public enum MatchResult { Unknown, Win, Lose, Draw  }

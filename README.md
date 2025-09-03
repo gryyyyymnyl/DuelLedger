@@ -65,6 +65,10 @@
    dotnet run -c Debug -f net8.0-windows --project ./UI/DuelLedger.UI.csproj
    ```
 
+### プロジェクト構成
+
+共有のDTOや列挙体は `Core/Abstractions` プロジェクトに分離されています。UIや検知ロジックから参照する際はこのプロジェクトを通じて利用します。
+
 ### コンソール実行 (Runner)
 
 UI なしで動作させたい場合は Runner を使用します。

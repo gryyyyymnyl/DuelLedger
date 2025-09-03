@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\Contracts\DuelLedger.Contracts.csproj" />
+    <ProjectReference Include="..\Core\Abstractions\DuelLedger.Core.Abstractions.csproj" />
     <ProjectReference Include="..\Core\DuelLedger.Core.csproj" />
   </ItemGroup>
 

@@ -1,6 +1,6 @@
 using System;
 
-using DuelLedger.Contracts;
+using DuelLedger.Core.Abstractions;
 namespace DuelLedger.UI.Models;
 
 public static class Mappers

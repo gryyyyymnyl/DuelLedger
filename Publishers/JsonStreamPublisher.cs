@@ -3,7 +3,7 @@ namespace DuelLedger.Publishers;
 using System.Text.Json;
 using System.Threading;
 
-using DuelLedger.Contracts;
+using DuelLedger.Core.Abstractions;
 using DuelLedger.Core;
 public sealed class JsonStreamPublisher : IMatchPublisher
 {

@@ -36,7 +36,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\DuelLedger.Core.csproj" />
-    <ProjectReference Include="..\Contracts\DuelLedger.Contracts.csproj" />
+    <ProjectReference Include="..\Core\Abstractions\DuelLedger.Core.Abstractions.csproj" />
     <ProjectReference Include="..\Publishers\DuelLedger.Publishers.csproj" />
     <ProjectReference Include="..\Detectors\DuelLedger.Detectors.csproj" />
     <ProjectReference Include="..\Infra\DuelLedger.Infra.csproj" />

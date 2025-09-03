@@ -2,7 +2,7 @@ namespace DuelLedger.Core;
 
 using System;
 
-using DuelLedger.Contracts;
+using DuelLedger.Core.Abstractions;
 public sealed class MatchAggregator
 {
     private readonly object _lock = new();

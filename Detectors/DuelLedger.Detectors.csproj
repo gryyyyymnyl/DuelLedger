@@ -2,7 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Vision\DuelLedger.Vision.csproj" />
-    <ProjectReference Include="..\Contracts\DuelLedger.Contracts.csproj" />
+    <ProjectReference Include="..\Core\Abstractions\DuelLedger.Core.Abstractions.csproj" />
     <ProjectReference Include="..\Core\DuelLedger.Core.csproj" />
   </ItemGroup>
 

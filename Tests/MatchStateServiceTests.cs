@@ -1,4 +1,4 @@
-using DuelLedger.Contracts;
+using DuelLedger.Core.Abstractions;
 using DuelLedger.UI.Services;
 
 namespace DuelLedger.Tests;

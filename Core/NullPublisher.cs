@@ -1,6 +1,6 @@
 namespace DuelLedger.Core;
 
-using DuelLedger.Contracts;
+using DuelLedger.Core.Abstractions;
 
 /// <summary>
 /// No-op implementation of <see cref="IMatchPublisher"/> used when no publisher is provided.

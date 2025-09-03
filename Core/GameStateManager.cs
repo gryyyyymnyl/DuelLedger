@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Collections.Generic;
 using OpenCvSharp;
 using DuelLedger.Vision;
-using DuelLedger.Contracts;
+using DuelLedger.Core.Abstractions;
 
 namespace DuelLedger.Core;
 public class GameStateManager

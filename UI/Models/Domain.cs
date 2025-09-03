@@ -1,6 +1,6 @@
 using System;
 
-using DuelLedger.Contracts;
+using DuelLedger.Core.Abstractions;
 namespace DuelLedger.UI.Models;
 
 // 値は Publisher 側の列挙に合わせて固定（数値シリアライズ対策）

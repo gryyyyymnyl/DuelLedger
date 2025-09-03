@@ -1,4 +1,4 @@
-using DuelLedger.Contracts;
+using DuelLedger.Core.Abstractions;
 namespace DuelLedger.Core;
 
 public interface IMatchPublisher

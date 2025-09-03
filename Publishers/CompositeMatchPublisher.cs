@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using DuelLedger.Contracts;
+using DuelLedger.Core.Abstractions;
 using DuelLedger.Core;
 
 namespace DuelLedger.Publishers;

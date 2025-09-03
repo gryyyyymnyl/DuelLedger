@@ -8,7 +8,7 @@ using DuelLedger.Core;
 using DuelLedger.Detectors.Shadowverse;
 using DuelLedger.Publishers;
 using DuelLedger.Vision;
-using DuelLedger.Contracts;
+using DuelLedger.Core.Abstractions;
 using DuelLedger.Infra.Templates;
 using DuelLedger.Infra.Drives;
 using DuelLedger.Core.Config;

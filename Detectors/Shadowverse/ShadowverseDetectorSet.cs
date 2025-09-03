@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using DuelLedger.Vision;
 using DuelLedger.Core;
-using DuelLedger.Contracts;
+using DuelLedger.Core.Abstractions;
 
 namespace DuelLedger.Detectors.Shadowverse
 {
