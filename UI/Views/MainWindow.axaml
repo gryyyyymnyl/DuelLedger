@@ -10,7 +10,7 @@
         xmlns:styles="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
         xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
         xmlns:conv="using:DuelLedger.UI.Converters"
-        xmlns:local="using:DuelLedger.UI.Views"
+        xmlns:views="clr-namespace:DuelLedger.UI.Views"
         x:Class="DuelLedger.UI.Views.MainWindow"
         x:Name="Root"
         Width="170" Height="800"
@@ -28,7 +28,8 @@
     <sys:Double x:Key="MinWindowHeight">100</sys:Double>
     <conv:WinBorderBrushMultiConverter x:Key="WinBorderBrushMultiConverter"/>
     <conv:BoolNotConverter x:Key="BoolNot"/>
-    <local:BooleanToOffsetYConverter x:Key="BoolToOffsetY" VisibleOffset="0" HiddenOffset="-6"/>
+    <views:BooleanToOffsetYConverter x:Key="BoolToOffsetY" VisibleOffset="0" HiddenOffset="-6"/>
+    <views:BooleanToOpacityConverter x:Key="BoolToOpacity" />
   </Window.Resources>
 
     <Window.Styles>
@@ -145,9 +146,13 @@
       </Menu>
     </styles:ColorZone>
 
+    <!-- 診断用：現在の状態を確認（後で削除） -->
+    <TextBlock Grid.Row="2" Margin="8,0,8,0" Foreground="Tomato"
+               Text="{Binding CurrentState}" />
+
     <!-- 試合中バナー -->
     <Border Grid.Row="2"
-            IsVisible="{Binding IsInBattle}"
+            Opacity="{Binding IsInBattle, Converter={StaticResource BoolToOpacity}}"
             Background="#FF374151"
             Padding="8,6"
             CornerRadius="6"

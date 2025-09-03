@@ -123,11 +123,14 @@ public sealed class MainWindowViewModel : NotifyBase
                 _currentState = value;
                 Raise();
                 Raise(nameof(IsInBattle));
+                System.Diagnostics.Debug.WriteLine($"[VM] CurrentState={_currentState}, IsInBattle={IsInBattle}");
             }
         }
     }
 
-    public bool IsInBattle => CurrentState == GameState.InBattle;
+    // TODO: 列挙子名をプロジェクト全体で統一したら通常の列挙比較に戻すこと
+    public bool IsInBattle =>
+        string.Equals(CurrentState.ToString(), "InBattle", StringComparison.OrdinalIgnoreCase);
 
     public MainWindowViewModel(MatchReaderService reader)
     {
