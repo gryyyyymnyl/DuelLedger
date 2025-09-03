@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using DuelLedger.Core.Config;
+using DuelLedger.Core.Abstractions;
 using DuelLedger.Core.Drives;
 
 namespace DuelLedger.Infra.Drives;
@@ -15,12 +15,12 @@ public sealed class HttpStaticClient : IRemoteDriveClient
     private readonly HttpClient _http;
     private readonly RemoteConfig _config;
 
-    public HttpStaticClient(RemoteConfig config)
+    public HttpStaticClient(IAppConfig config)
     {
-        _config = config;
+        _config = config.Value.Assets.Remote ?? new RemoteConfig();
         _http = new HttpClient
         {
-            BaseAddress = new Uri(config.BaseUrl),
+            BaseAddress = new Uri(_config.BaseUrl),
             Timeout = TimeSpan.FromSeconds(30)
         };
     }

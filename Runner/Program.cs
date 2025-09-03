@@ -11,7 +11,7 @@ using DuelLedger.Vision;
 using DuelLedger.Core.Abstractions;
 using DuelLedger.Infra.Templates;
 using DuelLedger.Infra.Drives;
-using DuelLedger.Core.Config;
+using DuelLedger.Infra.Config;
 using OpenCvSharp;
 
 internal static class Program
@@ -19,10 +19,10 @@ internal static class Program
     static async Task<int> Main(string[] args)
     {
         Directory.SetCurrentDirectory(AppContext.BaseDirectory);
-        var config = ConfigLoader.Load("appsettings.json");
-        var resolver = new TemplatePathResolver(config);
-        var drive = new HttpStaticClient(config.Assets.Remote!);
-        var sync = new TemplateSyncService(config, resolver, drive);
+        var cfgProvider = AppConfigProvider.LoadAsync("appsettings.json", "remote.json").GetAwaiter().GetResult();
+        var resolver = new TemplatePathResolver(cfgProvider);
+        var drive = new HttpStaticClient(cfgProvider);
+        var sync = new TemplateSyncService(cfgProvider, resolver, drive);
         await sync.SyncAsync("Shadowverse");
         var templateRoot = resolver.Get("Shadowverse");
         if (args.Contains("--dry-run"))
@@ -35,7 +35,7 @@ internal static class Program
                 Cv2.ImWrite(dummyTplPath, tpl);
             }
         }
-        config.Games.TryGetValue("Shadowverse", out var gameCfg);
+        cfgProvider.Value.Games.TryGetValue("Shadowverse", out var gameCfg);
         var outDir = Path.Combine(AppContext.BaseDirectory, "out");
         Directory.CreateDirectory(outDir);
         var publisher = new JsonStreamPublisher(outDir);

@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using DuelLedger.Core.Config;
+using DuelLedger.Core.Abstractions;
 using DuelLedger.Core.Drives;
 using DuelLedger.Core.Templates;
 
@@ -14,11 +14,11 @@ namespace DuelLedger.Infra.Templates;
 
 public sealed class TemplateSyncService
 {
-    private readonly AppConfig _config;
+    private readonly IAppConfig _config;
     private readonly ITemplatePathResolver _resolver;
     private readonly IRemoteDriveClient _client;
 
-    public TemplateSyncService(AppConfig config, ITemplatePathResolver resolver, IRemoteDriveClient client)
+    public TemplateSyncService(IAppConfig config, ITemplatePathResolver resolver, IRemoteDriveClient client)
     {
         _config = config;
         _resolver = resolver;
@@ -27,13 +27,13 @@ public sealed class TemplateSyncService
 
     public async Task SyncAsync(string gameName, IProgress<double>? progress = null, CancellationToken ct = default)
     {
-        if (_config.Assets.Remote is null)
+        if (_config.Value.Assets.Remote is null)
             return;
         var root = _resolver.Get(gameName);
         Directory.CreateDirectory(root);
 
         // Download manifest.json and compare with local copy
-        var manifestStream = await _client.DownloadAsync(_config.Assets.Remote.Manifest, ct);
+        var manifestStream = await _client.DownloadAsync(_config.Value.Assets.Remote.Manifest, ct);
         if (manifestStream == null)
             return;
         using var ms = new MemoryStream();
@@ -55,7 +55,7 @@ public sealed class TemplateSyncService
 
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         var manifest = JsonSerializer.Deserialize<List<RemoteEntry>>(manifestBytes, options) ?? new List<RemoteEntry>();
-        var extensions = new HashSet<string>(_config.Assets.Remote.Extensions ?? new List<string>(), StringComparer.OrdinalIgnoreCase);
+        var extensions = new HashSet<string>(_config.Value.Assets.Remote.Extensions ?? new List<string>(), StringComparer.OrdinalIgnoreCase);
 
         int total = manifest.Count, updated = 0, skipped = 0, failed = 0, processed = 0;
         progress?.Report(0);

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DuelLedger.Core.Config;
+namespace DuelLedger.Core.Abstractions;
 
 public sealed class AppConfig
 {

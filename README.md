@@ -69,6 +69,8 @@
 
 共有のDTOや列挙体は `Core/Abstractions` プロジェクトに分離されています。UIや検知ロジックから参照する際はこのプロジェクトを通じて利用します。
 
+アプリ設定は `Infra/Config` の `AppConfigProvider` が `appsettings.json` と `remote.json` をマージして提供します。リモート取得に失敗してもローカル設定で起動します。
+
 ### コンソール実行 (Runner)
 
 UI なしで動作させたい場合は Runner を使用します。
