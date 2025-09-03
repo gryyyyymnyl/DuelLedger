@@ -1,17 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "tkeKlo8bbHI=",
+  "dgSpecHash": "qd2239L07sA=",
   "success": true,
   "projectFilePath": "C:\\Users\\MW\\Documents\\Projects\\DuelLedger\\Vision\\DuelLedger.Vision.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\MW\\.nuget\\packages\\microsoft.net.illink.tasks\\8.0.19\\microsoft.net.illink.tasks.8.0.19.nupkg.sha512",
     "C:\\Users\\MW\\.nuget\\packages\\opencvsharp4\\4.11.0.20250507\\opencvsharp4.4.11.0.20250507.nupkg.sha512",
     "C:\\Users\\MW\\.nuget\\packages\\opencvsharp4.runtime.win\\4.11.0.20250507\\opencvsharp4.runtime.win.4.11.0.20250507.nupkg.sha512",
-    "C:\\Users\\MW\\.nuget\\packages\\system.memory\\4.6.3\\system.memory.4.6.3.nupkg.sha512",
-    "C:\\Users\\MW\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\8.0.19\\microsoft.netcore.app.runtime.win-x64.8.0.19.nupkg.sha512",
-    "C:\\Users\\MW\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\8.0.19\\microsoft.windowsdesktop.app.runtime.win-x64.8.0.19.nupkg.sha512",
-    "C:\\Users\\MW\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\8.0.19\\microsoft.aspnetcore.app.runtime.win-x64.8.0.19.nupkg.sha512",
-    "C:\\Users\\MW\\.nuget\\packages\\microsoft.netcore.app.crossgen2.win-x64\\8.0.19\\microsoft.netcore.app.crossgen2.win-x64.8.0.19.nupkg.sha512"
+    "C:\\Users\\MW\\.nuget\\packages\\system.memory\\4.6.3\\system.memory.4.6.3.nupkg.sha512"
   ],
   "logs": []
 }
