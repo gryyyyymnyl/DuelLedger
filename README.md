@@ -71,6 +71,8 @@
 
 アプリ設定は `Infra/Config` の `AppConfigProvider` が `appsettings.json` と `remote.json` をマージして提供します。リモート取得に失敗してもローカル設定で起動します。
 
+検知処理は `Core/Pipelines` の `MatchPipeline` が `IFrameSource` → `IDetector` → `SnapshotAggregator` → `ISnapshotPublisher` の流れで実行し、Format 検知が失敗しても直前の値を保持します。
+
 ### コンソール実行 (Runner)
 
 UI なしで動作させたい場合は Runner を使用します。
