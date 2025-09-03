@@ -149,7 +149,9 @@
             Opacity="{Binding IsInMatch, Converter={StaticResource BoolToDouble}}"
             Height="{Binding IsInMatch, Converter={StaticResource BoolToAutoHeight}}">
       <Border.Transitions>
-        <DoubleTransition Property="Opacity" Duration="0:0:0.3"/>
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.3"/>
+        </Transitions>
       </Border.Transitions>
       <TextBlock Text="試合中" HorizontalAlignment="Center" Margin="0,2" Foreground="{DynamicResource ThemeForegroundBrush}"/>
     </Border>
