@@ -27,6 +27,8 @@
     <sys:Double x:Key="MinWindowHeight">100</sys:Double>
     <conv:WinBorderBrushMultiConverter x:Key="WinBorderBrushMultiConverter"/>
     <conv:BoolNotConverter x:Key="BoolNot"/>
+    <conv:BoolToDoubleConverter x:Key="BoolToDouble"/>
+    <conv:BoolToAutoHeightConverter x:Key="BoolToAutoHeight"/>
   </Window.Resources>
 
     <Window.Styles>
@@ -55,7 +57,7 @@
     <vm:MainWindowViewModel />
   </Design.DataContext>
 
-  <Grid RowDefinitions="Auto,Auto,*,Auto">
+  <Grid RowDefinitions="Auto,Auto,Auto,*,Auto">
     <styles:ColorZone Grid.Row="0" Mode="PrimaryMid" PointerPressed="OnPointerPressed">
       <Grid ColumnDefinitions="Auto,*,Auto" Height="28" Margin="8,0">
         <TextBlock Grid.Column="0" Classes="Headline6" VerticalAlignment="Center" Text="しゃどレコ！" Margin="12,0"
@@ -143,7 +145,16 @@
       </Menu>
     </styles:ColorZone>
 
-    <ScrollViewer Grid.Row="2">
+    <Border Grid.Row="2" Background="{DynamicResource AccentBrush}" IsHitTestVisible="False"
+            Opacity="{Binding IsInMatch, Converter={StaticResource BoolToDouble}}"
+            Height="{Binding IsInMatch, Converter={StaticResource BoolToAutoHeight}}">
+      <Border.Transitions>
+        <DoubleTransition Property="Opacity" Duration="0:0:0.3"/>
+      </Border.Transitions>
+      <TextBlock Text="試合中" HorizontalAlignment="Center" Margin="0,2" Foreground="{DynamicResource ThemeForegroundBrush}"/>
+    </Border>
+
+    <ScrollViewer Grid.Row="3">
       <StackPanel Margin="16" Spacing="16">
         <styles:Card Classes="Outlined" Padding="12" Background="{DynamicResource CardBackgroundBrush}">
           <TabControl SelectedIndex="{Binding SelectedTabIndex}">
@@ -255,7 +266,7 @@
       </StackPanel>
     </ScrollViewer>
 
-      <Border Grid.Row="3" Padding="4" Background="{DynamicResource ThemeBackgroundBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1">
+      <Border Grid.Row="4" Padding="4" Background="{DynamicResource ThemeBackgroundBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1">
         <StackPanel>
           <TextBlock Text="{Binding RateTextForActiveTab}" Foreground="{DynamicResource ThemeForegroundBrush}"/>
           <ProgressBar Minimum="0" Maximum="1" Value="{Binding DownloadProgress}" Height="4" IsVisible="{Binding IsDownloadingTemplates}"/>

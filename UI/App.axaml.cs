@@ -56,7 +56,8 @@ public partial class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var reader = new MatchReaderService(outDir);
-            var vm = new MainWindowViewModel(reader);
+            var state = new MatchStateService(outDir);
+            var vm = new MainWindowViewModel(reader, state);
             var window = new MainWindow(vm);
             desktop.MainWindow = window;
 

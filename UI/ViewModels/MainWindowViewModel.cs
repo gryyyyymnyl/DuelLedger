@@ -12,6 +12,7 @@ namespace DuelLedger.UI.ViewModels;
 public sealed class MainWindowViewModel : NotifyBase
 {
     private readonly MatchReaderService _reader;
+    private readonly MatchStateService _state;
 
     public ObservableCollection<HistoryRowViewModel> History { get; } = new();
 
@@ -48,6 +49,8 @@ public sealed class MainWindowViewModel : NotifyBase
         get => _downloadProgress;
         set => Set(ref _downloadProgress, value);
     }
+
+    public bool IsInMatch => _state.IsInMatch;
 
     private bool _isDownloadingTemplates;
     public bool IsDownloadingTemplates
@@ -111,9 +114,11 @@ public sealed class MainWindowViewModel : NotifyBase
     public string SelfRateText => FormatRate(SelfTotals);
     public string RateTextForActiveTab => SelectedTabIndex == 0 ? OverallRateText : SelfRateText;
 
-    public MainWindowViewModel(MatchReaderService reader)
+    public MainWindowViewModel(MatchReaderService reader, MatchStateService state)
     {
         _reader = reader;
+        _state = state;
+        _state.PropertyChanged += (_, __) => Raise(nameof(IsInMatch));
         _reader.LoadInitial();
         RebuildHistory();
         HistoryView = new DataGridCollectionView(History)
