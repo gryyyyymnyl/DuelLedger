@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using OpenCvSharp;
 using DuelLedger.Vision;
 using DuelLedger.Core.Abstractions;
+using DuelLedger.Core.Util;
 
 namespace DuelLedger.Core;
 public class GameStateManager
@@ -32,7 +33,8 @@ public class GameStateManager
     public string? FinalEnemyClass { get; private set; }
     private readonly MatchAggregator _matchAgg;
     private readonly IScreenSource _screenSource;
-    public GameStateManager(IGameStateDetectorSet detectorSet, IScreenSource screenSource, IMatchPublisher? publisher = null)
+    private readonly IClock _clock;
+    public GameStateManager(IGameStateDetectorSet detectorSet, IScreenSource screenSource, IMatchPublisher? publisher = null, IClock? clock = null)
     {
         _detectorSet = detectorSet;
         _screenSource = screenSource;
@@ -45,6 +47,7 @@ public class GameStateManager
         _resultDetectors = _detectors.Where(d => IsType(d, "ResultDetector")).ToList();
 
         _matchAgg = new MatchAggregator(publisher ?? new NullPublisher());
+        _clock = clock ?? SystemClock.Instance;
         _lastFormatLabel = s_lastFormatLabel ?? _lastFormatLabel;
         Console.WriteLine($"[GSM] ctor id={_instanceId} carryFormat={_lastFormatLabel ?? "(none)"}");
     }
@@ -80,7 +83,7 @@ public class GameStateManager
                     }
 
                     // 2) 試合開始を送る
-                    _matchAgg.OnMatchStarted(DateTimeOffset.UtcNow);
+                    _matchAgg.OnMatchStarted(_clock.Now);
                     TrySetTurnOrderFromMatchStart(ms);
 
                     _currentState = GameState.InBattle;
@@ -249,7 +252,7 @@ public class GameStateManager
             msg.Contains("WIN", StringComparison.OrdinalIgnoreCase) ? MatchResult.Win :
             msg.Contains("LOSE", StringComparison.OrdinalIgnoreCase) ? MatchResult.Lose :
             MatchResult.Unknown;
-        _matchAgg.OnMatchEnded(result, DateTimeOffset.UtcNow);
+        _matchAgg.OnMatchEnded(result, _clock.Now);
         _formatPublishedForThisMatch = false;
         Console.WriteLine("[Format] Reset flag");
     }

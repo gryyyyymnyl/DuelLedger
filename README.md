@@ -74,6 +74,8 @@ Shadowverse 固有の検知やテンプレート定義は `Games/Shadowverse` �
 
 検知処理は `Core/Pipelines` の `MatchPipeline` が `IFrameSource` → `IDetector` → `SnapshotAggregator` → `ISnapshotPublisher` の流れで実行し、Format 検知が失敗しても直前の値を保持します。
 
+時間取得は `Core/Util/SystemClock` を介した `IClock` 抽象で行われ、テストでは差し替え可能です。
+
 スナップショットと試合結果は PascalCase の JSON (`Format`, `SelfClass` など) として `out/current.json` へ原子的に書き出され、UI は `FileShare.ReadWrite | FileShare.Delete` で監視します。リネーム/作成/変更イベントで即座に状態が反映されます。
 UI のクラスアイコンは `SvgIconCache` が非同期に取得し、キャッシュ済みでない場合はテキストのみを表示して後から更新されます。
 ファイル出力などの外部 I/O は `Util/Retry` による指数バックオフリトライで最大3回再試行され、失敗しても処理が停止しないようになっています。

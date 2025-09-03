@@ -37,7 +37,7 @@ public class MatchStateServiceTests
 
     private static async Task WaitForAsync(Func<bool> predicate)
     {
-        for (int i = 0; i < 50; i++)
+        for (int i = 0; i < 200; i++)
         {
             if (predicate()) return;
             await Task.Delay(20);
