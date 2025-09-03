@@ -1,10 +1,9 @@
 namespace DuelLedger.Publishers;
 
 using System.Text.Json;
-using System.Threading;
-
 using DuelLedger.Core.Abstractions;
 using DuelLedger.Core;
+using DuelLedger.Core.Util;
 public sealed class JsonStreamPublisher : IMatchPublisher
 {
     private readonly string _root;
@@ -27,39 +26,24 @@ public sealed class JsonStreamPublisher : IMatchPublisher
             fs.Write(json, 0, json.Length);
             fs.Flush(true);
         }
-        ReplaceWithRetry(tmp, _currentPath, maxRetry: 12, initialDelayMs: 30);
-    }
-
-    private static void ReplaceWithRetry(string tmp, string dst, int maxRetry, int initialDelayMs)
-    {
-        var delay = initialDelayMs;
-        for (int i = 0; i < maxRetry; i++)
+        try
         {
-            try
+            Retry.Run(() =>
             {
-                if (!File.Exists(dst))
+                if (!File.Exists(_currentPath))
                 {
-                    File.Move(tmp, dst);
+                    File.Move(tmp, _currentPath);
                 }
                 else
                 {
-                    File.Replace(tmp, dst, destinationBackupFileName: null);
+                    File.Replace(tmp, _currentPath, destinationBackupFileName: null);
                 }
-                return;
-            }
-            catch (UnauthorizedAccessException) when (i < maxRetry - 1)
-            {
-                Thread.Sleep(delay);
-                delay = Math.Min(delay * 2, 500);
-            }
-            catch (IOException) when (i < maxRetry - 1)
-            {
-                Thread.Sleep(delay);
-                delay = Math.Min(delay * 2, 500);
-            }
+            });
         }
-        try { if (File.Exists(tmp)) File.Delete(tmp); } catch { }
-        throw new IOException($"Atomic replace failed for '{Path.GetFullPath(dst)}'. Another process is denying delete/replace.");
+        finally
+        {
+            try { if (File.Exists(tmp)) File.Delete(tmp); } catch { }
+        }
     }
 
     public void PublishFinal(MatchSummary summary)
@@ -67,7 +51,7 @@ public sealed class JsonStreamPublisher : IMatchPublisher
         var json = JsonSerializer.Serialize(summary, new JsonSerializerOptions { WriteIndented = true });
         var name = $"{summary.StartedAt:yyyyMMdd_HHmmssfff}_{Guid.NewGuid():N}.json";
         var path = Path.Combine(_root, "matches", name);
-        File.WriteAllText(path, json);
+        Retry.Run(() => File.WriteAllText(path, json));
 
         // 最終状態で current.json も合わせて更新しておく
         PublishSnapshot(new MatchSnapshot(
