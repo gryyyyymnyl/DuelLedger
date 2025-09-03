@@ -7,7 +7,7 @@ using DuelLedger.UI.ViewModels;
 using DuelLedger.UI.Services;
 using DuelLedger.Core;
 using DuelLedger.Publishers;
-using DuelLedger.Detectors.Shadowverse;
+using DuelLedger.Games.Shadowverse;
 using DuelLedger.Vision;
 using DuelLedger.Infra.Templates;
 using DuelLedger.Infra.Drives;

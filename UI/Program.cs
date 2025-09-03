@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using DuelLedger.Core;
-using DuelLedger.Detectors.Shadowverse;
+using DuelLedger.Games.Shadowverse;
 using DuelLedger.Publishers;
 using DuelLedger.Vision;
 using DuelLedger.Core.Abstractions;

@@ -5,7 +5,7 @@ using DuelLedger.Vision;
 using DuelLedger.Core;
 using DuelLedger.Core.Abstractions;
 
-namespace DuelLedger.Detectors.Shadowverse
+namespace DuelLedger.Games.Shadowverse
 {
     public class ShadowverseDetectorSet : IGameStateDetectorSet
     {

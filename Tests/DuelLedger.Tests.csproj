@@ -24,7 +24,7 @@
     <ProjectReference Include="..\Core\DuelLedger.Core.csproj" />
     <ProjectReference Include="..\Core\Abstractions\DuelLedger.Core.Abstractions.csproj" />
     <ProjectReference Include="..\Vision\DuelLedger.Vision.csproj" />
-    <ProjectReference Include="..\Detectors\DuelLedger.Detectors.csproj" />
+    <ProjectReference Include="..\Games\Shadowverse\DuelLedger.Games.Shadowverse.csproj" />
     <ProjectReference Include="..\Publishers\DuelLedger.Publishers.csproj" />
     <ProjectReference Include="..\UI\DuelLedger.UI.csproj" />
     <ProjectReference Include="..\Infra\DuelLedger.Infra.csproj" />

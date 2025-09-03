@@ -1,27 +1,27 @@
-namespace DuelLedger.Detectors.Shadowverse;
+namespace DuelLedger.Games.Shadowverse;
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
+using System.Text;
 using OpenCvSharp;
 using DuelLedger.Vision;
 using DuelLedger.Core;
 
-public class FormatDetector : IStateDetector
+public class ResultDetector : IStateDetector
 {
     private readonly List<(string Label, Mat Tpl)> _templates = new();
-    public GameState State => GameState.MatchStart;
-    public string Message { get; private set; } = "{}";
+    public GameState State => GameState.Result;
+    public string Message { get; private set; } = "";
     public IReadOnlyList<string> BestLabelsInGroups { get; private set; } = Array.Empty<string>();
-    // テンプレート側：テンプレ画像を部分切り抜き
-    private readonly (double x, double y, double w, double h) _tplRel = (0.00, 0.00, 1.00, 1.00);//0.02, 0.20, 0.25, 0.30
+    // テンプレート側：テンプレ画像全体を使う想定（必要なら差し替え）
+    private readonly (double x, double y, double w, double h) _tplRel = (0.00, 0.00, 1.00, 1.00);
 
     /// <summary>
     /// 複数テンプレートをロード（ラベルはファイル名 stem を使用）
     /// </summary>
-    public FormatDetector(IEnumerable<string> templatePaths)
+    public ResultDetector(IEnumerable<string> templatePaths)
     {
         foreach (var p in templatePaths)
         {
@@ -37,7 +37,6 @@ public class FormatDetector : IStateDetector
     {
         score = 0; location = new OpenCvSharp.Point(0, 0);
         BestLabelsInGroups = Array.Empty<string>();
-        Console.WriteLine("FormatDetector invoked");
         if (screen.Empty() || _templates.Count == 0) return false;
 
         // 1) ラベル接頭辞「Group__」でグルーピング（未指定は G1）
@@ -82,12 +81,10 @@ public class FormatDetector : IStateDetector
         BestLabelsInGroups = bestLabels.AsReadOnly();
         score = double.IsPositiveInfinity(minGroupBest) ? 0 : minGroupBest;
         location = bestLocOverall;
-
-        var labelsJoined = string.Join(", ", BestLabelsInGroups);
-        var formatLabel = labelsJoined.Contains("format__Rank") ? "ランクマッチ"
-                          : labelsJoined.Contains("format__2pick") ? "2Pick"
-                          : labelsJoined;
-        Message = JsonSerializer.Serialize(new { format = formatLabel });
+        var bestLabel = bestLabelOverall;
+        Message = (string.Join(", ", BestLabelsInGroups)?.Contains("result__win") == true) ? "Win"
+                        : (string.Join(", ", BestLabelsInGroups)?.Contains("result__lose") == true) ? "Lose"
+                        : (string.Join(", ", BestLabelsInGroups) ?? "matched");
 #if DEBUG
         Console.WriteLine($"[Format] AND matched (groups={groups.Count})=> '{Message}', minScore={score:F3}, loc={location}, labels=[{string.Join(", ", BestLabelsInGroups)}]");
 #endif

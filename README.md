@@ -68,6 +68,7 @@
 ### プロジェクト構成
 
 共有のDTOや列挙体は `Core/Abstractions` プロジェクトに分離されています。UIや検知ロジックから参照する際はこのプロジェクトを通じて利用します。
+Shadowverse 固有の検知やテンプレート定義は `Games/Shadowverse` プロジェクトにまとめられています。
 
 アプリ設定は `Infra/Config` の `AppConfigProvider` が `appsettings.json` と `remote.json` をマージして提供します。リモート取得に失敗してもローカル設定で起動します。
 

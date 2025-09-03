@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\Vision\DuelLedger.Vision.csproj" />
-    <ProjectReference Include="..\Core\Abstractions\DuelLedger.Core.Abstractions.csproj" />
-    <ProjectReference Include="..\Core\DuelLedger.Core.csproj" />
+    <ProjectReference Include="..\..\Vision\DuelLedger.Vision.csproj" />
+    <ProjectReference Include="..\..\Core\Abstractions\DuelLedger.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Core\DuelLedger.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +22,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <RootNamespace>DuelLedger.Games.Shadowverse</RootNamespace>
   </PropertyGroup>
 
 </Project>
