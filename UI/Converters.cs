@@ -289,3 +289,29 @@ public sealed class NullToBoolConverter : IValueConverter
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
 }
+
+public sealed class BoolToDoubleConverter : IValueConverter
+{
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is bool b)
+        {
+            if (parameter is string p && double.TryParse(p, out var d))
+                return b ? d : 0;
+            return b ? 1.0 : 0.0;
+        }
+        return 0.0;
+    }
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
+public sealed class BoolToAutoHeightConverter : IValueConverter
+{
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => value is bool b && b ? double.NaN : 0.0;
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}

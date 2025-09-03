@@ -26,6 +26,7 @@
     <ProjectReference Include="..\Vision\DuelLedger.Vision.csproj" />
     <ProjectReference Include="..\Detectors\DuelLedger.Detectors.csproj" />
     <ProjectReference Include="..\Publishers\DuelLedger.Publishers.csproj" />
+    <ProjectReference Include="..\UI\DuelLedger.UI.csproj" />
   </ItemGroup>
 
 </Project>
